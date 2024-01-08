@@ -81,6 +81,7 @@ public class RobotContainer {
       //Reset Gyro D-Pad
       new POVButton(mainControl, 0).onTrue(new ResetGyroCommand(180).andThen(new ResetDisplacementCommand(new VectorR())));
       
+      //Ground Note Detection
       new Trigger(()-> mainControl.getRightTriggerAxis() >= 0.2).onTrue(new TurnTowardsGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, mainControl));
 
     } 
