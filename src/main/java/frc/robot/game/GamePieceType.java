@@ -6,6 +6,5 @@ package frc.robot.game;
 
 /** Add your docs here. */
 public enum GamePieceType {
-    CONE,
-    CUBE
+    NOTE
 }

@@ -1,5 +1,8 @@
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -12,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.teleop.DriveCommands.JoystickOrientedDriveCommand;
 import frc.robot.commands.teleop.DriveCommands.TurnTowardsGamePieceCommand;
 import frc.robot.path.PiratePath;
@@ -31,8 +35,8 @@ public class RobotContainer {
   public final Joystick auxButtonBoard = new Joystick(Constants.AUX_BUTTON_BOARD_PORT);
 
   public final DriveSubsystem drive = new DriveSubsystem();
-  //public final LimelightSubsystem poleLimelight = new LimelightSubsystem("limelight-back");
-  public final LimelightSubsystem clawLimelight = new LimelightSubsystem("limelight-front");
+  //public final LimelightSubsystem shooterLimelight = new LimelightSubsystem("limelight-shooter");
+  public final LimelightSubsystem intakeLimelight = new LimelightSubsystem("limelight-intake");
 
   //public final LEDs leds = new LEDs();
 
@@ -66,6 +70,7 @@ public class RobotContainer {
     CommandScheduler.getInstance().cancelAll();
     
     if (!DEBUG) {
+      CommandScheduler.getInstance().schedule(new TurnTowardsGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, mainControl));
       drive.setDefaultCommand(new JoystickOrientedDriveCommand(drive, mainControl));
       
       //leds.setDefaultCommand(new SetLEDsCommand(leds, mainControl, auxControl));
@@ -75,20 +80,8 @@ public class RobotContainer {
       
       //Reset Gyro D-Pad
       new POVButton(mainControl, 0).onTrue(new ResetGyroCommand(180).andThen(new ResetDisplacementCommand(new VectorR())));
-      //Floor cone detection
-      new JoystickButton(mainControl, Button.kX.value)
-          .whileTrue(
-              new TurnTowardsGamePieceCommand(drive, clawLimelight, LimelightSubsystem.DetectionType.CONE, mainControl));
-      //Human player cone detection
-      /*new JoystickButton(mainControl, Button.kB.value)
-      .whileTrue(
-          new TurnTowardsGamePieceCommand(drive, poleLimelight, LimelightSubsystem.DetectionType.CONE, mainControl));*/
-      //Floor cube detection
-      new JoystickButton(mainControl, Button.kA.value)
-          .whileTrue(new TurnTowardsGamePieceCommand(drive, clawLimelight, DetectionType.CUBE, mainControl));
-      //Pole lineup detection
-      /*new JoystickButton(mainControl, Button.kY.value)
-          .whileTrue(new TurnTowardsGamePieceCommand(drive, poleLimelight, DetectionType.RETROREFLECTIVE, mainControl));*/
+      
+      new Trigger(()-> mainControl.getRightTriggerAxis() >= 0.2).onTrue(new TurnTowardsGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, mainControl));
 
     } 
     

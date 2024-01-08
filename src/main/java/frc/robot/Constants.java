@@ -28,26 +28,6 @@ public final class Constants {
     public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(6, 5, 13, 360, 288.28, -1, -1, ModuleLocation.BACK_RIGHT);
     public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(4, 9, 12, 360, 1.2304, -1, 1, ModuleLocation.BACK_LEFT);
 
-    // Mast
-    public static final int MAIN_SLIDER_MOTOR = 21;
-    public static final int CARRIAGE_MOTOR = 22;
-    public static final int SHOULDER_MOTOR_1 = 23;
-    public static final int SHOULDER_MOTOR_2 = 26;
-
-    // Claw
-    public static final int WRIST_MOTOR = 24;
-    public static final int GRIPPER_INTAKE_MOTOR = 25;
-
-    // Gripper
-    public static final int GRIPPER_SOLENOID_CHANNEL = 0;
-
-    //LEDS
-    public static final int LED_PORT = 17;
-    public static final int LED_LENGTH = 194;
-
-    // Other
-    public static final String TEST_PATH = "New New New Path.wpilib.json";
-
     public static final double FIELD_X = 54d + 1d/12d;
     public static final double FIELD_Y = 26d + 7d/12d;
 

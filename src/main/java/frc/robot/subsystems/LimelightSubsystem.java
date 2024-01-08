@@ -7,9 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.DataStreamJitterDetector;
@@ -18,18 +16,9 @@ public class LimelightSubsystem extends SubsystemBase {
 
   private final String networkTableName;
 
-  /*
-   * Limelight Detection pipeline, NOTE: pipeline order must follow enum order
-   * Pipeline 0: CONE
-   * Pipeline 1: CUBE
-   * Pipeline 2: FIDUCIAL
-   * Pipeline 3: TAPE
-   */
   public enum DetectionType {
-    CONE(0),
-    CUBE(3), //1
-    FIDUCIAL(2),
-    RETROREFLECTIVE(1),//3
+    NOTE(0),
+    FIDUCIAL(1),
     NONE(-1);
 
     public final int pipeline;

@@ -16,17 +16,17 @@ import frc.robot.utils.VectorR;
 public class TurnTowardsGamePieceCommand extends Command {
 
   DriveSubsystem drive;
-  XboxController mainControl;
+  XboxController control;
   LimelightSubsystem limelight;
   LimelightSubsystem.DetectionType type;
 
   final VectorR leftJoystick = new VectorR();
 
-  public TurnTowardsGamePieceCommand(DriveSubsystem drive, LimelightSubsystem limelight, LimelightSubsystem.DetectionType type, XboxController mainControl) {
+  public TurnTowardsGamePieceCommand(DriveSubsystem drive, LimelightSubsystem limelight, LimelightSubsystem.DetectionType type, XboxController control) {
     this.drive = drive;
     this.limelight = limelight;
     this.type = type;
-    this.mainControl = mainControl;
+    this.control = control;
     addRequirements(drive, limelight);
   }
 
@@ -37,13 +37,13 @@ public class TurnTowardsGamePieceCommand extends Command {
 
   @Override
   public void execute() {
-    leftJoystick.setFromCartesian(mainControl.getLeftX(), -mainControl.getLeftY());
+    leftJoystick.setFromCartesian(control.getLeftX(), -control.getLeftY());
     leftJoystick.rotate(-90);
 
     
     limelight.setDetectionType(type);
 
-    leftJoystick.mult(0.15);
+    leftJoystick.mult(MathR.lerp(0.25, 1.2, 0.0, 1.0, control.getRightTriggerAxis()));
 
     if (limelight.isDetection && limelight.confidence() > 0.25) drive.move(leftJoystick, MathR.limit(limelight.x * -1 * (1d/45d), -0.25, 0.25) );
     else if (leftJoystick.getMagnitude() > 0.1) drive.move(leftJoystick, 0.0);

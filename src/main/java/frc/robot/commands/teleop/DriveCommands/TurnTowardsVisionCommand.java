@@ -34,7 +34,6 @@ public class TurnTowardsVisionCommand extends Command {
     this.xbox = xbox;
     this.pipeline = pipeline;
     addRequirements(drive);
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -63,24 +62,25 @@ public class TurnTowardsVisionCommand extends Command {
     leftJoystick.mult(maxSpeed);
 
     if (limelight.getDetectionType() != LimelightSubsystem.DetectionType.FIDUCIAL){
-      if (limelight.confidence() > CONFIDENCE) drive.move(leftJoystick, MathR.limit(-limelight.x * (1d/27d), -1, 1) * 0.4  );
+      if (limelight.confidence() > CONFIDENCE) drive.move(leftJoystick, MathR.limit(-limelight.x * (1d/27d), -1, 1) * 0.4);
       else drive.move(leftJoystick, xbox.getRightX());
     }
     else{
-      if (limelight.botposeZRot < -6){
-        drive.move(VectorR.fromPolar(MathR.limit(lineUpPID.calculate(rightAvg.get(), 0), -0.4, 0.4) * 0.15, 3*Math.PI/2), MathR.limit(-limelight.x * (1d/27d), -1, 1) * 0.3);
-      }
-      else if (limelight.botposeZRot > 6){
-        drive.move(VectorR.fromPolar(-MathR.limit(lineUpPID.calculate(leftAvg.get(), 0), -0.4, 0.4) * 0.15, Math.PI/2), MathR.limit(-limelight.x * (1d/27d), -1, 1) * 0.3);
-      }
-      else{
-        if (limelight.a < 1.4){
-          drive.move(VectorR.fromPolar(0.1, 0), MathR.limit(-limelight.x * (1d/27d), -1, 1) * 0.3);
-        }
-        else{
-          drive.stop();
-        }
-      }
+      //CHANGE
+      // if (limelight.botposeZRot < -6){
+      //   drive.move(VectorR.fromPolar(MathR.limit(lineUpPID.calculate(rightAvg.get(), 0), -0.4, 0.4) * 0.15, 3*Math.PI/2), MathR.limit(-limelight.x * (1d/27d), -1, 1) * 0.3);
+      // }
+      // else if (limelight.botposeZRot > 6){
+      //   drive.move(VectorR.fromPolar(-MathR.limit(lineUpPID.calculate(leftAvg.get(), 0), -0.4, 0.4) * 0.15, Math.PI/2), MathR.limit(-limelight.x * (1d/27d), -1, 1) * 0.3);
+      // }
+      // else{
+      //   if (limelight.a < 1.4){
+      //     drive.move(VectorR.fromPolar(0.1, 0), MathR.limit(-limelight.x * (1d/27d), -1, 1) * 0.3);
+      //   }
+      //   else{
+      //     drive.stop();
+      //   }
+      //}
     }
   }
 
