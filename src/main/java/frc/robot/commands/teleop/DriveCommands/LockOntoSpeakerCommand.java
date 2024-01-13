@@ -35,7 +35,7 @@ public class LockOntoSpeakerCommand extends TurnTowardsGamePieceCommand {
 
     leftJoystick.mult(MathR.lerp(0.25, 1.2, 0.0, 1.0, control.getRightTriggerAxis()));
 
-    double angleToFace = Math.toDegrees(Math.atan2(limelight.y, limelight.x + 0.0001) + Math.atan2(Constants.SHOOTER_VELOCITY, DriveSubsystem.getRelativeVelocity().getMagnitude() + 0.0001) + 2*Math.PI);
+    double angleToFace = Math.toDegrees(Math.atan2(limelight.y, limelight.x + 0.0001) + Math.atan2(Constants.SHOOTER_VELOCITY, DriveSubsystem.getRelativeVelocity().getMagnitude() + 0.0001));
 
     double turnPower = MathR.limit(TURN_KP * MathR.getDistanceToAngle(yaw, angleToFace), -0.25, 0.25);
     //MathR.limit(limelight.x * -1 * (1d/45d), -0.25, 0.25) 
