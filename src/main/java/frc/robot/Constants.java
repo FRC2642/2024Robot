@@ -31,4 +31,6 @@ public final class Constants {
     public static final double FIELD_X = 54d + 1d/12d;
     public static final double FIELD_Y = 26d + 7d/12d;
 
+    public static final double SHOOTER_VELOCITY = 0;
+
 }

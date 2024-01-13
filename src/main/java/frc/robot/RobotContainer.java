@@ -34,7 +34,7 @@ public class RobotContainer {
   public final XboxController auxControl = new XboxController(Constants.AUX_CONTROL_PORT);
   public final Joystick auxButtonBoard = new Joystick(Constants.AUX_BUTTON_BOARD_PORT);
 
-  public final DriveSubsystem drive = new DriveSubsystem();
+  //public final DriveSubsystem drive = new DriveSubsystem();
   //public final LimelightSubsystem shooterLimelight = new LimelightSubsystem("limelight-shooter");
   public final LimelightSubsystem intakeLimelight = new LimelightSubsystem("limelight-intake");
 
@@ -63,15 +63,15 @@ public class RobotContainer {
   }
 
   public void autonomousInit() {
-    drive.setDefaultCommand(new RunCommand(() -> drive.stop(), drive));
+  //drive.setDefaultCommand(new RunCommand(() -> drive.stop(), drive));
   }
 
   public void teleopInit() {
     CommandScheduler.getInstance().cancelAll();
     
     if (!DEBUG) {
-      CommandScheduler.getInstance().schedule(new TurnTowardsGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, mainControl));
-      drive.setDefaultCommand(new JoystickOrientedDriveCommand(drive, mainControl));
+      //CommandScheduler.getInstance().schedule(new TurnTowardsGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, mainControl));
+      //drive.setDefaultCommand(new JoystickOrientedDriveCommand(drive, mainControl));
       
       //leds.setDefaultCommand(new SetLEDsCommand(leds, mainControl, auxControl));
 
@@ -82,7 +82,7 @@ public class RobotContainer {
       new POVButton(mainControl, 0).onTrue(new ResetGyroCommand(180).andThen(new ResetDisplacementCommand(new VectorR())));
       
       //Ground Note Detection
-      new Trigger(()-> mainControl.getRightTriggerAxis() >= 0.2).onTrue(new TurnTowardsGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, mainControl));
+      //new Trigger(()-> mainControl.getRightTriggerAxis() >= 0.2).onTrue(new TurnTowardsGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, mainControl));
 
     } 
     
@@ -90,7 +90,7 @@ public class RobotContainer {
     //DEBUG MODE
     else {
       //leds.setDefaultCommand(new RunCommand(() -> LEDs.animateLEDs(LEDPattern.STROBE_BLUE), leds));
-      drive.setDefaultCommand(new RunCommand(() -> drive.stop(), drive));
+      //drive.setDefaultCommand(new RunCommand(() -> drive.stop(), drive));
       
     }
   }

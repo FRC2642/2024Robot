@@ -36,7 +36,8 @@ public class DriveSubsystem extends SubsystemBase {
         new SwerveModule(Constants.BACK_RIGHT), new SwerveModule(Constants.BACK_LEFT));
 
     gyro = new AHRS();
-    gyro.calibrate();
+    gyro.reset();
+    gyro.resetDisplacement();
 
     increment = new VectorR();
     displacement = new VectorR();
@@ -160,7 +161,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   public static void resetGyro(double yawDegrees) {
     gyro.reset();
-    gyro.calibrate();
     yawOffsetDegrees = yawDegrees;
   }
   

@@ -4,11 +4,12 @@
 
 package frc.robot.subsystems.swerve;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenixpro.controls.TorqueCurrentFOC;
-import com.ctre.phoenixpro.hardware.TalonFX;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Constants;
@@ -25,7 +26,7 @@ public class SwerveModule {
   // HARDWARE
   public final TalonFX angleMotor;
   private final TalonFX driveMotor;
-  public final CANCoder orientationEncoder;
+  public final CANcoder orientationEncoder;
 
   // INFORMATION
   public final SwerveModuleInfo info;
@@ -38,10 +39,18 @@ public class SwerveModule {
     this.info = info;
     this.angleMotor = new TalonFX(info.TURN_ID);
     this.driveMotor = new TalonFX(info.DRIVE_ID);
-    this.orientationEncoder = new CANCoder(info.ENCODER_ID);
+    this.orientationEncoder = new CANcoder(info.ENCODER_ID);
     this.defensiveAngleDeg = VectorR.fromCartesian(info.X, info.Y).getAngle();
     
     orientationEncoder.setPosition(0);
+    
+    MagnetSensorConfigs config = new MagnetSensorConfigs();
+  // set units of the CANCoder to radians, with velocity being radians per second
+  
+    config = config.withAbsoluteSensorRange(AbsoluteSensorRangeValue.Signed_PlusMinusHalf);
+  
+  
+    orientationEncoder.getConfigurator().apply(config);
     //driveMotor.setSelectedSensorPosition(0);
   }
 
@@ -119,7 +128,7 @@ public class SwerveModule {
   public void update(double speed, double angleDegrees) {
     
     
-    wheelOrientation = orientationEncoder.getAbsolutePosition();
+    wheelOrientation = (orientationEncoder.getAbsolutePosition().getValueAsDouble() + 0.5) * 360; 
     desired.setFromPolar(speed, angleDegrees);
 
     if (Math.abs(MathR.getDistanceToAngle(getWheelOrientationDegrees(), desiredAngle())) > 90d)
