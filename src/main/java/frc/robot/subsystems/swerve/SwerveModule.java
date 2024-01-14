@@ -128,7 +128,7 @@ public class SwerveModule {
   public void update(double speed, double angleDegrees) {
     
     
-    wheelOrientation = (orientationEncoder.getAbsolutePosition().getValueAsDouble() + 0.5) * 360; 
+    wheelOrientation = ((orientationEncoder.getAbsolutePosition().getValueAsDouble() + 0.5)/1.49975585938) * 360; 
     desired.setFromPolar(speed, angleDegrees);
 
     if (Math.abs(MathR.getDistanceToAngle(getWheelOrientationDegrees(), desiredAngle())) > 90d)
