@@ -32,5 +32,6 @@ public final class Constants {
     public static final double FIELD_Y = 26d + 7d/12d;
 
     public static final double SHOOTER_VELOCITY = 7;
+    public static final double SPEAKER_TARGET_HEIGHT = 7.8333;
 
 }
