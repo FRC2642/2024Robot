@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.LimelightSubsystem.DetectionType;
 import frc.robot.utils.MathR;
 import frc.robot.utils.VectorR;
@@ -16,7 +17,8 @@ public class LockOntoSpeakerCommand extends TurnTowardsGamePieceCommand {
   /** Creates a new LockOntoSpeakerCommand. */
   final double TURN_KP = 0.017;
 
-  public LockOntoSpeakerCommand(DriveSubsystem drive, LimelightSubsystem limelight, DetectionType type, XboxController control) {
+  private ShooterSubsystem shooter;
+  public LockOntoSpeakerCommand(DriveSubsystem drive, ShooterSubsystem shooter, LimelightSubsystem limelight, DetectionType type, XboxController control) {
     super(drive, limelight, type, control);
 
 
@@ -46,12 +48,10 @@ public class LockOntoSpeakerCommand extends TurnTowardsGamePieceCommand {
     
     double turnPower = MathR.limit(TURN_KP * MathR.getDistanceToAngle(0, angleToFace), -0.25, 0.25) * -1;
     
-    //MathR.limit(limelight.x * -1 * (1d/45d), -0.25, 0.25) 
     if (limelight.isDetection && limelight.confidence() > 0.2) drive.move(leftJoystick, turnPower);
     else if (leftJoystick.getMagnitude() > 0.1) drive.move(leftJoystick, 0.0);
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;
