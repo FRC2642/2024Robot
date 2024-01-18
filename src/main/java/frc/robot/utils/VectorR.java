@@ -4,7 +4,6 @@
 
 package frc.robot.utils;
 
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 
 /** Wrapper class for vectors */
 public class VectorR implements Cloneable {
