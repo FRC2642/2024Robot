@@ -20,7 +20,7 @@ public class LockOntoSpeakerCommand extends TurnTowardsGamePieceCommand {
   private ShooterSubsystem shooter;
   public LockOntoSpeakerCommand(DriveSubsystem drive, ShooterSubsystem shooter, LimelightSubsystem limelight, DetectionType type, XboxController control) {
     super(drive, limelight, type, control);
-
+    this.shooter = shooter;
 
   }
 

@@ -32,5 +32,7 @@ public final class Constants {
     public static final double FIELD_Y = 26d + 7d/12d;
 
     public static final double SHOOTER_VELOCITY = 7;
+    public static final double SHOOTER_TILT_ENCODER_TICKS_PER_DEGREE = 1;
+    public static final double ELEVATOR_ENCODER_TICKS_PER_FOOT = 1;
 
 }
