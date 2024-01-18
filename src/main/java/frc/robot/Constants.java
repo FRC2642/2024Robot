@@ -33,5 +33,7 @@ public final class Constants {
 
     public static final double SHOOTER_VELOCITY = 7;
     public static final double SPEAKER_TARGET_HEIGHT = 7.8333;
+    public static final double SHOOTER_TILT_ENCODER_TICKS_PER_DEGREE = 1;
+    public static final double ELEVATOR_ENCODER_TICKS_PER_FOOT = 1;
 
 }
