@@ -43,7 +43,7 @@ public class TurnTowardsGamePieceCommand extends Command {
     
     limelight.setDetectionType(type);
 
-    leftJoystick.mult(MathR.lerp(0.25, 1.2, 0.0, 1.0, control.getRightTriggerAxis()));
+    leftJoystick.mult(MathR.lerp(0.25, 1.2, 0.0, 1.0, control.getLeftTriggerAxis()));
 
     if (limelight.isDetection && limelight.confidence() > 0.25) drive.move(leftJoystick, MathR.limit(limelight.x * -1 * (1d/45d), -0.25, 0.25) );
     else if (leftJoystick.getMagnitude() > 0.1) drive.move(leftJoystick, 0.0);

@@ -37,10 +37,10 @@ public class LockOntoSpeakerCommand extends TurnTowardsGamePieceCommand {
     
     limelight.setDetectionType(type);
 
-    leftJoystick.mult(MathR.lerp(0.25, 1.2, 0.0, 1.0, control.getRightTriggerAxis()));
+    leftJoystick.mult(MathR.lerp(0.25, 1.2, 0.0, 1.0, control.getLeftTriggerAxis()));
 
-    double distanceToSpeaker = Math.sqrt(Math.pow(limelight.botposeX, 2) + Math.pow(limelight.botposeY, 2));
-    double angleToSpeaker = Math.atan2(Constants.SPEAKER_TARGET_HEIGHT - shooter.getHeight(), distanceToSpeaker);
+    double distanceToSpeaker = Math.sqrt(Math.pow(4.5416 - limelight.botposeX, 2) + Math.pow(limelight.botposeY, 2));
+    double angleToSpeaker = Math.toDegrees(Math.atan2(Constants.SPEAKER_TARGET_HEIGHT - shooter.getHeight(), distanceToSpeaker));
 
     System.out.println(angleToSpeaker);
     
