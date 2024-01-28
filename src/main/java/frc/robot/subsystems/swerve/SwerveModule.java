@@ -45,13 +45,9 @@ public class SwerveModule {
     orientationEncoder.setPosition(0);
     
     MagnetSensorConfigs config = new MagnetSensorConfigs();
-  // set units of the CANCoder to radians, with velocity being radians per second
-  
-    config = config.withAbsoluteSensorRange(AbsoluteSensorRangeValue.Signed_PlusMinusHalf);
-  
-  
+    config = config.withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1);
     orientationEncoder.getConfigurator().apply(config);
-    //driveMotor.setSelectedSensorPosition(0);
+
   }
 
   //RESET METHODS
@@ -128,7 +124,7 @@ public class SwerveModule {
   public void update(double speed, double angleDegrees) {
     
     
-    wheelOrientation = ((orientationEncoder.getAbsolutePosition().getValueAsDouble() + 0.5)/1.49975585938) * 360; 
+    wheelOrientation = ((orientationEncoder.getAbsolutePosition().getValueAsDouble()) /* /1.49975585938*/) * 360; 
     desired.setFromPolar(speed, angleDegrees);
 
     if (Math.abs(MathR.getDistanceToAngle(getWheelOrientationDegrees(), desiredAngle())) > 90d)

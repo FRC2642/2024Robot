@@ -1,44 +1,38 @@
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.teleop.DriveCommands.JoystickOrientedDriveCommand;
 import frc.robot.commands.teleop.DriveCommands.TurnTowardsGamePieceCommand;
-import frc.robot.path.PiratePath;
-import frc.robot.path.PiratePoint;
 import frc.robot.commands.teleop.resetters.ResetDisplacementCommand;
 import frc.robot.commands.teleop.resetters.ResetGyroCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.LimelightSubsystem.DetectionType;
 import frc.robot.utils.VectorR;
-import frc.robot.utils.Easings.Functions;
 
 
 public class RobotContainer {
   public final XboxController mainControl = new XboxController(Constants.DRIVE_CONTROL_PORT);
-  public final XboxController auxControl = new XboxController(Constants.AUX_CONTROL_PORT);
   public final Joystick auxButtonBoard = new Joystick(Constants.AUX_BUTTON_BOARD_PORT);
 
-  //public final DriveSubsystem drive = new DriveSubsystem();
+  public final DriveSubsystem drive = new DriveSubsystem();
+  public final ShooterSubsystem shooter = new ShooterSubsystem();
+  public final IntakeSubsystem intake = new IntakeSubsystem();
+  public final ElevatorSubsystem elevator = new ElevatorSubsystem();
   //public final LimelightSubsystem shooterLimelight = new LimelightSubsystem("limelight-shooter");
   public final LimelightSubsystem intakeLimelight = new LimelightSubsystem("limelight-intake");
-
-  //public final LEDs leds = new LEDs();
 
 
   public final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
@@ -63,19 +57,18 @@ public class RobotContainer {
   }
 
   public void autonomousInit() {
-  //drive.setDefaultCommand(new RunCommand(() -> drive.stop(), drive));
+    drive.setDefaultCommand(new RunCommand(() -> drive.stop(), drive));
   }
 
   public void teleopInit() {
     CommandScheduler.getInstance().cancelAll();
     
     if (!DEBUG) {
-      //CommandScheduler.getInstance().schedule(new TurnTowardsGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, mainControl));
-      //drive.setDefaultCommand(new JoystickOrientedDriveCommand(drive, mainControl));
-      
-      //leds.setDefaultCommand(new SetLEDsCommand(leds, mainControl, auxControl));
-
-      // BUTTONS
+      CommandScheduler.getInstance().schedule(new PresetSelectorCommand(shooter, elevator, intake, auxButtonBoard));
+      drive.setDefaultCommand(new JoystickOrientedDriveCommand(drive, mainControl));
+      shooter.setDefaultCommand(new ManualShooterCommand(shooter, mainControl));
+      elevator.setDefaultCommand(new ManualElevatorCommand(elevator, mainControl));
+      intake.setDefaultCommand(new ManualIntakeCommand(intake, mainControl));
 
       
       //Reset Gyro D-Pad
@@ -90,13 +83,10 @@ public class RobotContainer {
     //DEBUG MODE
     else {
       //leds.setDefaultCommand(new RunCommand(() -> LEDs.animateLEDs(LEDPattern.STROBE_BLUE), leds));
-      //drive.setDefaultCommand(new RunCommand(() -> drive.stop(), drive));
+      drive.setDefaultCommand(new RunCommand(() -> drive.stop(), drive));
+      //ADD SUBSYSTEMS HERE
       
     }
-  }
-
-  public void testInit() {
-
   }
 
   public Command getAutonomousCommand() {

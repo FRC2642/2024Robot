@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -15,41 +14,48 @@ import frc.robot.Constants;
 import frc.robot.IPositionable;
 import frc.robot.utils.MathR;
 
-public class ShooterSubsystem extends SubsystemBase implements IPositionable<ShooterSubsystem.ShooterPosition>{
+public class IntakeSubsystem extends SubsystemBase implements IPositionable<IntakeSubsystem.IntakePosition>{
+
+  private final int TILT_TOLERANCE = 3;
 
   private PIDController tiltPID = new PIDController(0.2, 0, 0);
+
+  private CANSparkMax intakeSpinnerMotor = new CANSparkMax(Constants.INTAKE_SPINNER_ID, MotorType.kBrushless);
+  private CANSparkMax intakeTiltMotor = new CANSparkMax(Constants.INTAKE_PIVOT_ID, MotorType.kBrushless);
   
-  private TalonFX shooterMotor = new TalonFX(Constants.SHOOTER_SPINNER_ID);
-  private CANSparkMax shooterTiltMotor = new CANSparkMax(Constants.SHOOTER_PIVOT_ID, MotorType.kBrushless);
-  private CANSparkMax feederMotor = new CANSparkMax(Constants.FEEDER_WHEELS_ID, MotorType.kBrushless);
+  private AbsoluteEncoder tiltEncoder = intakeTiltMotor.getAbsoluteEncoder(Type.kDutyCycle);
 
-  private AbsoluteEncoder tiltEncoder = shooterTiltMotor.getAbsoluteEncoder(Type.kDutyCycle);
+  private IntakePosition currentSetPosition = IntakePosition.RETRACTED;
+  private double speedLimit = 0.5;
 
-  private ShooterPosition currentSetPosition = ShooterPosition.TRAVEL;
-  private double speedLimit = 1;
+  public static final double MAX_DEGREES = 80;
+  public static final double MIN_DEGREES = 0;
 
-  public static final double MAX_DEGREES = 90;
-  public static final double MIN_DEGREES = -40;
-  
-  public ShooterSubsystem() {}
+  public IntakeSubsystem() {
+    tiltPID.setTolerance(TILT_TOLERANCE);
+  }
 
   public double getPitch(){
-    return tiltEncoder.getPosition() * Constants.SHOOTER_TILT_ENCODER_TICKS_PER_DEGREE;
+    return tiltEncoder.getPosition() * Constants.INTAKE_TILT_ENCODER_TICKS_PER_DEGREE;
   }
 
   public void tiltToAngle(double degrees){
-    shooterTiltMotor.set(MathR.limit(tiltPID.calculate(getPitch(), degrees), -1, 1));
+    intakeTiltMotor.set(MathR.limit(tiltPID.calculate(getPitch(), degrees), -1, 1));
+  }
+
+  public void setIntake(double speed){
+    intakeSpinnerMotor.set(speed);
   }
 
   public void set(double speed) {
-    currentSetPosition = ShooterPosition.MANUAL;
+    currentSetPosition = IntakePosition.MANUAL;
 
-    shooterTiltMotor.set(
+    intakeTiltMotor.set(
         MathR.limitWhenReached(speed, -speedLimit, speedLimit, getPitch() <= MIN_DEGREES,
             getPitch() >= MAX_DEGREES));
   }
 
-  public void set(ShooterPosition pos) {
+  public void set(IntakePosition pos) {
     double speed = tiltPID.calculate(getPitch(), pos.angle);
 
     if (!atSetPosition())
@@ -61,17 +67,8 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   }
 
   public void setManual(double speed) {
-    shooterTiltMotor.set(speed);
+    intakeTiltMotor.set(speed);
   }
-
-  public void setFeeder(double speed){
-    feederMotor.set(speed);
-  }
-
-  public void setShooter(double speed){
-    shooterMotor.set(speed);
-  }
-
 
   @Override
   public boolean atSetPosition() {
@@ -79,7 +76,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   }
 
   @Override
-  public ShooterPosition getSetPosition() {
+  public IntakePosition getSetPosition() {
     return currentSetPosition;
   }
 
@@ -95,22 +92,21 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
 
   @Override
   public void setRampRate(double rampRate) {
-    shooterTiltMotor.setOpenLoopRampRate(rampRate);
+    intakeTiltMotor.setOpenLoopRampRate(rampRate);
   }
 
   @Override
   public double getRampRate() {
-    return shooterTiltMotor.getOpenLoopRampRate();
+    return intakeTiltMotor.getOpenLoopRampRate();
   }
 
-  public enum ShooterPosition {
-    TRAVEL(0),
-    AMP(0),
-    TRAP(0),
+  public enum IntakePosition {
+    RETRACTED(0),
+    EXTENDED(0),
     MANUAL(-1);
 
     public final double angle;
-    private ShooterPosition(double angle) {
+    private IntakePosition(double angle) {
       this.angle = angle;
     }
   }
