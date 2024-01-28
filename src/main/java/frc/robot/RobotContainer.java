@@ -10,7 +10,10 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.auto.positionable.PresetSelectorCommand;
 import frc.robot.commands.teleop.DriveCommands.JoystickOrientedDriveCommand;
+import frc.robot.commands.teleop.DriveCommands.ManualElevatorCommand;
+import frc.robot.commands.teleop.DriveCommands.ManualShooterCommand;
 import frc.robot.commands.teleop.DriveCommands.TurnTowardsGamePieceCommand;
 import frc.robot.commands.teleop.resetters.ResetDisplacementCommand;
 import frc.robot.commands.teleop.resetters.ResetGyroCommand;
@@ -67,8 +70,7 @@ public class RobotContainer {
       CommandScheduler.getInstance().schedule(new PresetSelectorCommand(shooter, elevator, intake, auxButtonBoard));
       drive.setDefaultCommand(new JoystickOrientedDriveCommand(drive, mainControl));
       shooter.setDefaultCommand(new ManualShooterCommand(shooter, mainControl));
-      elevator.setDefaultCommand(new ManualElevatorCommand(elevator, mainControl));
-      intake.setDefaultCommand(new ManualIntakeCommand(intake, mainControl));
+      elevator.setDefaultCommand(new ManualElevatorCommand(elevator, auxButtonBoard));
 
       
       //Reset Gyro D-Pad
