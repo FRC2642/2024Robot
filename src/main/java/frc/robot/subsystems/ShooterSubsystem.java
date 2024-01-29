@@ -30,15 +30,18 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
 
   public static final double MAX_DEGREES = 90;
   public static final double MIN_DEGREES = -40;
+  private final int TILT_TOLERANCE = 3;
   
-  public ShooterSubsystem() {}
+  public ShooterSubsystem() {
+    tiltPID.setTolerance(TILT_TOLERANCE);
+  }
 
   public double getPitch(){
     return tiltEncoder.getPosition() * Constants.SHOOTER_TILT_ENCODER_TICKS_PER_DEGREE;
   }
 
   public void tiltToAngle(double degrees){
-    shooterTiltMotor.set(MathR.limit(tiltPID.calculate(getPitch(), degrees), -1, 1));
+    shooterTiltMotor.set(MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), degrees), 0), -1, 1));
   }
 
   public void set(double speed) {

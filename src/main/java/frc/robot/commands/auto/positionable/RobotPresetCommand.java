@@ -51,7 +51,14 @@ public class RobotPresetCommand extends Command {
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    shooter.setSpeedLimit(0.5);
+    shooter.setRampRate(0.2);
+    elevator.setSpeedLimit(0.5);
+    elevator.setRampRate(0.5);
+    intake.setSpeedLimit(0.5);
+    intake.setRampRate(0.2);
+  }
 
   @Override
   public void execute() {
@@ -137,7 +144,13 @@ public class RobotPresetCommand extends Command {
       double distanceToSpeaker = Math.sqrt(Math.pow(4.5416 - shooterLimelight.botposeX, 2) + Math.pow(shooterLimelight.botposeY, 2));
       double angleToSpeaker = Math.toDegrees(Math.atan2(Constants.SPEAKER_TARGET_HEIGHT - elevator.getHeight(), distanceToSpeaker));
 
-      shooter.tiltToAngle(angleToSpeaker);
+      if (shooterLimelight.isDetection && shooterLimelight.confidence() > 0.1){
+        shooter.tiltToAngle(angleToSpeaker);
+      }
+      else{
+        shooter.tiltToAngle(60);
+      }
+      
 
       VectorR direction = DriveSubsystem.getRelativeVelocity();
       direction.div(DriveSubsystem.getRelativeVelocity().getMagnitude());

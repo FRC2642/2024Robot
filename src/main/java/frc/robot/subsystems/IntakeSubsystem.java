@@ -40,7 +40,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   }
 
   public void tiltToAngle(double degrees){
-    intakeTiltMotor.set(MathR.limit(tiltPID.calculate(getPitch(), degrees), -1, 1));
+    intakeTiltMotor.set(MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), degrees), 0), -1, 1));
   }
 
   public void setIntake(double speed){

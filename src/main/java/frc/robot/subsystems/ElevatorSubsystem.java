@@ -25,10 +25,12 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
 
   private ElevatorPosition currentSetPosition = ElevatorPosition.TRAVEL;
   private double speedLimit = 0.8;
+  private final double PID_TOLERANCE = 0.05;
 
   public ElevatorSubsystem() {
     elevatorMotor2.follow(elevatorMotor1);
     elevatorEncoder.setPositionConversionFactor(1/Constants.ELEVATOR_MAX_ENCODER_TICK);
+    elevatorPID.setTolerance(PID_TOLERANCE);
   }
 
   public double getHeight(){
