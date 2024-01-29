@@ -32,26 +32,26 @@ public class LockOntoSpeakerCommand extends TurnTowardsGamePieceCommand {
   @Override
   public void execute() {
     leftJoystick.setFromCartesian(control.getLeftX(), -control.getLeftY());
-    leftJoystick.rotate(-90);
+      leftJoystick.rotate(-90);
     
-    limelight.setDetectionType(type);
+      limelight.setDetectionType(type);
 
-    leftJoystick.mult(MathR.lerp(0.25, 1.2, 0.0, 1.0, control.getLeftTriggerAxis()));
+      leftJoystick.mult(MathR.lerp(0.25, 1.2, 0.0, 1.0, control.getLeftTriggerAxis()));
 
-    double distanceToSpeaker = Math.sqrt(Math.pow(4.5416 - limelight.botposeX, 2) + Math.pow(limelight.botposeY, 2));
-    double angleToSpeaker = Math.toDegrees(Math.atan2(Constants.SPEAKER_TARGET_HEIGHT - elevator.getHeight(), distanceToSpeaker));
+      double distanceToSpeaker = Math.sqrt(Math.pow(4.5416 - limelight.botposeX, 2) + Math.pow(limelight.botposeY, 2));
+      double angleToSpeaker = Math.toDegrees(Math.atan2(Constants.SPEAKER_TARGET_HEIGHT - elevator.getHeight(), distanceToSpeaker));
 
-    shooter.tiltToAngle(angleToSpeaker);
+      shooter.tiltToAngle(angleToSpeaker);
 
-    VectorR direction = DriveSubsystem.getRelativeVelocity();
-    direction.div(DriveSubsystem.getRelativeVelocity().getMagnitude());
-    
-    double angleToFace = limelight.x + 90 - Math.toDegrees(Math.atan2(Constants.SHOOTER_VELOCITY, DriveSubsystem.getRelativeVelocity().getX() + 0.0001));
+      VectorR direction = DriveSubsystem.getRelativeVelocity();
+      direction.div(DriveSubsystem.getRelativeVelocity().getMagnitude());
+      
+      double angleToFace = limelight.x + 90 - Math.toDegrees(Math.atan2(Constants.SHOOTER_VELOCITY, DriveSubsystem.getRelativeVelocity().getX() + 0.0001));
 
-    double turnPower = MathR.limit(TURN_KP * MathR.getDistanceToAngle(0, angleToFace), -0.25, 0.25) * -1;
-    
-    if (limelight.isDetection && limelight.confidence() > 0.2) drive.move(leftJoystick, turnPower);
-    else if (leftJoystick.getMagnitude() > 0.1) drive.move(leftJoystick, 0.0);
+      double turnPower = MathR.limit(TURN_KP * MathR.getDistanceToAngle(0, angleToFace), -0.25, 0.25) * -1;
+      
+      if (limelight.isDetection && limelight.confidence() > 0.2) drive.move(leftJoystick, turnPower);
+      else if (leftJoystick.getMagnitude() > 0.1) drive.move(leftJoystick, 0.0);
   }
 
   @Override

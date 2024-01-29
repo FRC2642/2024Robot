@@ -98,8 +98,9 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
 
   public enum ElevatorPosition {
     TRAVEL(0),
-    AMP(1),
-    TRAP(1),
+    AMP(0.5),
+    TRAP(0.9),
+    CLIMB(1),
     MANUAL(-1);
 
     public final double percentageElevated;

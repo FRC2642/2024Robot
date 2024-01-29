@@ -8,13 +8,17 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class RunIntakeCommand extends Command {
-  IntakeSubsystem intake;
+public class ManualIntakeCommand extends Command {
+  /** Creates a new ManualIntakeCommand. */
+
+  private final IntakeSubsystem intake;
+  private final XboxController mainControl;
   double speed;
-  XboxController mainControl;
-  public RunIntakeCommand(IntakeSubsystem intake, double speed, XboxController mainControl) {
+
+
+  public ManualIntakeCommand(IntakeSubsystem intake, XboxController mainControl) {
+
     this.intake = intake;
-    this.speed = speed;
     this.mainControl = mainControl;
     addRequirements(intake);
   }
@@ -24,11 +28,20 @@ public class RunIntakeCommand extends Command {
 
   @Override
   public void execute() {
-    intake.setIntake(speed);
+    if(mainControl.getLeftBumper()){
+      intake.setIntake(0.7);
+    }
+    else{
+      intake.setIntake(0);
+    }
+
+    intake.setManual(mainControl.getLeftY());
+
+    
   }
 
   @Override
   public boolean isFinished() {
-    return !mainControl.getLeftBumper();
+    return false;
   }
 }

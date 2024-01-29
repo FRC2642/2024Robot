@@ -5,61 +5,43 @@
 package frc.robot.commands.auto.positionable;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.RobotState;
 
 public class PresetSelectorCommand extends Command {
-  /** Creates a new PresetSelectorCommand. */
-  private final ShooterSubsystem shooter;
-  private final ElevatorSubsystem elevator;
-  private final IntakeSubsystem intake;
   private final Joystick auxButtonBoard;
+  private final XboxController mainControl;
 
 
-  public PresetSelectorCommand(ShooterSubsystem shooter, ElevatorSubsystem elevator, IntakeSubsystem intake, Joystick auxButtonBoard){
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.shooter = shooter;
-    this.elevator = elevator;
-    this.intake = intake;
+  public PresetSelectorCommand(XboxController mainControl, Joystick auxButtonBoard){
     this.auxButtonBoard = auxButtonBoard;
-    addRequirements(shooter, elevator, intake);
+    this.mainControl = mainControl;
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
-  public void SpeakerPreset(){}
-
-  public void AmpPreset(){}
-
-  public void TrapPreset(){}
-
-  public void IntakePreset(){}
-
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(auxButtonBoard.getRawButton(0)){
-      SpeakerPreset();
+    if (auxButtonBoard.getRawButtonPressed(0)){
+      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.SHOOT_SPEAKER);
     }
-    if(auxButtonBoard.getRawButton(1)){
-      AmpPreset();
+    else if (auxButtonBoard.getRawButtonPressed(1)){
+      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.SHOOT_AMP);
     }
-    if(auxButtonBoard.getRawButton(2)){
-      TrapPreset();
+    else if (auxButtonBoard.getRawButtonPressed(2)){
+      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.SHOOT_TRAP);
     }
-    if(auxButtonBoard.getRawButton(3)){
-      IntakePreset();
+    else if (mainControl.getLeftBumper()){
+      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.INTAKE);
     }
-  }
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
+    else{
+      RobotState.setRobotState(RobotState.RobotConfiguration.TRAVEL);
+    }
 
-  // Returns true when the command should end.
+  }
+
   @Override
   public boolean isFinished() {
     return false;

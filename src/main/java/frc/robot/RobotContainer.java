@@ -6,14 +6,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.positionable.PresetSelectorCommand;
+import frc.robot.commands.auto.positionable.RobotPresetCommand;
+import frc.robot.commands.teleop.ManualElevatorCommand;
+import frc.robot.commands.teleop.ManualIntakeCommand;
+import frc.robot.commands.teleop.ManualShooterCommand;
 import frc.robot.commands.teleop.DriveCommands.JoystickOrientedDriveCommand;
-import frc.robot.commands.teleop.DriveCommands.ManualElevatorCommand;
-import frc.robot.commands.teleop.DriveCommands.ManualShooterCommand;
 import frc.robot.commands.teleop.DriveCommands.TurnTowardsGamePieceCommand;
 import frc.robot.commands.teleop.resetters.ResetDisplacementCommand;
 import frc.robot.commands.teleop.resetters.ResetGyroCommand;
@@ -34,7 +37,7 @@ public class RobotContainer {
   public final ShooterSubsystem shooter = new ShooterSubsystem();
   public final IntakeSubsystem intake = new IntakeSubsystem();
   public final ElevatorSubsystem elevator = new ElevatorSubsystem();
-  //public final LimelightSubsystem shooterLimelight = new LimelightSubsystem("limelight-shooter");
+  public final LimelightSubsystem shooterLimelight = new LimelightSubsystem("limelight-shooter");
   public final LimelightSubsystem intakeLimelight = new LimelightSubsystem("limelight-intake");
 
 
@@ -67,11 +70,12 @@ public class RobotContainer {
     CommandScheduler.getInstance().cancelAll();
     
     if (!DEBUG) {
-      CommandScheduler.getInstance().schedule(new PresetSelectorCommand(shooter, elevator, intake, auxButtonBoard));
+      CommandScheduler.getInstance().schedule(new PresetSelectorCommand(mainControl, auxButtonBoard));
+      CommandScheduler.getInstance().schedule(new RobotPresetCommand(drive, shooter, elevator, intake, intakeLimelight, intakeLimelight, mainControl, auxButtonBoard));
       drive.setDefaultCommand(new JoystickOrientedDriveCommand(drive, mainControl));
-      shooter.setDefaultCommand(new ManualShooterCommand(shooter, mainControl));
-      elevator.setDefaultCommand(new ManualElevatorCommand(elevator, auxButtonBoard));
-
+      shooter.setDefaultCommand(new InstantCommand());
+      elevator.setDefaultCommand(new InstantCommand());
+      intake.setDefaultCommand(new InstantCommand());
       
       //Reset Gyro D-Pad
       new POVButton(mainControl, 0).onTrue(new ResetGyroCommand(180).andThen(new ResetDisplacementCommand(new VectorR())));
@@ -86,7 +90,9 @@ public class RobotContainer {
     else {
       //leds.setDefaultCommand(new RunCommand(() -> LEDs.animateLEDs(LEDPattern.STROBE_BLUE), leds));
       drive.setDefaultCommand(new RunCommand(() -> drive.stop(), drive));
-      //ADD SUBSYSTEMS HERE
+      shooter.setDefaultCommand(new ManualShooterCommand(shooter, mainControl));
+      elevator.setDefaultCommand(new ManualElevatorCommand(elevator, mainControl));
+      intake.setDefaultCommand(new ManualIntakeCommand(intake, mainControl));
       
     }
   }
