@@ -62,12 +62,6 @@ public class RobotPresetCommand extends Command {
 
   @Override
   public void execute() {
-    shooter.setSpeedLimit(0.9);
-    shooter.setRampRate(0);
-    intake.setSpeedLimit(0.9);
-    intake.setRampRate(0);
-    elevator.setSpeedLimit(0.5);
-    elevator.setRampRate(0.5);
 
     //Set subsystem presets
     if (control.getLeftBumper() || control.getRightBumper()){
@@ -129,11 +123,6 @@ public class RobotPresetCommand extends Command {
 
     //SPEAKER PRESET
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER)){ 
-      shooter.setShooter(0.7);
-      if (control.getRightTriggerAxis() >= 0.1){
-        shooter.setFeeder(1);
-      } else{shooter.set(0);}
-
       leftJoystick.setFromCartesian(control.getLeftX(), -control.getLeftY());
       leftJoystick.rotate(-90);
     
