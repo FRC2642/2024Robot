@@ -5,7 +5,6 @@
 package frc.robot.commands.auto.drive;
 
 import java.util.Iterator;
-import java.util.Optional;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;

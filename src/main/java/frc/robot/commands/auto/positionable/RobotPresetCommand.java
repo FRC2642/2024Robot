@@ -4,7 +4,6 @@
 
 package frc.robot.commands.auto.positionable;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.subsystems.RobotState;
 import edu.wpi.first.wpilibj.XboxController;

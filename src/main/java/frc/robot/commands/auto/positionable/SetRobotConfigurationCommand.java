@@ -4,8 +4,6 @@
 
 package frc.robot.commands.auto.positionable;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -32,7 +30,8 @@ public class SetRobotConfigurationCommand extends ParallelCommandGroup {
     SHOOT_SPEAKER(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.MANUAL),
     SHOOT_AMP(ElevatorPosition.AMP, IntakePosition.RETRACTED, ShooterPosition.AMP),
     SHOOT_TRAP(ElevatorPosition.TRAP, IntakePosition.RETRACTED, ShooterPosition.TRAP),
-    INTAKE(ElevatorPosition.TRAVEL, IntakePosition.EXTENDED, ShooterPosition.TRAVEL);
+    INTAKE(ElevatorPosition.TRAVEL, IntakePosition.EXTENDED, ShooterPosition.TRAVEL),
+    TRAVEL(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.TRAVEL);
 
     public final ShooterPosition shooterPos;
     public final ElevatorPosition elevatorPos;

@@ -6,8 +6,6 @@ package frc.robot;
 
 import static frc.robot.subsystems.swerve.SwerveModules.ModuleLocation;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.swerve.SwerveModuleInfo;
 
 public final class Constants {
