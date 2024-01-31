@@ -40,13 +40,15 @@ public final class Constants {
     public static final double FIELD_X = 54d + 1d/12d;
     public static final double FIELD_Y = 26d + 7d/12d;
 
-    public static final double SHOOTER_VELOCITY = 7;
+    public static final double SHOOTER_VELOCITY = 7; //NOTE SHOOT FEET PER SECOND //CHANGE
     public static final double SPEAKER_TARGET_HEIGHT = 7.8333;
-    public static final double SHOOTER_TILT_ENCODER_TICKS_PER_DEGREE = 1;
+    public static final double SHOOTER_TILT_ENCODER_TICKS_PER_DEGREE = 0; //CHANGE
     
     public static final double ELEVATOR_MAX_ENCODER_TICK = 0; //CHANGE
-    public static final double ELEVATOR_MAX_HEIGHT = 0; //CHANGE
+    public static final double ELEVATOR_MAX_HEIGHT_FEET = 0; //CHANGE
 
     public static final double INTAKE_TILT_ENCODER_TICKS_PER_DEGREE = 0; //CHANGE
+
+    public static final int BEAM_BREAK_CHANNEL = 0; //CHANGE
 
 }

@@ -4,6 +4,7 @@
 
 package frc.robot.commands.auto.positionable;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.subsystems.RobotState;
 import edu.wpi.first.wpilibj.XboxController;
@@ -37,6 +38,7 @@ public class RobotPresetCommand extends Command {
   private double maxSpeed = 0.25;
   private boolean isLocked = false;
   private double lockedHeading = 0;
+  
 
   public RobotPresetCommand(DriveSubsystem drive, ShooterSubsystem shooter, ElevatorSubsystem elevator, IntakeSubsystem intake, LimelightSubsystem intakeLimelight, LimelightSubsystem shooterLimelight, XboxController control, Joystick auxButtonBoard) {
     this.drive = drive;
@@ -99,7 +101,16 @@ public class RobotPresetCommand extends Command {
 
     //INTAKE PRESET
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE)){
-      intake.setIntake(0.7);
+      if (!shooter.getNoteDetected()){
+        intake.setIntake(0.7);
+        shooter.setFeeder(0.7);
+      } 
+      else {
+        intake.setIntake(0);
+        shooter.setFeeder(0);
+        //RobotState.setRobotState(RobotConfiguration.TRAVEL); <-TEST
+      }
+      
       intakeLimelight.setDetectionType(DetectionType.NOTE);
 
       leftJoystick.setFromCartesian(control.getLeftX(), -control.getLeftY());

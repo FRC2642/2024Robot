@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.IPositionable;
@@ -25,6 +26,8 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
 
   private AbsoluteEncoder tiltEncoder = shooterTiltMotor.getAbsoluteEncoder(Type.kDutyCycle);
 
+  private DigitalInput beamBreak = new DigitalInput(Constants.BEAM_BREAK_CHANNEL);
+
   private ShooterPosition currentSetPosition = ShooterPosition.TRAVEL;
   private double speedLimit = 1;
 
@@ -38,6 +41,10 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
 
   public double getPitch(){
     return tiltEncoder.getPosition() * Constants.SHOOTER_TILT_ENCODER_TICKS_PER_DEGREE;
+  }
+
+  public boolean getNoteDetected(){
+    return !beamBreak.get();
   }
 
   public void tiltToAngle(double degrees){

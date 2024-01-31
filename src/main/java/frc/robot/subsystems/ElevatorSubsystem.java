@@ -34,7 +34,7 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
   }
 
   public double getHeight(){
-    return elevatorEncoder.getPosition() * Constants.ELEVATOR_MAX_HEIGHT;
+    return elevatorEncoder.getPosition() * Constants.ELEVATOR_MAX_HEIGHT_FEET;
   }
 
   public double getPercentElevated(){
