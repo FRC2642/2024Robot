@@ -59,6 +59,7 @@ public class RobotPresetCommand extends Command {
     elevator.setRampRate(0.5);
     intake.setSpeedLimit(0.5);
     intake.setRampRate(0.2);
+    RobotState.setChosenConfiguration(RobotConfiguration.SHOOT_SPEAKER);
   }
 
   @Override
