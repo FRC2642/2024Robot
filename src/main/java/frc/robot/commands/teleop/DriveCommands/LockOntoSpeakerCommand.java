@@ -46,7 +46,7 @@ public class LockOntoSpeakerCommand extends TurnTowardsGamePieceCommand {
       VectorR direction = DriveSubsystem.getRelativeVelocity();
       direction.div(DriveSubsystem.getRelativeVelocity().getMagnitude());
       
-      double angleToFace = limelight.x + 90 - Math.toDegrees(Math.atan2(Constants.SHOOTER_VELOCITY, DriveSubsystem.getRelativeVelocity().getX() + 0.0001));
+      double angleToFace = limelight.x + 90 - Math.toDegrees(Math.atan2(Constants.SHOOTER_VELOCITY - DriveSubsystem.getRelativeVelocity().getY(), DriveSubsystem.getRelativeVelocity().getX() + 0.0001));
 
       double turnPower = MathR.limit(TURN_KP * MathR.getDistanceToAngle(0, angleToFace), -0.25, 0.25) * -1;
       
