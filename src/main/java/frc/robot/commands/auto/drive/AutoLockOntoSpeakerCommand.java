@@ -58,7 +58,7 @@ public class AutoLockOntoSpeakerCommand extends FollowPathCommand {
       double turnPower = MathR.limit(TURN_KP * MathR.getDistanceToAngle(0, angleToFace), -0.25, 0.25) * -1;
       
       //if (limelight.isDetection && limelight.confidence() > 0.2) drive.move(leftJoystick, turnPower);
-      //else if (leftJoystick.getMagnitude() > 0.1) drive.move(leftJoystick, 0.0);
+      //else drive.move(leftJoystick, 0.0);
   }
 
   // Called once the command ends or is interrupted.

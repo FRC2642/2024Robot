@@ -25,12 +25,12 @@ import frc.robot.utils.Easings.Functions;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class HPSixAndHalf extends SequentialCommandGroup {
-  /** Creates a new HPSixAndHalf. */
-  public HPSixAndHalf(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem limelight, ElevatorSubsystem elevator) {
+public class HPFive extends SequentialCommandGroup {
+  /** Creates a new HPFive. */
+  public HPFive(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem limelight, ElevatorSubsystem elevator) {
     ArrayList<Double> times = new ArrayList<Double>();
-    times.add(0.0); times.add(1.087); times.add(1.908); times.add(2.434); times.add(3.203); times.add(4.019); times.add(4.601); times.add(5.360); times.add(7.677); times.add(9.308); times.add(10.835); times.add(12.350); times.add(14.260);
-    PiratePath path = new PiratePath("6.5 Pc HP", false);
+    times.add(0.0); times.add(1.225); times.add(2.000); times.add(2.782); times.add(3.259); times.add(4.083); times.add(5.927); times.add(8.346); times.add(10.853); times.add(13.514);
+    PiratePath path = new PiratePath("5 Pc HP", false);
     path.fillWithSubPointsEasing(0.01, Functions.easeLinear);
     var paths = path.getSubPaths(times, 0.01);
     var driveToShoot1 = paths.get(0);
@@ -43,10 +43,7 @@ public class HPSixAndHalf extends SequentialCommandGroup {
     var driveToIntake4 = paths.get(8);
     var driveToShoot5 = paths.get(9);
     var driveToIntake5 = paths.get(10);
-    var driveToShoot6 = paths.get(11);
-    var driveToIntake6 = paths.get(12);
-
-
+    
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
@@ -127,22 +124,6 @@ public class HPSixAndHalf extends SequentialCommandGroup {
         intake.setIntake(0.5);
       }, intake),
       new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake5, false, 0.25, 0.3, 0.5, true),
-      new InstantCommand(()->{
-        intake.setIntake(0);
-      }, intake),
-      new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot6, true, 0.25),
-      new InstantCommand(()->{
-        shooter.setFeeder(0.5);
-      }, shooter),
-      new WaitCommand(.2),
-      new InstantCommand(()->{
-        shooter.setFeeder(0);
-      }, shooter),
-      new SetIntakeCommand(intake, ()->IntakePosition.EXTENDED),
-      new InstantCommand(()->{
-        intake.setIntake(0.5);
-      }, intake),
-      new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake6, false, 0.25, 0.3, 0.5, true),
       new InstantCommand(()->{
         intake.setIntake(0);
       }, intake)
