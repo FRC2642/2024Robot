@@ -17,8 +17,6 @@ import frc.robot.utils.MathR;
 import frc.robot.utils.VectorR;
 
 
-
-
 public class AutoLockOntoSpeakerCommand extends FollowPathCommand {
   private final double TURN_KP = 0.017;
   private final Timer timer = new Timer();
@@ -38,29 +36,20 @@ public class AutoLockOntoSpeakerCommand extends FollowPathCommand {
     this.object = object;
     this.elevator = elevator;
     this.shooter = shooter;
-    addRequirements(drive);
-
 
     if (additionalLookaheadTime != 0.0) startingLookAheadTime = BASE_PRECISION + additionalLookaheadTime;
     else startingLookAheadTime = null;
-    // Use addRequirements() here to declare subsystem dependencies.
+
+    addRequirements(limelight, elevator, shooter);
   }
 
-  // Called when the command is initially scheduled.
+  
   @Override
   public void initialize() {
-    if (path.allianceDependent && DriverStation.getAlliance().get() == Alliance.Red){
-
-      setPath(path.getRedAlliance());
-    
-     }
-     else{
-      setPath(path);
-     }
-    startPath();
+    super.initialize();
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  
   @Override
   public void execute() {
       if (startingLookAheadTime == null) lookAheadTime = BASE_PRECISION;
@@ -80,10 +69,9 @@ public class AutoLockOntoSpeakerCommand extends FollowPathCommand {
       var velocity = nextPoint.position.clone();
       velocity.sub(DriveSubsystem.getRelativeFieldPosition());
       velocity.mult(MOVEMENT_KP / delta_t);
+
+      double turn = MathR.getDistanceToAngle(DriveSubsystem.getYawDegrees(), nextPoint.holonomicRotation) / delta_t;
       
-
-
-
 
       limelight.setDetectionType(object);
 
@@ -99,17 +87,14 @@ public class AutoLockOntoSpeakerCommand extends FollowPathCommand {
 
       double turnPower = MathR.limit(TURN_KP * MathR.getDistanceToAngle(0, angleToFace), -0.25, 0.25) * -1;
 
+      //If april tag is seen, follow path movement and rotate to tag
       if (limelight.isDetection && limelight.confidence() > 0.2) drive.move(velocity, turnPower);
-      else drive.move(velocity, 0.0);
+      //If not seen, follow path movement and rotation
+      else drive.move(velocity, turn * HEADING_KP);
   }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
+  
   @Override
   public boolean isFinished() {
-    return false;
+    return super.isFinished();
   }
 }

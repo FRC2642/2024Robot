@@ -23,7 +23,7 @@ public class LockOntoSpeakerCommand extends TurnTowardsGamePieceCommand {
     super(drive, limelight, type, control);
     this.shooter = shooter;
     this.elevator = elevator;
-    addRequirements(shooter, elevator);
+    addRequirements(shooter, elevator, limelight);
   }
 
   @Override

@@ -104,20 +104,20 @@ public class PiratePath extends TreeSet<PiratePoint> {
         return null;
     }
 
-    public PiratePath getBlueAlliance() {
+    public PiratePath getRedAlliance() {
 
-        PiratePath bluePath = new PiratePath(true);
-        bluePath.name = "BLUE " + this.name;
+        PiratePath redPath = new PiratePath(true);
+        redPath.name = "RED " + this.name;
 
         for (var pt : this) {
             double Y = pt.position.getY();
             var newPt = pt.clone();
-            newPt.position.setY(Constants.FIELD_Y - Y);
+            newPt.position.setY(Math.abs(Constants.FIELD_Y - Y));
             newPt.holonomicRotation = -newPt.holonomicRotation;
-            bluePath.add(newPt);
+            redPath.add(newPt);
         }
 
-        return bluePath;
+        return redPath;
     }
 
     public ArrayList<PiratePath> getSubPaths() {
