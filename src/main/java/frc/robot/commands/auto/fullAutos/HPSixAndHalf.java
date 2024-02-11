@@ -63,17 +63,19 @@ public class HPSixAndHalf extends SequentialCommandGroup {
       }, shooter, intake),
       new WaitCommand(.5).alongWith(
         new SetIntakeCommand(intake, ()->IntakePosition.EXTENDED),
+        new InstantCommand(()->{
+          shooter.setFeeder(0);
+          shooter.setShooter(0);
+        }),
 
         //Drive to note and pick it up 
         new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake1, false, 0.25, 0.3, 0.5, true)
       ),
 
-      //Stop shooter and intake
+      //Stop intake
       new InstantCommand(()->{
-        shooter.setFeeder(0);
-        shooter.setShooter(0);
         intake.setIntake(0);
-      }, shooter, intake),
+      }, intake),
       
 
       //*****3RD NOTE*****//
