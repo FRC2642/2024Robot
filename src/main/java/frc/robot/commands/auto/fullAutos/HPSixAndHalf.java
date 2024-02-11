@@ -53,23 +53,26 @@ public class HPSixAndHalf extends SequentialCommandGroup {
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot1, true, 0.25).alongWith(
         new InstantCommand(()->{
           shooter.setShooter(0.7);
-        })
+        }, shooter)
       ),
 
       //Shoot note and drop intake and run intake
       new InstantCommand(()->{
         shooter.setFeeder(0.5);
         intake.setIntake(0.5);
-      }, shooter, intake),
-      new WaitCommand(.5).alongWith(
+      }, shooter, intake).alongWith(
         new SetIntakeCommand(intake, ()->IntakePosition.EXTENDED),
-        new InstantCommand(()->{
+
+        //Stop shooter after 0.5 seconds
+        new WaitCommand(0.5).andThen(
+          new InstantCommand(()->{
           shooter.setFeeder(0);
           shooter.setShooter(0);
-        }),
-
-        //Drive to note and pick it up 
-        new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake1, false, 0.25, 0.3, 0.5, true)
+        }, shooter)
+        ),
+          
+        //Intake next note as note is being shot
+          new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake1, false, 0.25, 0.3, 0.5, true)
       ),
 
       //Stop intake
@@ -78,12 +81,12 @@ public class HPSixAndHalf extends SequentialCommandGroup {
       }, intake),
       
 
-      //*****3RD NOTE*****//
+      //*****2ND AND 3RD NOTE*****//
       //Drive to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot2, true, 0.25).alongWith(
         new InstantCommand(()->{
           shooter.setShooter(0.7);
-        })
+        }, shooter)
       ),
       
       //Shoot note and start intake
@@ -108,12 +111,12 @@ public class HPSixAndHalf extends SequentialCommandGroup {
         intake.setIntake(0);
       }, intake),
 
-      //*****4TH NOTE*****//
+      //*****3RD AND 4TH NOTE*****//
       //Drive to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot3, false, 0.25).alongWith(
         new InstantCommand(()->{
           shooter.setShooter(0.7);
-        })
+        }, shooter)
       ),
       
       //Shoot note and start intake
@@ -140,7 +143,7 @@ public class HPSixAndHalf extends SequentialCommandGroup {
       }, intake),
 
 
-      //*****5TH NOTE*****//
+      //*****4TH AND 5TH NOTE*****//
       //Drive to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot4, false, 0.25).alongWith(
           new InstantCommand(()->{
@@ -171,7 +174,7 @@ public class HPSixAndHalf extends SequentialCommandGroup {
       }, intake),
 
 
-      //*****6TH NOTE*****//
+      //*****5TH AND 6TH NOTE*****//
       //Move to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot5, false, 0.25).alongWith(
         new InstantCommand(()->{
@@ -202,7 +205,7 @@ public class HPSixAndHalf extends SequentialCommandGroup {
       }, intake),
       
 
-      //*****7TH NOTE*****//
+      //*****6TH AND 7TH NOTE*****//
       //Move to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot6, false, 0.25),
       

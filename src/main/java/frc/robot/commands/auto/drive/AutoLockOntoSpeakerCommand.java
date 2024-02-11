@@ -4,8 +4,7 @@
 
 package frc.robot.commands.auto.drive;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.path.PiratePath;

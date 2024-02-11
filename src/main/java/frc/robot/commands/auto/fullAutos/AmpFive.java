@@ -42,91 +42,153 @@ public class AmpFive extends SequentialCommandGroup {
     var driveToShoot4 = paths.get(7);
     var driveToIntake4 = paths.get(8);
     var driveToShoot5 = paths.get(9);
-    var driveToIntake5 = paths.get(10);
 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot1, true, 0.25),
+    //******1ST AND 2ND NOTE*****//
+      //Drive to position and lock onto speaker and rev shooter
+      new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot1, true, 0.25).alongWith(
+        new InstantCommand(()->{
+          shooter.setShooter(0.7);
+        }, shooter)
+      ),
+
+      //Shoot note and drop intake and run intake
       new InstantCommand(()->{
         shooter.setFeeder(0.5);
-      }, shooter),
-      new WaitCommand(.2),
-      new InstantCommand(()->{
-        shooter.setFeeder(0);
-      }, shooter),
-      new SetIntakeCommand(intake, ()->IntakePosition.EXTENDED),
-      new InstantCommand(()->{
         intake.setIntake(0.5);
-      }, intake),
-      new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake1, false, 0.25, 0.3, 0.5, true),
+      }, shooter, intake).alongWith(
+        new SetIntakeCommand(intake, ()->IntakePosition.EXTENDED),
+        
+        //Stop shooter after 0.5 seconds
+        new WaitCommand(0.5).andThen(
+          new InstantCommand(()->{
+          shooter.setFeeder(0);
+          shooter.setShooter(0);
+        }, shooter)
+        ),
+          
+        //Intake next note as note is being shot
+          new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake1, false, 0.25, 0.3, 0.5, true)
+      ),
+
+      //Stop intake
       new InstantCommand(()->{
         intake.setIntake(0);
       }, intake),
-      new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot2, true, 0.25),
+      
+
+      //*****2ND AND 3RD NOTE*****//
+      //Drive to next position and lock onto speaker and rev shooter
+      new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot2, true, 0.25).alongWith(
+        new InstantCommand(()->{
+          shooter.setShooter(0.7);
+        }, shooter)
+      ),
+      
+      //Shoot note and start intake
       new InstantCommand(()->{
         shooter.setFeeder(0.5);
-      }, shooter),
-      new WaitCommand(.2),
-      new InstantCommand(()->{
-        shooter.setFeeder(0);
-      }, shooter),
-      new SetIntakeCommand(intake, ()->IntakePosition.EXTENDED),
-      new InstantCommand(()->{
         intake.setIntake(0.5);
-      }, intake),
-      new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake2, false, 0.25, 0.3, 0.5, true),
+      }, shooter, intake).alongWith(
+        //Stop shooter after 0.5 seconds
+        new WaitCommand(0.5).andThen(
+          new InstantCommand(()->{
+          shooter.setFeeder(0);
+          shooter.setShooter(0);
+        }, shooter)
+        ),
+          
+        //Intake next note as note is being shot
+          new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake2, false, 0.25, 0.3, 0.5, true)
+      ),
+
+      //Stop intake
       new InstantCommand(()->{
         intake.setIntake(0);
       }, intake),
-      new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot3, true, 0.25),
+
+      //*****3RD AND 4TH NOTE*****//
+      //Drive to next position and lock onto speaker and rev shooter
+      new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot3, false, 0.25).alongWith(
+        new InstantCommand(()->{
+          shooter.setShooter(0.7);
+        }, shooter)
+      ),
+      
+      //Shoot note and start intake
       new InstantCommand(()->{
         shooter.setFeeder(0.5);
-      }, shooter),
-      new WaitCommand(.2),
-      new InstantCommand(()->{
-        shooter.setFeeder(0);
-      }, shooter),
-      new SetIntakeCommand(intake, ()->IntakePosition.EXTENDED),
-      new InstantCommand(()->{
         intake.setIntake(0.5);
-      }, intake),
-      new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake3, false, 0.25, 0.3, 0.5, true),
+      }, shooter, intake).alongWith(
+        //Stop shooter after 0.5 seconds
+        new WaitCommand(.5).andThen(
+          new InstantCommand(()->{
+            shooter.setFeeder(0);
+            shooter.setShooter(0);
+          }, shooter)
+        ),
+
+        //Intake next note as note is being shot
+          new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake3, false, 0.25, 0.3, 0.5, true)
+      
+      ),
+      
+      //Stop intake
       new InstantCommand(()->{
         intake.setIntake(0);
       }, intake),
-      new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot4, true, 0.25),
+
+
+      //*****4TH AND 5TH NOTE*****//
+      //Drive to next position and lock onto speaker and rev shooter
+      new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot4, false, 0.25).alongWith(
+          new InstantCommand(()->{
+            shooter.setShooter(0.7);
+          }, shooter)
+      ),
+      
+      //Shoot note and start intake
       new InstantCommand(()->{
         shooter.setFeeder(0.5);
-      }, shooter),
-      new WaitCommand(.2),
-      new InstantCommand(()->{
-        shooter.setFeeder(0);
-      }, shooter),
-      new SetIntakeCommand(intake, ()->IntakePosition.EXTENDED),
-      new InstantCommand(()->{
         intake.setIntake(0.5);
-      }, intake),
-      new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake4, false, 0.25, 0.3, 0.5, true),
+      }, shooter, intake).alongWith(
+        //Stop shooter after 0.5 seconds
+        new WaitCommand(.5).andThen(
+          new InstantCommand(()->{
+            shooter.setFeeder(0);
+            shooter.setShooter(0);
+          }, shooter)
+        ),
+
+        //Intake next note as note is being shot
+        new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake4, false, 0.25, 0.3, 0.5, true)
+      ),
+      
+      //Stop intake
       new InstantCommand(()->{
         intake.setIntake(0);
       }, intake),
-      new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot5, true, 0.25),
+
+      //Move to next position and lock onto speaker and rev shooter
+      new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot5, false, 0.25).alongWith(
+        new InstantCommand(()->{
+        shooter.setFeeder(0.5);
+      }, shooter)
+      ),
+
+      //Shoot note and start intake
       new InstantCommand(()->{
         shooter.setFeeder(0.5);
-      }, shooter),
-      new WaitCommand(.2),
-      new InstantCommand(()->{
-        shooter.setFeeder(0);
-      }, shooter),
-      new SetIntakeCommand(intake, ()->IntakePosition.EXTENDED),
-      new InstantCommand(()->{
-        intake.setIntake(0.5);
-      }, intake),
-      new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake5, false, 0.25, 0.3, 0.5, true),
-      new InstantCommand(()->{
-        intake.setIntake(0);
-      }, intake)
+      }, shooter).alongWith(
+        //Stop shooter after 0.5 seconds
+        new WaitCommand(.5).andThen(
+          new InstantCommand(()->{
+            shooter.setFeeder(0);
+            shooter.setShooter(0);
+          }, shooter)
+        ))
     );
   }
 }
