@@ -28,9 +28,9 @@ public class FollowPathCommand extends Command {
   private final Timer timer = new Timer();
   private final PiratePath notAdjustedPath;
 
-  private Iterator<PiratePoint> iterator = null;
+  protected Iterator<PiratePoint> iterator = null;
   private PiratePath path;
-  private double currentTime;
+  public double currentTime;
   private final boolean recenterDisplacementToFirstPoint;
 
   public FollowPathCommand(DriveSubsystem drive, PiratePath path, boolean recenterDisplacementToFirstPoint, double additionalLookaheadTime) {
@@ -46,9 +46,9 @@ public class FollowPathCommand extends Command {
 
   @Override
   public void initialize() {
-     if (notAdjustedPath.allianceDependent && DriverStation.getAlliance().get() == Alliance.Blue){
+     if (notAdjustedPath.allianceDependent && DriverStation.getAlliance().get() == Alliance.Red){
 
-      setPath(notAdjustedPath.getBlueAlliance());
+      setPath(notAdjustedPath.getRedAlliance());
     
      }
      else{
