@@ -29,7 +29,7 @@ public class HPFive extends SequentialCommandGroup {
   /** Creates a new HPFive. */
   public HPFive(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem limelight, ElevatorSubsystem elevator) {
     ArrayList<Double> times = new ArrayList<Double>();
-    times.add(0.0); times.add(1.225); times.add(2.000); times.add(2.782); times.add(3.259); times.add(4.083); times.add(5.927); times.add(8.346); times.add(10.853); times.add(13.514);
+    times.add(0.0); times.add(1.174); times.add(1.948); times.add(2.643); times.add(3.227); times.add(4.019); times.add(5.810); times.add(8.163); times.add(10.737); times.add(13.317); times.add(16.131);
     PiratePath path = new PiratePath("5 Pc HP", false);
     path.fillWithSubPointsEasing(0.01, Functions.easeLinear);
     var paths = path.getSubPaths(times, 0.01);
@@ -42,6 +42,7 @@ public class HPFive extends SequentialCommandGroup {
     var driveToShoot4 = paths.get(7);
     var driveToIntake4 = paths.get(8);
     var driveToShoot5 = paths.get(9);
+    var driveOut = paths.get(10);
     
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
@@ -171,6 +172,7 @@ public class HPFive extends SequentialCommandGroup {
         intake.setIntake(0);
       }, intake),
 
+      //*****5TH NOTE AND DRIVE OUT*****//
       //Move to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot5, false, 0.25).alongWith(
         new InstantCommand(()->{
@@ -188,7 +190,10 @@ public class HPFive extends SequentialCommandGroup {
             shooter.setFeeder(0);
             shooter.setShooter(0);
           }, shooter)
-        ))
+        )),
+
+      //Drive Out
+      new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveOut, false, 0.25, 0.3, 0.5, true)
     );
   }
 }

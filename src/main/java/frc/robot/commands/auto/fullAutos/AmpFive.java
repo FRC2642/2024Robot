@@ -29,7 +29,7 @@ public class AmpFive extends SequentialCommandGroup {
   /** Creates a new AmpFive. */
   public AmpFive(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem limelight, ElevatorSubsystem elevator) {
     ArrayList<Double> times = new ArrayList<Double>();
-    times.add(0.0); times.add(1.107); times.add(1.771); times.add(2.609); times.add(4.354); times.add(5.933); times.add(7.412); times.add(9.271); times.add(11.213); times.add(13.418);
+    times.add(0.0); times.add(1.107); times.add(1.771); times.add(2.609); times.add(4.354); times.add(5.939); times.add(7.405); times.add(8.834); times.add(10.728); times.add(12.927); times.add(15.332);
     PiratePath path = new PiratePath("5 Pc HP", false);
     path.fillWithSubPointsEasing(0.01, Functions.easeLinear);
     var paths = path.getSubPaths(times, 0.01);
@@ -42,6 +42,7 @@ public class AmpFive extends SequentialCommandGroup {
     var driveToShoot4 = paths.get(7);
     var driveToIntake4 = paths.get(8);
     var driveToShoot5 = paths.get(9);
+    var driveOut = paths.get(10);
 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
@@ -188,7 +189,10 @@ public class AmpFive extends SequentialCommandGroup {
             shooter.setFeeder(0);
             shooter.setShooter(0);
           }, shooter)
-        ))
+        )),
+
+      //Drive Out
+      new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveOut, false, 0.25, 0.3, 0.5, true)
     );
   }
 }

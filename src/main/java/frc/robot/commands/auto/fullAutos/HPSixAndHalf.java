@@ -29,7 +29,7 @@ public class HPSixAndHalf extends SequentialCommandGroup {
   /** Creates a new HPSixAndHalf. */
   public HPSixAndHalf(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem limelight, ElevatorSubsystem elevator) {
     ArrayList<Double> times = new ArrayList<Double>();
-    times.add(0.0); times.add(1.087); times.add(1.908); times.add(2.434); times.add(3.203); times.add(4.019); times.add(4.601); times.add(5.360); times.add(7.677); times.add(9.308); times.add(10.835); times.add(12.350); times.add(14.260);
+    times.add(0.0); times.add(1.087); times.add(1.908); times.add(2.434); times.add(3.203); times.add(3.996); times.add(4.569); times.add(5.296); times.add(7.644); times.add(9.285); times.add(10.801); times.add(12.294); times.add(14.217);
     PiratePath path = new PiratePath("6.5 Pc HP", false);
     path.fillWithSubPointsEasing(0.01, Functions.easeLinear);
     var paths = path.getSubPaths(times, 0.01);
@@ -55,6 +55,7 @@ public class HPSixAndHalf extends SequentialCommandGroup {
           shooter.setShooter(0.7);
         }, shooter)
       ),
+
 
       //Shoot note and drop intake and run intake
       new InstantCommand(()->{
