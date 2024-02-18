@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -20,7 +21,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
 
   private PIDController tiltPID = new PIDController(0.2, 0, 0);
 
-  private CANSparkMax intakeSpinnerMotor = new CANSparkMax(Constants.INTAKE_SPINNER_ID, MotorType.kBrushless);
+  private TalonFX intakeSpinnerMotor = new TalonFX(Constants.INTAKE_SPINNER_ID);
   private CANSparkMax intakeTiltMotor = new CANSparkMax(Constants.INTAKE_PIVOT_ID, MotorType.kBrushless);
   
   private AbsoluteEncoder tiltEncoder = intakeTiltMotor.getAbsoluteEncoder(Type.kDutyCycle);

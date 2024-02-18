@@ -31,6 +31,7 @@ public final class Constants {
 
     public static final int ELEVATOR_MOTOR_1_ID = 31;
     public static final int ELEVATOR_MOTOR_2_ID = 32;
+    public static final int ELEVATOR_ENCODER_ANALOG_PORT = 0;
 
     public static final int INTAKE_PIVOT_ID = 41;
     public static final int INTAKE_SPINNER_ID = 42;
