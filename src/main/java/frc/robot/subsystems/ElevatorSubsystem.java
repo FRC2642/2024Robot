@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
@@ -18,16 +19,15 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
 
   private PIDController elevatorPID = new PIDController(0.2, 0, 0);
 
-  private CANSparkMax elevatorMotor1 = new CANSparkMax(Constants.ELEVATOR_MOTOR_1_ID, MotorType.kBrushless);
-  private CANSparkMax elevatorMotor2 = new CANSparkMax(Constants.ELEVATOR_MOTOR_2_ID, MotorType.kBrushless);
-  private AbsoluteEncoder elevatorEncoder = elevatorMotor1.getAbsoluteEncoder(com.revrobotics.SparkAbsoluteEncoder.Type.kDutyCycle);
+  private TalonFX elevatorMotor1 = new TalonFX(Constants.ELEVATOR_MOTOR_1_ID);
+  private TalonFX elevatorMotor2 = new TalonFX(Constants.ELEVATOR_MOTOR_2_ID);
+  private AbsoluteEncoder elevatorEncoder;
 
   private ElevatorPosition currentSetPosition = ElevatorPosition.TRAVEL;
   private double speedLimit = 0.8;
   private final double PID_TOLERANCE = 0.05;
 
   public ElevatorSubsystem() {
-    elevatorMotor2.follow(elevatorMotor1);
     elevatorEncoder.setPositionConversionFactor(1/Constants.ELEVATOR_MAX_ENCODER_TICK);
     elevatorPID.setTolerance(PID_TOLERANCE);
   }
@@ -41,15 +41,19 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
   }
 
   public void moveToPosition(double percentElevated){
-    elevatorMotor1.set(MathR.limit(elevatorPID.calculate(getPercentElevated(), percentElevated), -1, 1));
+    double power = MathR.limit(elevatorPID.calculate(getPercentElevated(), percentElevated), -1, 1);
+    elevatorMotor1.set(power);
+    elevatorMotor2.set(power);
+
   }
 
   public void set(double speed) {
     currentSetPosition = ElevatorPosition.MANUAL;
 
-    elevatorMotor1.set(
-        MathR.limitWhenReached(speed, -speedLimit, speedLimit, getPercentElevated() <= 0,
-            getPercentElevated() >= 1));
+    double power = MathR.limitWhenReached(speed, -speedLimit, speedLimit, getPercentElevated() <= 0, getPercentElevated() >= 1);
+
+    elevatorMotor1.set(power);
+    elevatorMotor2.set(power);
   }
 
   public void set(ElevatorPosition pos) {
@@ -65,6 +69,7 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
 
   public void setManual(double speed) {
     elevatorMotor1.set(speed);
+    elevatorMotor2.set(speed);
   }
 
   @Override
@@ -85,16 +90,6 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
   @Override
   public double getSpeedLimit() {
     return speedLimit;
-  }
-
-  @Override
-  public void setRampRate(double rampRate) {
-    elevatorMotor1.setOpenLoopRampRate(rampRate);
-  }
-
-  @Override
-  public double getRampRate() {
-    return elevatorMotor1.getOpenLoopRampRate();
   }
 
   public enum ElevatorPosition {

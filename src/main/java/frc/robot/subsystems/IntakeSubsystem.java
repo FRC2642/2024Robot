@@ -90,12 +90,10 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
     return speedLimit;
   }
 
-  @Override
   public void setRampRate(double rampRate) {
     intakeTiltMotor.setOpenLoopRampRate(rampRate);
   }
 
-  @Override
   public double getRampRate() {
     return intakeTiltMotor.getOpenLoopRampRate();
   }

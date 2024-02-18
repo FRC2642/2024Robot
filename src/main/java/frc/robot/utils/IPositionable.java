@@ -11,7 +11,4 @@ public interface IPositionable<Position> {
     public void set(Position pos);
     public void setSpeedLimit(double max);
     public double getSpeedLimit();
-    public void setRampRate(double rampRate);
-    public double getRampRate();
-    
 }
