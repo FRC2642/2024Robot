@@ -103,12 +103,10 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
     return speedLimit;
   }
 
-  @Override
   public void setRampRate(double rampRate) {
     shooterTiltMotor.setOpenLoopRampRate(rampRate);
   }
 
-  @Override
   public double getRampRate() {
     return shooterTiltMotor.getOpenLoopRampRate();
   }
