@@ -31,8 +31,8 @@ public class RobotState {
 
     public enum RobotConfiguration {
         SHOOT_SPEAKER(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.MANUAL),
-        SHOOT_AMP(ElevatorPosition.AMP, IntakePosition.RETRACTED, ShooterPosition.AMP),
-        SHOOT_TRAP(ElevatorPosition.TRAP, IntakePosition.RETRACTED, ShooterPosition.TRAP),
+        SHOOT_AMP(ElevatorPosition.AMP, IntakePosition.AMP, ShooterPosition.AMP),
+        SHOOT_TRAP(ElevatorPosition.TRAP, IntakePosition.AMP, ShooterPosition.TRAP),
         INTAKE(ElevatorPosition.TRAVEL, IntakePosition.EXTENDED, ShooterPosition.TRAVEL),
         TRAVEL(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.TRAVEL);
 

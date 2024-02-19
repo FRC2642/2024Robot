@@ -112,9 +112,9 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   }
 
   public enum ShooterPosition {
-    TRAVEL(0),
-    AMP(0),
-    TRAP(0),
+    TRAVEL(60),
+    AMP(-20),
+    TRAP(50),
     MANUAL(-1);
 
     public final double angle;

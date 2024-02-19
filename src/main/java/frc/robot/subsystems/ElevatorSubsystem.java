@@ -57,6 +57,10 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
   public void set(ElevatorPosition pos) {
     double speed = elevatorPID.calculate(getPercentElevated(), pos.percentageElevated);
 
+    if ((Math.abs(speed) > 0 && IntakeSubsystem.getPitch() >= 70)) {
+      speed = 0.0;
+    }
+
     if (!atSetPosition())
       set(speed);
     else
