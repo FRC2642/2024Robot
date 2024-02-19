@@ -33,7 +33,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
 
   public static final double MAX_DEGREES = 90;
   public static final double MIN_DEGREES = -40;
-  private final int TILT_TOLERANCE = 3;
+  private final int TILT_TOLERANCE = 4;
   
   public ShooterSubsystem() {
     tiltPID.setTolerance(TILT_TOLERANCE);

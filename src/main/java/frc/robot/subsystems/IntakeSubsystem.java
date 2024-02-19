@@ -17,7 +17,7 @@ import frc.robot.utils.MathR;
 
 public class IntakeSubsystem extends SubsystemBase implements IPositionable<IntakeSubsystem.IntakePosition>{
 
-  private final int TILT_TOLERANCE = 3;
+  private final int TILT_TOLERANCE = 1;
 
   private PIDController tiltPID = new PIDController(0.2, 0, 0);
 
