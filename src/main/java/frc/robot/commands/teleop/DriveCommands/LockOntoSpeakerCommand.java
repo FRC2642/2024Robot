@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.LimelightSubsystem.DetectionType;
 import frc.robot.utils.MathR;
 import frc.robot.utils.VectorR;
@@ -17,8 +17,8 @@ public class LockOntoSpeakerCommand extends TurnTowardsGamePieceCommand {
   /** Creates a new LockOntoSpeakerCommand. */
   final double TURN_KP = 0.017;
 
-  private ShooterSubsystem shooter;
-  public LockOntoSpeakerCommand(DriveSubsystem drive, ShooterSubsystem shooter, LimelightSubsystem limelight, DetectionType type, XboxController control) {
+  private FeederSubsystem shooter;
+  public LockOntoSpeakerCommand(DriveSubsystem drive, FeederSubsystem shooter, LimelightSubsystem limelight, DetectionType type, XboxController control) {
     super(drive, limelight, type, control);
 
 

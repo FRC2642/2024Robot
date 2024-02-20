@@ -4,20 +4,23 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAlternateEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkMaxAlternateEncoder.Type;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ShooterSubsystem extends SubsystemBase {
+public class FeederSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
 
-  // Replace deviceIds when recieved
-  private CANSparkMax backRoller = new CANSparkMax(0, MotorType.kBrushless);
-  private TalonFX flyWheels = new TalonFX(0);
-
-  public ShooterSubsystem() {}
+  private CANSparkMax feederMotor = new CANSparkMax(0, MotorType.kBrushless);
+  private AbsoluteEncoder encoder = feederMotor.getAbsoluteEncoder(com.revrobotics.SparkAbsoluteEncoder.Type.kDutyCycle);
+  public FeederSubsystem() {
+    
+  }
 
   @Override
   public void periodic() {
