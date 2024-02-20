@@ -17,6 +17,14 @@ public class ShooterSubsystem extends SubsystemBase {
   private CANSparkMax backRoller = new CANSparkMax(0, MotorType.kBrushless);
   private TalonFX flyWheels = new TalonFX(0);
 
+  void runBackRoller(double rollerSpeed) {
+    backRoller.set(rollerSpeed);
+  }
+
+  void runFlyWheels(double flyWheelSpeed) {
+    flyWheels.set(flyWheelSpeed);
+  }
+
   public ShooterSubsystem() {}
 
   @Override
