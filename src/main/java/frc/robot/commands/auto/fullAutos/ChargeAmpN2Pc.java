@@ -35,7 +35,7 @@ public class ChargeAmpN2Pc extends SequentialCommandGroup {
   public ChargeAmpN2Pc(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem limelight, ElevatorSubsystem elevator) {
     
     ArrayList<Double> times = new ArrayList<>();
-    times.add(0.0); times.add(1.1); times.add(2.2); times.add(3.3); times.add(4.4); times.add(5.5); times.add(6.6); times.add(7.7); times.add(8.8);
+    times.add(0.0); times.add(0.957); times.add(1.888); times.add(3.371); times.add(6.158); times.add(8.938); times.add(11.796); times.add(13.315); times.add(15.136);
     PiratePath path = new PiratePath("2 Pc Charged Amp", false);
     path.fillWithSubPointsEasing(0.01, Functions.easeLinear);
     var paths = path.getSubPaths(times, 0.01);
