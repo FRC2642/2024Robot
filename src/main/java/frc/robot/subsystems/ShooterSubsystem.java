@@ -40,7 +40,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   }
 
   public double getPitch(){
-    return tiltEncoder.getPosition() * Constants.SHOOTER_TILT_ENCODER_TICKS_PER_DEGREE;
+    return tiltEncoder.getPosition() / (Constants.SHOOTER_TILT_ENCODER_MAX_VALUE + Constants.SHOOTER_TILT_ENCODER_MIN_VALUE) + Constants.SHOOTER_TILT_ENCODER_OFFSET;
   }
 
   public boolean getNoteDetected(){
@@ -60,7 +60,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   }
 
   public void set(ShooterPosition pos) {
-    double speed = tiltPID.calculate(getPitch(), pos.angle);
+    double speed = tiltPID.calculate(getPitch(), MathR.getDistanceToAngle(getPitch(), pos.angle));
 
     if (speed < 0 && pos.angle < 0 && ElevatorSubsystem.getPercentElevated() <= 0.2){
       speed = 0;

@@ -147,7 +147,7 @@ public class RobotPresetCommand extends Command {
         shooter.tiltToAngle(angleToSpeaker);
       }
       else{
-        shooter.tiltToAngle(60);
+        shooter.setManual(0);
       }
       
 
