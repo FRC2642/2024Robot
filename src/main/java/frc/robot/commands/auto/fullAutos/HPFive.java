@@ -29,7 +29,7 @@ public class HPFive extends SequentialCommandGroup {
   /** Creates a new HPFive. */
   public HPFive(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem limelight, ElevatorSubsystem elevator) {
     ArrayList<Double> times = new ArrayList<Double>();
-    times.add(0.0); times.add(1.174); times.add(1.948); times.add(2.643); times.add(3.227); times.add(4.019); times.add(5.810); times.add(8.163); times.add(10.737); times.add(13.317); times.add(16.131);
+    times.add(0.0); times.add(1.174); times.add(1.948); times.add(2.643); times.add(3.227); times.add(4.019); times.add(5.810); times.add(8.063); times.add(10.763); times.add(13.270); times.add(16.144);
     PiratePath path = new PiratePath("5 Pc HP", false);
     path.fillWithSubPointsEasing(0.01, Functions.easeLinear);
     var paths = path.getSubPaths(times, 0.01);

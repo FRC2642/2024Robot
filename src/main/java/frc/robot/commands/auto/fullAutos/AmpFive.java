@@ -29,7 +29,7 @@ public class AmpFive extends SequentialCommandGroup {
   /** Creates a new AmpFive. */
   public AmpFive(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem limelight, ElevatorSubsystem elevator) {
     ArrayList<Double> times = new ArrayList<Double>();
-    times.add(0.0); times.add(1.107); times.add(1.771); times.add(2.609); times.add(4.354); times.add(5.939); times.add(7.405); times.add(8.834); times.add(10.728); times.add(12.927); times.add(15.332);
+    times.add(0.0); times.add(1.107); times.add(1.727); times.add(2.609); times.add(4.359); times.add(5.914); times.add(7.379); times.add(8.876); times.add(10.739); times.add(12.987); times.add(15.325);
     PiratePath path = new PiratePath("5 Pc HP", false);
     path.fillWithSubPointsEasing(0.01, Functions.easeLinear);
     var paths = path.getSubPaths(times, 0.01);
