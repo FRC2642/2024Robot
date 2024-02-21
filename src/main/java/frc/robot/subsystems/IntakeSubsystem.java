@@ -57,7 +57,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   }
 
   public void set(IntakePosition pos) {
-    double speed = tiltPID.calculate(getPitch(), pos.angle);
+    double speed = tiltPID.calculate(getPitch(), MathR.getDistanceToAngle(getPitch(), pos.angle));
 
     if (!atSetPosition())
       set(speed);
