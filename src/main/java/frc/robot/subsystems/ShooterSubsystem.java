@@ -62,6 +62,10 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   public void set(ShooterPosition pos) {
     double speed = tiltPID.calculate(getPitch(), MathR.getDistanceToAngle(getPitch(), pos.angle));
 
+    if (speed < 0 && pos.angle < 0 && ElevatorSubsystem.getPercentElevated() <= 0.2){
+      speed = 0;
+    }
+
     if (!atSetPosition())
       set(speed);
     else

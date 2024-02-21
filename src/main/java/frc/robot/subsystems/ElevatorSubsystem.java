@@ -20,7 +20,7 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
   private TalonFX elevatorMotor1 = new TalonFX(Constants.ELEVATOR_MOTOR_1_ID);
   private TalonFX elevatorMotor2 = new TalonFX(Constants.ELEVATOR_MOTOR_2_ID);
   
-  private AnalogInput elevatorEncoder = new AnalogInput(Constants.ELEVATOR_ENCODER_ANALOG_PORT);
+  private static AnalogInput elevatorEncoder = new AnalogInput(Constants.ELEVATOR_ENCODER_ANALOG_PORT);
 
   private ElevatorPosition currentSetPosition = ElevatorPosition.TRAVEL;
   private double speedLimit = 0.8;
@@ -34,7 +34,7 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
     return elevatorEncoder.getValue() * Constants.ELEVATOR_MAX_HEIGHT_FEET;
   }
 
-  public double getPercentElevated(){
+  public static double getPercentElevated(){
     return elevatorEncoder.getValue() / Constants.ELEVATOR_MAX_ENCODER_TICK;
   }
 
