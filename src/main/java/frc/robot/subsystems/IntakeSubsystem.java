@@ -29,7 +29,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   private IntakePosition currentSetPosition = IntakePosition.RETRACTED;
   private double speedLimit = 0.5;
 
-  public static final double MAX_DEGREES = 80;
+  public static final double MAX_DEGREES = 90;
   public static final double MIN_DEGREES = 0;
 
   public IntakeSubsystem() {
@@ -37,7 +37,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   }
 
   public static double getPitch(){
-    return tiltEncoder.getPosition() * Constants.INTAKE_TILT_ENCODER_TICKS_PER_DEGREE;
+    return tiltEncoder.getPosition() / (Constants.INTAKE_TILT_ENCODER_MAX_VALUE - Constants.INTAKE_TILT_ENCODER_MIN_VALUE) + Constants.INTAKE_TILT_ENCODER_OFFSET;
   }
 
   public void tiltToAngle(double degrees){
