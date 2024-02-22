@@ -51,7 +51,7 @@ public class HPFive extends SequentialCommandGroup {
       //Drive to position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot1, true, 0.25).alongWith(
         new InstantCommand(()->{
-          shooter.setShooter(0.7);
+          shooter.setShooterRPM();
         }, shooter)
       ),
 
@@ -84,7 +84,7 @@ public class HPFive extends SequentialCommandGroup {
       //Drive to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot2, true, 0.25).alongWith(
         new InstantCommand(()->{
-          shooter.setShooter(0.7);
+          shooter.setShooterRPM();
         }, shooter)
       ),
       
@@ -114,7 +114,7 @@ public class HPFive extends SequentialCommandGroup {
       //Drive to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot3, false, 0.25).alongWith(
         new InstantCommand(()->{
-          shooter.setShooter(0.7);
+          shooter.setShooterRPM();
         }, shooter)
       ),
       
@@ -145,7 +145,7 @@ public class HPFive extends SequentialCommandGroup {
       //Drive to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot4, false, 0.25).alongWith(
         new InstantCommand(()->{
-          shooter.setShooter(0.7);
+          shooter.setShooterRPM();
         }, shooter)
       ),
       
@@ -175,7 +175,7 @@ public class HPFive extends SequentialCommandGroup {
       //Move to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot5, false, 0.25).alongWith(
         new InstantCommand(()->{
-          shooter.setFeeder(0.5);
+          shooter.setShooterRPM();
         }, shooter)
       ),
 

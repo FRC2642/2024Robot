@@ -55,7 +55,7 @@ public class ChargeAmpN2Pc extends SequentialCommandGroup {
       //Drive to Shooting Spot And Rev Shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot1, true, 0.25).alongWith(
         new InstantCommand(()->{
-          shooter.setShooter(0.7);
+          shooter.setShooterRPM();
         }, shooter)
       ),
 
@@ -92,7 +92,7 @@ public class ChargeAmpN2Pc extends SequentialCommandGroup {
           new SetElevatorCommand(elevator, ()->ElevatorPosition.AMP),
           new SetShooterCommand(shooter, ()->ShooterPosition.AMP),
           new InstantCommand(()->{
-            shooter.setShooter(0.3);
+            shooter.setShooterRPM();
           }, shooter)
       ),
 
@@ -127,7 +127,7 @@ public class ChargeAmpN2Pc extends SequentialCommandGroup {
         new SetElevatorCommand(elevator, ()->ElevatorPosition.AMP),
         new SetShooterCommand(shooter, ()->ShooterPosition.AMP),
         new InstantCommand(()->{
-          shooter.setShooter(0.7);
+          shooter.setShooterRPM();
         }, shooter)
       ),
 
@@ -160,7 +160,7 @@ public class ChargeAmpN2Pc extends SequentialCommandGroup {
       //Drive to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot2, true, 0.25).alongWith(
         new InstantCommand(()->{
-          shooter.setShooter(0.7);
+          shooter.setShooterRPM();
         }, shooter)
       ),
 
