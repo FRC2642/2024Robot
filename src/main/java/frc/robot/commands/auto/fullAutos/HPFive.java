@@ -29,7 +29,7 @@ public class HPFive extends SequentialCommandGroup {
   /** Creates a new HPFive. */
   public HPFive(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem limelight, ElevatorSubsystem elevator) {
     ArrayList<Double> times = new ArrayList<Double>();
-    times.add(0.0); times.add(1.174); times.add(1.948); times.add(2.643); times.add(3.227); times.add(4.019); times.add(5.810); times.add(8.163); times.add(10.737); times.add(13.317); times.add(16.131);
+    times.add(0.0); times.add(1.174); times.add(1.948); times.add(2.643); times.add(3.227); times.add(4.019); times.add(5.810); times.add(8.063); times.add(10.763); times.add(13.270); times.add(16.144);
     PiratePath path = new PiratePath("5 Pc HP", false);
     path.fillWithSubPointsEasing(0.01, Functions.easeLinear);
     var paths = path.getSubPaths(times, 0.01);
@@ -51,7 +51,7 @@ public class HPFive extends SequentialCommandGroup {
       //Drive to position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot1, true, 0.25).alongWith(
         new InstantCommand(()->{
-          shooter.setShooter(0.7);
+          shooter.setShooterRPM();
         }, shooter)
       ),
 
@@ -65,13 +65,13 @@ public class HPFive extends SequentialCommandGroup {
         //Stop shooter after 0.5 seconds
         new WaitCommand(0.5).andThen(
           new InstantCommand(()->{
-          shooter.setFeeder(0);
-          shooter.setShooter(0);
-        }, shooter)
+            shooter.setFeeder(0);
+            shooter.setShooter(0);
+          }, shooter)
         ),
           
         //Intake next note as note is being shot
-          new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake1, false, 0.25, 0.3, 0.5, true)
+        new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake1, false, 0.25, 0.3, 0.5, true)
       ),
 
       //Stop intake
@@ -84,7 +84,7 @@ public class HPFive extends SequentialCommandGroup {
       //Drive to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot2, true, 0.25).alongWith(
         new InstantCommand(()->{
-          shooter.setShooter(0.7);
+          shooter.setShooterRPM();
         }, shooter)
       ),
       
@@ -96,13 +96,13 @@ public class HPFive extends SequentialCommandGroup {
         //Stop shooter after 0.5 seconds
         new WaitCommand(0.5).andThen(
           new InstantCommand(()->{
-          shooter.setFeeder(0);
-          shooter.setShooter(0);
-        }, shooter)
+            shooter.setFeeder(0);
+            shooter.setShooter(0);
+          }, shooter)
         ),
           
         //Intake next note as note is being shot
-          new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake2, false, 0.25, 0.3, 0.5, true)
+        new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake2, false, 0.25, 0.3, 0.5, true)
       ),
 
       //Stop intake
@@ -114,7 +114,7 @@ public class HPFive extends SequentialCommandGroup {
       //Drive to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot3, false, 0.25).alongWith(
         new InstantCommand(()->{
-          shooter.setShooter(0.7);
+          shooter.setShooterRPM();
         }, shooter)
       ),
       
@@ -132,8 +132,7 @@ public class HPFive extends SequentialCommandGroup {
         ),
 
         //Intake next note as note is being shot
-          new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake3, false, 0.25, 0.3, 0.5, true)
-      
+        new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake3, false, 0.25, 0.3, 0.5, true)
       ),
       
       //Stop intake
@@ -145,9 +144,9 @@ public class HPFive extends SequentialCommandGroup {
       //*****4TH AND 5TH NOTE*****//
       //Drive to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot4, false, 0.25).alongWith(
-          new InstantCommand(()->{
-            shooter.setShooter(0.7);
-          }, shooter)
+        new InstantCommand(()->{
+          shooter.setShooterRPM();
+        }, shooter)
       ),
       
       //Shoot note and start intake
@@ -176,8 +175,8 @@ public class HPFive extends SequentialCommandGroup {
       //Move to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot5, false, 0.25).alongWith(
         new InstantCommand(()->{
-        shooter.setFeeder(0.5);
-      }, shooter)
+          shooter.setShooterRPM();
+        }, shooter)
       ),
 
       //Shoot note
@@ -190,7 +189,8 @@ public class HPFive extends SequentialCommandGroup {
             shooter.setFeeder(0);
             shooter.setShooter(0);
           }, shooter)
-        )),
+        )
+      ),
 
       //Drive Out
       new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveOut, false, 0.25, 0.3, 0.5, true)

@@ -29,7 +29,7 @@ public class HPSixAndHalf extends SequentialCommandGroup {
   /** Creates a new HPSixAndHalf. */
   public HPSixAndHalf(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem limelight, ElevatorSubsystem elevator) {
     ArrayList<Double> times = new ArrayList<Double>();
-    times.add(0.0); times.add(1.087); times.add(1.908); times.add(2.434); times.add(3.203); times.add(3.996); times.add(4.569); times.add(5.296); times.add(7.644); times.add(9.285); times.add(10.801); times.add(12.294); times.add(14.217);
+    times.add(0.0); times.add(0.908); times.add(1.642); times.add(2.372); times.add(2.925); times.add(3.678); times.add(4.237); times.add(4.909); times.add(6.848); times.add(8.416); times.add(10.065); times.add(11.559); times.add(13.390);
     PiratePath path = new PiratePath("6.5 Pc HP", false);
     path.fillWithSubPointsEasing(0.01, Functions.easeLinear);
     var paths = path.getSubPaths(times, 0.01);
@@ -52,7 +52,7 @@ public class HPSixAndHalf extends SequentialCommandGroup {
       //Drive to position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot1, true, 0.25).alongWith(
         new InstantCommand(()->{
-          shooter.setShooter(0.7);
+          shooter.setShooterRPM();
         }, shooter)
       ),
 
@@ -67,13 +67,13 @@ public class HPSixAndHalf extends SequentialCommandGroup {
         //Stop shooter after 0.5 seconds
         new WaitCommand(0.5).andThen(
           new InstantCommand(()->{
-          shooter.setFeeder(0);
-          shooter.setShooter(0);
-        }, shooter)
+            shooter.setFeeder(0);
+            shooter.setShooter(0);
+          }, shooter)
         ),
           
         //Intake next note as note is being shot
-          new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake1, false, 0.25, 0.3, 0.5, true)
+        new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake1, false, 0.25, 0.3, 0.5, true)
       ),
 
       //Stop intake
@@ -86,7 +86,7 @@ public class HPSixAndHalf extends SequentialCommandGroup {
       //Drive to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot2, true, 0.25).alongWith(
         new InstantCommand(()->{
-          shooter.setShooter(0.7);
+          shooter.setShooterRPM();
         }, shooter)
       ),
       
@@ -95,16 +95,17 @@ public class HPSixAndHalf extends SequentialCommandGroup {
         shooter.setFeeder(0.5);
         intake.setIntake(0.5);
       }, shooter, intake).alongWith(
+
         //Stop shooter after 0.5 seconds
         new WaitCommand(0.5).andThen(
           new InstantCommand(()->{
-          shooter.setFeeder(0);
-          shooter.setShooter(0);
-        }, shooter)
+            shooter.setFeeder(0);
+            shooter.setShooter(0);
+          }, shooter)
         ),
           
         //Intake next note as note is being shot
-          new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake2, false, 0.25, 0.3, 0.5, true)
+        new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake2, false, 0.25, 0.3, 0.5, true)
       ),
 
       //Stop intake
@@ -116,7 +117,7 @@ public class HPSixAndHalf extends SequentialCommandGroup {
       //Drive to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot3, false, 0.25).alongWith(
         new InstantCommand(()->{
-          shooter.setShooter(0.7);
+          shooter.setShooterRPM();
         }, shooter)
       ),
       
@@ -125,6 +126,7 @@ public class HPSixAndHalf extends SequentialCommandGroup {
         shooter.setFeeder(0.5);
         intake.setIntake(0.5);
       }, shooter, intake).alongWith(
+
         //Stop shooter after 0.5 seconds
         new WaitCommand(.5).andThen(
           new InstantCommand(()->{
@@ -134,8 +136,7 @@ public class HPSixAndHalf extends SequentialCommandGroup {
         ),
 
         //Intake next note as note is being shot
-          new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake3, false, 0.25, 0.3, 0.5, true)
-      
+        new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake3, false, 0.25, 0.3, 0.5, true)
       ),
       
       //Stop intake
@@ -147,9 +148,9 @@ public class HPSixAndHalf extends SequentialCommandGroup {
       //*****4TH AND 5TH NOTE*****//
       //Drive to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot4, false, 0.25).alongWith(
-          new InstantCommand(()->{
-            shooter.setShooter(0.7);
-          }, shooter)
+        new InstantCommand(()->{
+          shooter.setShooterRPM();
+        }, shooter)
       ),
       
       //Shoot note and start intake
@@ -179,8 +180,8 @@ public class HPSixAndHalf extends SequentialCommandGroup {
       //Move to next position and lock onto speaker and rev shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot5, false, 0.25).alongWith(
         new InstantCommand(()->{
-        shooter.setFeeder(0.5);
-      }, shooter)
+          shooter.setShooterRPM();
+        }, shooter)
       ),
 
       //Shoot note and start intake
@@ -208,8 +209,13 @@ public class HPSixAndHalf extends SequentialCommandGroup {
 
       //*****6TH AND 7TH NOTE*****//
       //Move to next position and lock onto speaker and rev shooter
-      new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot6, false, 0.25),
+      new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot6, false, 0.25).alongWith(
+        new InstantCommand(()->{
+          shooter.setShooterRPM();
+        }, shooter)
+      ),
       
+
       //Shoot note and start intake
       new InstantCommand(()->{
         shooter.setFeeder(0.5);

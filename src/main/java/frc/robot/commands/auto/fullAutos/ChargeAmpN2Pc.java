@@ -35,7 +35,7 @@ public class ChargeAmpN2Pc extends SequentialCommandGroup {
   public ChargeAmpN2Pc(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem limelight, ElevatorSubsystem elevator) {
     
     ArrayList<Double> times = new ArrayList<>();
-    times.add(0.0); times.add(1.1); times.add(2.2); times.add(3.3); times.add(4.4); times.add(5.5); times.add(6.6); times.add(7.7); times.add(8.8);
+    times.add(0.0); times.add(0.957); times.add(1.888); times.add(3.371); times.add(6.158); times.add(8.938); times.add(11.796); times.add(13.315); times.add(15.136);
     PiratePath path = new PiratePath("2 Pc Charged Amp", false);
     path.fillWithSubPointsEasing(0.01, Functions.easeLinear);
     var paths = path.getSubPaths(times, 0.01);
@@ -52,14 +52,14 @@ public class ChargeAmpN2Pc extends SequentialCommandGroup {
     addCommands(
       //******Drive To Shoot 1st Note and Drop and Run Intake******//
 
-      //Drive to Shooting Spot
+      //Drive to Shooting Spot And Rev Shooter
       new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot1, true, 0.25).alongWith(
         new InstantCommand(()->{
-          shooter.setShooter(0.7);
+          shooter.setShooterRPM();
         }, shooter)
       ),
 
-        //Shoot note and drop intake and run intake
+      //Shoot note and drop intake and run intake
       new InstantCommand(()->{
         shooter.setFeeder(0.5);
         intake.setIntake(0.5);
@@ -69,17 +69,18 @@ public class ChargeAmpN2Pc extends SequentialCommandGroup {
         //Stop shooter after 0.5 seconds
         new WaitCommand(0.5).andThen(
           new InstantCommand(()->{
-          shooter.setFeeder(0);
-          shooter.setShooter(0);
+            shooter.setFeeder(0);
+            shooter.setShooter(0);
         }, shooter)
         ),        
 
-      //******Intake 2nd Note******//
+        //******Intake 2nd Note******//
 
-      //Intake next note as note is being shot
-      new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake1, false, 0.25, 0.3, 0.5, true)),
+        //Intake next note as note is being shot
+        new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake1, false, 0.25, 0.3, 0.5, true)
+      ),
 
-      //Stop intake
+      //Stop Intake
       new InstantCommand(()->{
         intake.setIntake(0);
       }, intake),
@@ -87,12 +88,11 @@ public class ChargeAmpN2Pc extends SequentialCommandGroup {
       //******Drive And Deposit 2nd Note Into Amp Then Intake 3rd Note******//
 
       //Drive To Amp And Prep For Shoot
-      new FollowPathCommand(drive, driveToAmp1, false, 0.25
-      ).alongWith(
+      new FollowPathCommand(drive, driveToAmp1, false, 0.25).alongWith(
           new SetElevatorCommand(elevator, ()->ElevatorPosition.AMP),
           new SetShooterCommand(shooter, ()->ShooterPosition.AMP),
           new InstantCommand(()->{
-            shooter.setShooter(0.7);
+            shooter.setShooterRPM();
           }, shooter)
       ),
 
@@ -106,14 +106,14 @@ public class ChargeAmpN2Pc extends SequentialCommandGroup {
         //Stop shooter after 0.5 seconds
         new WaitCommand(0.5).andThen(
           new InstantCommand(()->{
-          shooter.setFeeder(0);
-          shooter.setShooter(0);
-        }, shooter)
+            shooter.setFeeder(0);
+            shooter.setShooter(0);
+          }, shooter)
         ),        
 
-    //Intake next note as note is being shot
-    new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake2, false, 0.25, 0.3, 0.5, true)
-    ),
+        //Intake next note as note is being shot
+        new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake2, false, 0.25, 0.3, 0.5, true)
+      ),
 
       //Stop intake
       new InstantCommand(()->{
@@ -123,13 +123,12 @@ public class ChargeAmpN2Pc extends SequentialCommandGroup {
       //******Drive And Deposit 3rd Note Into Amp Then Intake 4th Note******//
 
       //Drive To Amp And Prep For Shoot
-      new FollowPathCommand(drive, driveToAmp2, false, 0.25
-      ).alongWith(
-          new SetElevatorCommand(elevator, ()->ElevatorPosition.AMP),
-          new SetShooterCommand(shooter, ()->ShooterPosition.AMP),
-          new InstantCommand(()->{
-            shooter.setShooter(0.7);
-          }, shooter)
+      new FollowPathCommand(drive, driveToAmp2, false, 0.25).alongWith(
+        new SetElevatorCommand(elevator, ()->ElevatorPosition.AMP),
+        new SetShooterCommand(shooter, ()->ShooterPosition.AMP),
+        new InstantCommand(()->{
+          shooter.setShooterRPM();
+        }, shooter)
       ),
 
       //Shoot note and drop intake and run intake
@@ -142,45 +141,45 @@ public class ChargeAmpN2Pc extends SequentialCommandGroup {
         //Stop shooter after 0.5 seconds
         new WaitCommand(0.5).andThen(
           new InstantCommand(()->{
-          shooter.setFeeder(0);
-          shooter.setShooter(0);
-        }, shooter)
+            shooter.setFeeder(0);
+            shooter.setShooter(0);
+          }, shooter)
         ),        
 
-      //Intake next note as note is being shot
-      new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake3, false, 0.25, 0.3, 0.5, true)
-    ),
-
-    //Stop intake
-    new InstantCommand(()->{
-      intake.setIntake(0);
-    }, intake),
-
-    //******Drive To Shoot 4th Note and Drop and Run Intake******//
-
-    //Drive to next position and lock onto speaker and rev shooter
-    new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot2, true, 0.25).alongWith(
-      new InstantCommand(()->{
-        shooter.setShooter(0.7);
-      }, shooter)
-    ),
-
-    //Shoot note and start intake
-    new InstantCommand(()->{
-      shooter.setFeeder(0.5);
-      intake.setIntake(0.5);
-    }, shooter, intake).alongWith(
-      //Stop shooter after 0.5 seconds
-      new WaitCommand(0.5).andThen(
-        new InstantCommand(()->{
-        shooter.setFeeder(0);
-        shooter.setShooter(0);
-      }, shooter)
+        //Intake next note as note is being shot
+        new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveToIntake3, false, 0.25, 0.3, 0.5, true)
       ),
+
+      //Stop intake
+      new InstantCommand(()->{
+        intake.setIntake(0);
+      }, intake),
+
+      //******Drive To Shoot 4th Note and Drop and Run Intake******//
+
+      //Drive to next position and lock onto speaker and rev shooter
+      new AutoLockOntoSpeakerCommand(drive, limelight, elevator, shooter, DetectionType.FIDUCIAL, driveToShoot2, true, 0.25).alongWith(
+        new InstantCommand(()->{
+          shooter.setShooterRPM();
+        }, shooter)
+      ),
+
+      //Shoot note and start intake
+      new InstantCommand(()->{
+        shooter.setFeeder(0.5);
+        intake.setIntake(0.5);
+      }, shooter, intake).alongWith(
+        //Stop shooter after 0.5 seconds
+        new WaitCommand(0.5).andThen(
+          new InstantCommand(()->{
+            shooter.setFeeder(0);
+            shooter.setShooter(0);
+          }, shooter)
+        ),
         
-      //Drive out to last note as note is being shot
+        //Drive out to last note as note is being shot
         new DivertToGamePieceCommand(drive, limelight, DetectionType.NOTE, driveOut, false, 0.25, 0.3, 0.5, true)
-    )
+      )
     );
   }
 }
