@@ -8,6 +8,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.IPositionable;
@@ -20,7 +22,7 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
   private TalonFX elevatorMotor1 = new TalonFX(Constants.ELEVATOR_MOTOR_1_ID);
   private TalonFX elevatorMotor2 = new TalonFX(Constants.ELEVATOR_MOTOR_2_ID);
   
-  private static AnalogInput elevatorEncoder = new AnalogInput(Constants.ELEVATOR_ENCODER_ANALOG_PORT);
+  private static Encoder elevatorEncoder = new Encoder(Constants.ELEVATOR_ENCODER_DIGITAL_PORT_A, Constants.ELEVATOR_ENCODER_DIGITAL_PORT_B);
 
   private ElevatorPosition currentSetPosition = ElevatorPosition.TRAVEL;
   private double speedLimit = 0.8;
@@ -31,11 +33,11 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
   }
 
   public double getHeight(){
-    return elevatorEncoder.getValue() * Constants.ELEVATOR_MAX_HEIGHT_FEET + Constants.ELEVATOR_MECHANISM_HEIGHT;
+    return elevatorEncoder.getRaw() * Constants.ELEVATOR_MAX_HEIGHT_FEET + Constants.ELEVATOR_MECHANISM_HEIGHT;
   }
 
   public static double getPercentElevated(){
-    return elevatorEncoder.getValue() / Constants.ELEVATOR_ENCODER_MAX_VALUE + Constants.ELEVATOR_ENCODER_OFFSET;
+    return elevatorEncoder.getRaw() / Constants.ELEVATOR_ENCODER_MAX_VALUE + Constants.ELEVATOR_ENCODER_OFFSET;
   }
 
   public void moveToPosition(double percentElevated){
