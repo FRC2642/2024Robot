@@ -45,6 +45,7 @@ public final class Constants {
 
     // Various Stats
     public static final double SHOOTER_VELOCITY = 7; //NOTE SHOOT FEET PER SECOND //CHANGE
+    public static final double SHOOTER_SET_RPM = 4000; // CHANGE
     public static final double SPEAKER_TARGET_HEIGHT = 7.8333;
     public static final double SHOOTER_TILT_ENCODER_MAX_VALUE = 0; //CHANGE
     public static final double SHOOTER_TILT_ENCODER_MIN_VALUE = 0; //CHANGE
@@ -53,6 +54,7 @@ public final class Constants {
     public static final double ELEVATOR_ENCODER_MAX_VALUE = 0; //CHANGE
     public static final double ELEVATOR_ENCODER_OFFSET = 0; //CHANGE
     public static final double ELEVATOR_MAX_HEIGHT_FEET = 0; //CHANGE
+    public static final double ELEVATOR_MECHANISM_HEIGHT = 0; // CHANGE
 
     public static final double INTAKE_TILT_ENCODER_MAX_VALUE = 0; //CHANGE
     public static final double INTAKE_TILT_ENCODER_MIN_VALUE = 0; //CHANGE

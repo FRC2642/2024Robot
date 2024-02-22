@@ -19,6 +19,7 @@ import frc.robot.utils.MathR;
 public class ShooterSubsystem extends SubsystemBase implements IPositionable<ShooterSubsystem.ShooterPosition>{
 
   private PIDController tiltPID = new PIDController(0.2, 0, 0);
+  private PIDController shooterPID = new PIDController(0.2, 0, 0);
   
   private TalonFX shooterMotor = new TalonFX(Constants.SHOOTER_SPINNER_ID);
   private CANSparkMax shooterTiltMotor = new CANSparkMax(Constants.SHOOTER_PIVOT_ID, MotorType.kBrushless);
@@ -84,6 +85,11 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
 
   public void setShooter(double speed){
     shooterMotor.set(speed);
+  }
+
+  public void setShooterRPM(){
+    double currentRPM = shooterMotor.getVelocity().getValue();
+    setShooter(shooterPID.calculate(currentRPM, Constants.SHOOTER_SET_RPM));
   }
 
 

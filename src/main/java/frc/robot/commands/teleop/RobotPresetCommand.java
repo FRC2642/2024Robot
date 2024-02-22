@@ -86,7 +86,7 @@ public class RobotPresetCommand extends Command {
 
     //SET SHOOTER FOR REQUIRED PRESETS
     if (!(RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE) || RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL))){
-      shooter.setShooter(0.7);
+      shooter.setShooterRPM();
       if (control.getRightTriggerAxis() >= 0.1){
         shooter.setFeeder(1);
       } 
