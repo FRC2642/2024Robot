@@ -7,8 +7,11 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -24,7 +27,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   private TalonFX intakeSpinnerMotor = new TalonFX(Constants.INTAKE_SPINNER_ID);
   private static CANSparkMax intakeTiltMotor = new CANSparkMax(Constants.INTAKE_PIVOT_ID, MotorType.kBrushless);
   
-  private static AbsoluteEncoder tiltEncoder = intakeTiltMotor.getAbsoluteEncoder(Type.kDutyCycle);
+  private static SparkAbsoluteEncoder tiltEncoder;
 
   private IntakePosition currentSetPosition = IntakePosition.RETRACTED;
   private double speedLimit = 0.5;
@@ -33,11 +36,12 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   public static final double MIN_DEGREES = 0;
 
   public IntakeSubsystem() {
+    tiltEncoder = intakeTiltMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
     tiltPID.setTolerance(TILT_TOLERANCE);
   }
 
   public static double getPitch(){
-    return tiltEncoder.getPosition() / (Constants.INTAKE_TILT_ENCODER_MAX_VALUE - Constants.INTAKE_TILT_ENCODER_MIN_VALUE) + Constants.INTAKE_TILT_ENCODER_OFFSET;
+    return MathR.getDistanceToAngle(0, tiltEncoder.getPosition() / (Constants.INTAKE_TILT_ENCODER_MAX_VALUE - Constants.INTAKE_TILT_ENCODER_MIN_VALUE) * 360 + Constants.INTAKE_TILT_ENCODER_OFFSET, 180);
   }
 
   public void tiltToAngle(double degrees){

@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import edu.wpi.first.math.controller.PIDController;
@@ -25,7 +26,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   private CANSparkMax shooterTiltMotor = new CANSparkMax(Constants.SHOOTER_PIVOT_ID, MotorType.kBrushless);
   private CANSparkMax feederMotor = new CANSparkMax(Constants.FEEDER_WHEELS_ID, MotorType.kBrushless);
 
-  private AbsoluteEncoder tiltEncoder = shooterTiltMotor.getAbsoluteEncoder(Type.kDutyCycle);
+  private static SparkAbsoluteEncoder tiltEncoder;
 
   private DigitalInput beamBreak = new DigitalInput(Constants.BEAM_BREAK_CHANNEL);
 
@@ -37,11 +38,12 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   private final int TILT_TOLERANCE = 4;
   
   public ShooterSubsystem() {
+    tiltEncoder = shooterTiltMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
     tiltPID.setTolerance(TILT_TOLERANCE);
   }
 
   public double getPitch(){
-    return tiltEncoder.getPosition() / (Constants.SHOOTER_TILT_ENCODER_MAX_VALUE + Constants.SHOOTER_TILT_ENCODER_MIN_VALUE) + Constants.SHOOTER_TILT_ENCODER_OFFSET;
+    return MathR.getDistanceToAngle(0, tiltEncoder.getPosition() / (Constants.SHOOTER_TILT_ENCODER_MAX_VALUE - Constants.SHOOTER_TILT_ENCODER_MIN_VALUE) * 360 + Constants.SHOOTER_TILT_ENCODER_OFFSET, 180);
   }
 
   public boolean getNoteDetected(){
