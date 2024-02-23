@@ -55,7 +55,7 @@ public final class Constants {
     public static final double ELEVATOR_ENCODER_MAX_VALUE = 0; //CHANGE
     public static final double ELEVATOR_ENCODER_OFFSET = 0; //CHANGE
     public static final double ELEVATOR_MAX_HEIGHT_FEET = 0; //CHANGE
-    public static final double ELEVATOR_MECHANISM_HEIGHT = 0.39583333;
+    public static final double ELEVATOR_MECHANISM_HEIGHT = 0.4375;
 
     public static final double INTAKE_TILT_ENCODER_MAX_VALUE = 0; //CHANGE
     public static final double INTAKE_TILT_ENCODER_MIN_VALUE = 0; //CHANGE

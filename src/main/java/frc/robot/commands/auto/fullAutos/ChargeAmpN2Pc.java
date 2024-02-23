@@ -71,7 +71,7 @@ public class ChargeAmpN2Pc extends SequentialCommandGroup {
           new InstantCommand(()->{
             shooter.setFeeder(0);
             shooter.setShooter(0);
-        }, shooter)
+          }, shooter)
         ),        
 
         //******Intake 2nd Note******//
@@ -89,11 +89,11 @@ public class ChargeAmpN2Pc extends SequentialCommandGroup {
 
       //Drive To Amp And Prep For Shoot
       new FollowPathCommand(drive, driveToAmp1, false, 0.25).alongWith(
-          new SetElevatorCommand(elevator, ()->ElevatorPosition.AMP),
-          new SetShooterCommand(shooter, ()->ShooterPosition.AMP),
-          new InstantCommand(()->{
-            shooter.setShooterRPM();
-          }, shooter)
+        new SetElevatorCommand(elevator, ()->ElevatorPosition.AMP),
+        new SetShooterCommand(shooter, ()->ShooterPosition.AMP),
+        new InstantCommand(()->{
+          shooter.setShooterRPM();
+        }, shooter)
       ),
 
       //Shoot note and drop intake and run intake
