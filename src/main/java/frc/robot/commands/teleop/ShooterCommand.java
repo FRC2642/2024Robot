@@ -13,7 +13,7 @@ public class ShooterCommand extends Command {
 
   XboxController control;
   ShooterSubsystem shooter;
-  int i;
+  int i; // i is used for the delay. starting value needs to be changed accordingly
 
   public ShooterCommand(XboxController controlIN, ShooterSubsystem shooterIN) {
     this.control = controlIN;
@@ -31,17 +31,17 @@ public class ShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (control.getRightTriggerAxis() > 0.02) {
-      shooter.runFlyWheels(control.getRightTriggerAxis());
+    if (control.getRightTriggerAxis() > 0.02) { // Makes sure the right trigger is actually pressed + factors into delay
+      shooter.setFlyWheelSpeed(control.getRightTriggerAxis());
       if (i <= 0) {
-        shooter.runBackRoller(control.getRightTriggerAxis());
+        shooter.setBackRollerSpeed(control.getRightTriggerAxis());
       } else {
         i -= 1;
       }
-    } else {
+    } else { // When the trigger isn't pressed
       i = 10;
-      shooter.runFlyWheels(0);
-      shooter.runBackRoller(0);
+      shooter.setFlyWheelSpeed(0);
+      shooter.setBackRollerSpeed(0);
     }
   }
 
