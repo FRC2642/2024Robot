@@ -32,10 +32,10 @@ public class ShooterCommand extends Command {
   @Override
   public void execute() {
     if (control.getRightTriggerAxis() > 0.02) { // Makes sure the right trigger is actually pressed + factors into delay
-      shooter.setFlyWheelSpeed(control.getRightTriggerAxis());
+      shooter.setFlyWheelSpeed(control.getRightTriggerAxis()); // Variable speed?
       if (i <= 0) {
         shooter.setBackRollerSpeed(control.getRightTriggerAxis());
-      } else {
+      } else { // Delay -- waits 10 frames... idk how long this is in seconds bec idk robot fps
         i -= 1;
       }
     } else { // When the trigger isn't pressed
