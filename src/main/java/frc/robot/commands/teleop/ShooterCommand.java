@@ -32,14 +32,16 @@ public class ShooterCommand extends Command {
   @Override
   public void execute() {
     if (control.getRightTriggerAxis() > 0.02) {
-      shooter.runFlyWheels(1);
+      shooter.runFlyWheels(control.getRightTriggerAxis());
       if (i <= 0) {
-        shooter.runBackRoller(1);
+        shooter.runBackRoller(control.getRightTriggerAxis());
       } else {
         i -= 1;
       }
     } else {
       i = 10;
+      shooter.runFlyWheels(0);
+      shooter.runBackRoller(0);
     }
   }
 
