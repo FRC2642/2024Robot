@@ -35,7 +35,7 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
   }
 
   public static double getPercentElevated(){
-    return elevatorEncoder.getRaw() / Constants.ELEVATOR_ENCODER_MAX_VALUE + Constants.ELEVATOR_ENCODER_OFFSET;
+    return elevatorEncoder.getRaw() / Constants.ELEVATOR_ENCODER_WHEN_AT_TOP + Constants.ELEVATOR_ENCODER_OFFSET;
   }
 
   public void moveToPosition(double percentElevated){
