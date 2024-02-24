@@ -20,6 +20,10 @@ public class PivotSubsystem extends SubsystemBase {
     pivotMotor.set(pivotSpeed);
   }
 
+  public void getEncoderValue() {
+    encoder.getAbsolutePosition();
+  }
+
   public PivotSubsystem() {}
 
   @Override
