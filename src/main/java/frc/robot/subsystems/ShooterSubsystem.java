@@ -13,8 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
 
-  // Replace deviceIds when recieved
-  private CANSparkMax backRoller = new CANSparkMax(0, MotorType.kBrushless);
+  private CANSparkMax backRoller = new CANSparkMax(0, MotorType.kBrushless); // CHANGE DEVICE IDs
   private TalonFX flyWheels = new TalonFX(0);
 
   public void setBackRollerSpeed(double rollerSpeed) {
