@@ -13,6 +13,7 @@ public class PivotCommand extends Command {
 
   PivotSubsystem pivot;
   XboxController control;
+  double angle;
 
   public PivotCommand(PivotSubsystem pivotIN, XboxController controlIN) {
     this.pivot = pivotIN;
@@ -28,7 +29,8 @@ public class PivotCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      
+    angle = pivot.getEncoderValue() / 4096 * 360;
+    
   }
 
   // Called once the command ends or is interrupted.

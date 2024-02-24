@@ -20,8 +20,8 @@ public class PivotSubsystem extends SubsystemBase {
     pivotMotor.set(pivotSpeed);
   }
 
-  public void getEncoderValue() {
-    encoder.getAbsolutePosition();
+  public double getEncoderValue() {
+    return encoder.getAbsolutePosition();
   }
 
   public PivotSubsystem() {}
