@@ -135,6 +135,13 @@ public class RobotPresetCommand extends Command {
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER)){ 
       leftJoystick.setFromCartesian(control.getLeftX(), -control.getLeftY());
       leftJoystick.rotate(-90);
+      rightJoystick.setFromCartesian(control.getRightX(), -control.getRightY());
+      rightJoystick.rotate(90);
+
+      double turnAngle = rightJoystick.getAngle();
+
+      double nonLimelightTurnPower = MathR.lerp(0.35, 1, 0.2, 1.0, rightJoystick.getMagnitude())  * MathR
+          .limit(TURN_KP * MathR.getDistanceToAngle(DriveSubsystem.getYawDegrees(), turnAngle), -1, 1);
     
       shooterLimelight.setDetectionType(DetectionType.FIDUCIAL);
 
@@ -156,10 +163,10 @@ public class RobotPresetCommand extends Command {
       
       double angleToFace = shooterLimelight.x + 90 - Math.toDegrees(Math.atan2(Constants.SHOOTER_VELOCITY - DriveSubsystem.getRelativeVelocity().getY(), DriveSubsystem.getRelativeVelocity().getX() + 0.0001));
 
-      double turnPower = MathR.limit(TURN_KP * MathR.getDistanceToAngle(0, angleToFace), -0.25, 0.25) * -1;
+      double limelightTurnPower = MathR.limit(TURN_KP * MathR.getDistanceToAngle(0, angleToFace), -0.25, 0.25) * -1;
       
-      if (shooterLimelight.isDetection && shooterLimelight.confidence() > 0.2) drive.move(leftJoystick, turnPower);
-      else if (leftJoystick.getMagnitude() > 0.1) drive.move(leftJoystick, 0.0);
+      if (shooterLimelight.isDetection && shooterLimelight.confidence() > 0.2) drive.move(leftJoystick, limelightTurnPower);
+      else if (leftJoystick.getMagnitude() > 0.1) drive.move(leftJoystick, nonLimelightTurnPower);
     }
     
     //TRAVEL MODE AND DRIVE FOR TRAP AND AMP PRESETS
