@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.teleop.PivotCommand;
+import frc.robot.commands.teleop.ShooterCommand;
 import frc.robot.commands.teleop.DriveCommands.JoystickOrientedDriveCommand;
 import frc.robot.commands.teleop.DriveCommands.TurnTowardsGamePieceCommand;
 import frc.robot.path.PiratePath;
@@ -24,6 +26,8 @@ import frc.robot.commands.teleop.resetters.ResetDisplacementCommand;
 import frc.robot.commands.teleop.resetters.ResetGyroCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.PivotSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.LimelightSubsystem.DetectionType;
 import frc.robot.utils.VectorR;
 import frc.robot.utils.Easings.Functions;
@@ -33,6 +37,9 @@ public class RobotContainer {
   public final XboxController mainControl = new XboxController(Constants.DRIVE_CONTROL_PORT);
   public final XboxController auxControl = new XboxController(Constants.AUX_CONTROL_PORT);
   public final Joystick auxButtonBoard = new Joystick(Constants.AUX_BUTTON_BOARD_PORT);
+
+  public final ShooterSubsystem shooter = new ShooterSubsystem();
+  public final PivotSubsystem pivot = new PivotSubsystem();
 
   //public final DriveSubsystem drive = new DriveSubsystem();
   //public final LimelightSubsystem shooterLimelight = new LimelightSubsystem("limelight-shooter");
@@ -59,7 +66,9 @@ public class RobotContainer {
 
     
     SmartDashboard.putData(new ResetDisplacementCommand(new VectorR()));
-
+    
+    shooter.setDefaultCommand(new ShooterCommand(shooter, mainControl));
+    pivot.setDefaultCommand(new PivotCommand(pivot, mainControl));
   }
 
   public void autonomousInit() {

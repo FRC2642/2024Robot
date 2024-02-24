@@ -16,7 +16,7 @@ public class ShooterCommand extends Command {
   int i; // i is used for the delay. starting value needs to be changed accordingly (currently 10 frames)
   private final int frameDelay = 10; // 10-frame delay. CHANGE THIS IF NEEDED because idk how long 10 frames would be
 
-  public ShooterCommand(XboxController controlIN, ShooterSubsystem shooterIN) {
+  public ShooterCommand(ShooterSubsystem shooterIN, XboxController controlIN) {
     this.control = controlIN;
     this.shooter = shooterIN;
     // Use addRequirements() here to declare subsystem dependencies.

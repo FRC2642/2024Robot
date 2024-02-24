@@ -14,6 +14,7 @@ public class PivotCommand extends Command {
   PivotSubsystem pivot;
   XboxController control;
   double angle;
+  double desiredAngle;
 
   public PivotCommand(PivotSubsystem pivotIN, XboxController controlIN) {
     this.pivot = pivotIN;
