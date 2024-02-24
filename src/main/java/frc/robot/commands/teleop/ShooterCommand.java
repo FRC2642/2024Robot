@@ -13,7 +13,8 @@ public class ShooterCommand extends Command {
 
   XboxController control;
   ShooterSubsystem shooter;
-  int i; // i is used for the delay. starting value needs to be changed accordingly
+  int i; // i is used for the delay. starting value needs to be changed accordingly (currently 10 frames)
+  private final int frameDelay = 10; // 10-frame delay. CHANGE THIS IF NEEDED because idk how long 10 frames would be
 
   public ShooterCommand(XboxController controlIN, ShooterSubsystem shooterIN) {
     this.control = controlIN;
@@ -25,7 +26,7 @@ public class ShooterCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    i = 10;
+    i = frameDelay;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -35,11 +36,11 @@ public class ShooterCommand extends Command {
       shooter.setFlyWheelSpeed(control.getRightTriggerAxis()); // Variable speed?
       if (i <= 0) {
         shooter.setBackRollerSpeed(control.getRightTriggerAxis());
-      } else { // Delay -- waits 10 frames... idk how long this is in seconds bec idk robot fps
+      } else { // Delay
         i -= 1;
       }
     } else { // When the trigger isn't pressed
-      i = 10;
+      i = frameDelay;
       shooter.setFlyWheelSpeed(0);
       shooter.setBackRollerSpeed(0);
     }
