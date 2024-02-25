@@ -5,12 +5,12 @@
 package frc.robot.commands.teleop.DriveCommands;
 
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.utils.MathR;
 import frc.robot.utils.VectorR;
 
-public class JoystickOrientedDriveCommand extends Command {
+public class JoystickOrientedDriveCommand extends CommandBase {
 
   private double maxSpeed = 0.25;
 
@@ -18,6 +18,8 @@ public class JoystickOrientedDriveCommand extends Command {
   private final XboxController control;
   private final VectorR leftJoystick = new VectorR();
   private final VectorR rightJoystick = new VectorR();
+
+  
 
   public JoystickOrientedDriveCommand(DriveSubsystem drive, XboxController control) {
     this.drive = drive;
@@ -34,11 +36,11 @@ public class JoystickOrientedDriveCommand extends Command {
 
   @Override
   public void execute() {
-      maxSpeed = MathR.lerp(0.25, 1.2, 0.0, 1.0, control.getLeftTriggerAxis());
+      maxSpeed = MathR.lerp(0.25, 1.0, 0.0, 1.0, control.getLeftTriggerAxis());
 
       leftJoystick.setFromCartesian(control.getLeftX(), -control.getLeftY());
       leftJoystick.rotate(-90);
-      rightJoystick.setFromCartesian(control.getRightX(), -control.getRightY());
+      rightJoystick.setFromCartesian(-control.getRightX(), -control.getRightY());
       rightJoystick.rotate(90);
 
       double yaw = DriveSubsystem.getYawDegrees();
@@ -62,9 +64,14 @@ public class JoystickOrientedDriveCommand extends Command {
 
       double angleToFace = isLocked ? lockedHeading : rightJoystick.getAngle();
 
+    
+      
       double turnPower = MathR.lerp(0.35, 1, 0.2, 1.0, rightJoystick.getMagnitude())  * MathR
           .limit(TURN_KP * MathR.getDistanceToAngle(yaw, angleToFace), -1, 1);
 
+      System.out.println(yaw + " " + angleToFace);
+      
+      
       leftJoystick.mult(maxSpeed);
       drive.move(leftJoystick, turnPower * maxSpeed);
   }

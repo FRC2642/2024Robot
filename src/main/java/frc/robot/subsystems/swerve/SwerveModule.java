@@ -4,11 +4,8 @@
 
 package frc.robot.subsystems.swerve;
 
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
-
 import frc.robot.Constants;
 import frc.robot.utils.MathR;
 import frc.robot.utils.VectorR;
@@ -23,34 +20,23 @@ public class SwerveModule {
   // HARDWARE
   public final TalonFX angleMotor;
   private final TalonFX driveMotor;
-  public final CANcoder orientationEncoder;
+  public final CANCoder orientationEncoder;
 
   // INFORMATION
   public final SwerveModuleInfo info;
   private final double defensiveAngleDeg;
   private double wheelOrientation = 0.0;
 
-
-
   public SwerveModule(SwerveModuleInfo info) {
     this.info = info;
     this.angleMotor = new TalonFX(info.TURN_ID);
     this.driveMotor = new TalonFX(info.DRIVE_ID);
-    this.orientationEncoder = new CANcoder(info.ENCODER_ID);
+    this.orientationEncoder = new CANCoder(info.ENCODER_ID);
     this.defensiveAngleDeg = VectorR.fromCartesian(info.X, info.Y).getAngle();
-    
     orientationEncoder.setPosition(0);
-    
-    MagnetSensorConfigs config = new MagnetSensorConfigs();
-    config = config.withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1);
-    orientationEncoder.getConfigurator().apply(config);
 
   }
 
-  //RESET METHODS
-  public void resetDriveEncoder() {
-    //driveMotor.getPosition
-  }
 
   // MODULE WHEEL MEASUREMENTS
   public double getWheelSpeed() {
@@ -58,7 +44,6 @@ public class SwerveModule {
   }
 
   private double getWheelPosition() {
-    
     return driveMotor.getPosition().getValue() * Constants.FEET_PER_DISPLACEMENT;
   }
 
@@ -67,15 +52,11 @@ public class SwerveModule {
    * negative (-) = right turn CW
    */
   public double getWheelOrientationDegrees() {
-    return wheelOrientation - info.ABS_ENCODER_VALUE_WHEN_STRAIGHT;
+    return wheelOrientation- info.ABS_ENCODER_VALUE_WHEN_STRAIGHT;
   }
 
   public VectorR getVelocity() {
     return VectorR.fromPolar(getWheelSpeed(), getWheelOrientationDegrees());
-  }
-
-  public double getWheelPower(){
-    return driveMotor.get();
   }
 
   private double lastWheelPosition = 0;
@@ -119,19 +100,17 @@ public class SwerveModule {
    * angle radians follows coordinate plane standards, sets module wheel to angle
    */
   public void update(double speed, double angleDegrees) {
-    
-    
-    wheelOrientation = ((orientationEncoder.getAbsolutePosition().getValueAsDouble()) /* /1.49975585938*/) * 360; 
+    wheelOrientation = orientationEncoder.getAbsolutePosition();
     desired.setFromPolar(speed, angleDegrees);
 
     if (Math.abs(MathR.getDistanceToAngle(getWheelOrientationDegrees(), desiredAngle())) > 90d)
       reverse();
 
-    double speed_power = MathR.limit(desiredSpeed(), -1, 1);
+    double speed_power = MathR.limit(desiredSpeed(), -1.0, 1.0);
     double angle_power = MathR
         .limit(Constants.MODULE_ANGLE_KP * MathR.getDistanceToAngle(getWheelOrientationDegrees(), desiredAngle()), -1, 1);
-   
   
+    
     driveMotor.set(speed_power); 
     angleMotor.set(angle_power);
 

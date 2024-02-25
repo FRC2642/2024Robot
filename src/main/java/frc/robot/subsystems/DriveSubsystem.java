@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.swerve.SwerveModule;
 import frc.robot.subsystems.swerve.SwerveModules;
+import frc.robot.subsystems.swerve.SwerveModules.ModuleLocation;
 import frc.robot.utils.TimedVectorDerivative;
 import frc.robot.utils.VectorR;
 
@@ -37,7 +38,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     gyro = new AHRS();
     gyro.reset();
-    gyro.resetDisplacement();
 
     increment = new VectorR();
     displacement = new VectorR();
@@ -60,7 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
     increment.setFromCartesian(0, 0);
     
     VectorR directionalPull = directionalSpeed.clone();
-    directionalPull.rotate(-getYawDegrees());
+    directionalPull.rotate(getYawDegrees());
 
     for (SwerveModule module : modules) {
 
@@ -71,7 +71,6 @@ public class DriveSubsystem extends SubsystemBase {
 
       // position tracking
       var inc = module.getPositionIncrement();
-      
       inc.mult(1d / 4d);
       inc.rotate(getYawDegrees());
       displacement.add(inc);
@@ -99,14 +98,14 @@ public class DriveSubsystem extends SubsystemBase {
     jerk.update();
   }
 
-  /*
-   * public void debugWheelDirections(double angle) {
-   * modules.frontRight.update(0.25, angle);
-   * modules.frontLeft.update(0.25, angle);
-   * modules.backRight.update(0.25, angle);
-   * modules.backLeft.update(0.25, angle);
-   * }
-   */
+  
+    public void debugWheelDirections(double angle) {
+    modules.frontRight.update(0.1, angle);
+    modules.frontLeft.update(0.1, angle);
+    modules.backRight.update(0.1, angle);
+    modules.backLeft.update(0.1, angle);
+    }
+  
 
   public void setDefensiveMode(boolean activated) {
     defensiveMode = activated;
@@ -147,7 +146,7 @@ public class DriveSubsystem extends SubsystemBase {
    * negative (-) = right turn CW
    */
   public static double getYawDegrees() {
-    return -1 * gyro.getYaw() + yawOffsetDegrees;
+    return gyro.getYaw() + yawOffsetDegrees;
   }
 
   // + LEFT
@@ -163,11 +162,6 @@ public class DriveSubsystem extends SubsystemBase {
     gyro.reset();
     yawOffsetDegrees = yawDegrees;
   }
-  
-  public void resetDriveEncoders() {
-    for (var mod : modules)
-      mod.resetDriveEncoder();
-  }
 
   @Override
   public void periodic() {
@@ -178,7 +172,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("gyro", getYawDegrees());
    // modules.debugSmartDashboard();
 
-
+  
      SmartDashboard.putNumber("x field", displacement.getX());
      SmartDashboard.putNumber("y field", displacement.getY());
 

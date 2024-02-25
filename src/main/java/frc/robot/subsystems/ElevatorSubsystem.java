@@ -31,11 +31,16 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
   }
 
   public double getHeight(){
-    return elevatorEncoder.getRaw() * Constants.ELEVATOR_MAX_HEIGHT_FEET + Constants.ELEVATOR_MECHANISM_HEIGHT;
+    return 0;
+    //return elevatorEncoder.getRaw() * Constants.ELEVATOR_MAX_HEIGHT_FEET + Constants.ELEVATOR_MECHANISM_HEIGHT;
   }
 
   public static double getPercentElevated(){
-    return elevatorEncoder.getRaw() / Constants.ELEVATOR_ENCODER_WHEN_AT_TOP + Constants.ELEVATOR_ENCODER_OFFSET;
+    return -elevatorEncoder.getRaw() / Constants.ELEVATOR_ENCODER_WHEN_AT_TOP + Constants.ELEVATOR_ENCODER_OFFSET;
+  }
+
+  public static void resetEncoder(){
+    elevatorEncoder.reset();
   }
 
   public void moveToPosition(double percentElevated){
@@ -51,15 +56,15 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
     double power = MathR.limitWhenReached(speed, -speedLimit, speedLimit, getPercentElevated() <= 0, getPercentElevated() >= 1);
 
     elevatorMotor1.set(power);
-    elevatorMotor2.set(power);
+    elevatorMotor2.set(-power);
   }
 
   public void set(ElevatorPosition pos) {
     double speed = elevatorPID.calculate(getPercentElevated(), pos.percentageElevated);
 
-    if ((Math.abs(speed) > 0 && IntakeSubsystem.getPitch() >= 70)) {
+    /*if ((Math.abs(speed) > 0 && IntakeSubsystem.getPitch() >= 70)) {
       speed = 0.0;
-    }
+    }*/
 
     if (!atSetPosition())
       set(speed);
@@ -71,7 +76,7 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
 
   public void setManual(double speed) {
     elevatorMotor1.set(speed);
-    elevatorMotor2.set(speed);
+    elevatorMotor2.set(-speed);
   }
 
   @Override
@@ -108,5 +113,7 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    
+  }
 }

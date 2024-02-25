@@ -20,7 +20,7 @@ import frc.robot.utils.MathR;
 
 public class IntakeSubsystem extends SubsystemBase implements IPositionable<IntakeSubsystem.IntakePosition>{
 
-  private final int TILT_TOLERANCE = 1;
+  private final int TILT_TOLERANCE = 5;
 
   private PIDController tiltPID = new PIDController(0.2, 0, 0);
 
@@ -30,7 +30,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   private static SparkAbsoluteEncoder tiltEncoder;
 
   private IntakePosition currentSetPosition = IntakePosition.RETRACTED;
-  private double speedLimit = 0.5;
+  private double speedLimit = 0.2;
 
   public static final double MAX_DEGREES = 90;
   public static final double MIN_DEGREES = 0;
@@ -61,8 +61,9 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   }
 
   public void set(IntakePosition pos) {
+    tiltPID.setSetpoint(pos.angle);
     double speed = tiltPID.calculate(getPitch(), MathR.getDistanceToAngle(getPitch(), pos.angle));
-
+  
     if (!atSetPosition())
       set(speed);
     else
@@ -104,7 +105,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   }
 
   public enum IntakePosition {
-    RETRACTED(90),
+    RETRACTED(139),
     EXTENDED(0),
     AMP(60),
     MANUAL(-1);
@@ -116,5 +117,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    
+  }
 }

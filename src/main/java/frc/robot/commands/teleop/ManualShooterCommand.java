@@ -25,19 +25,25 @@ public class ManualShooterCommand extends Command {
   @Override
   public void execute() {
     if (mainControl.getRightTriggerAxis() >= 0.1){
-      shooter.setShooter(0.7);
+      shooter.setShooter(-mainControl.getRightTriggerAxis());
+    }
+    else if (mainControl.getYButton()){
+      shooter.setShooter(0.3);
     }
     else{
       shooter.setShooter(0);
     }
     if (mainControl.getRightBumper()){
-      shooter.setFeeder(1);
+      shooter.setFeeder(0.5);
+    }
+    else if (mainControl.getXButton()){
+      shooter.setFeeder(-0.5);
     }
     else{
-      shooter.setShooter(0);
+      shooter.setFeeder(0);
     }
     
-    shooter.setManual(mainControl.getRightY());
+    shooter.setManual(mainControl.getRightY() * 0.2);
     
 
   }
