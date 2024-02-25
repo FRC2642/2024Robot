@@ -15,7 +15,8 @@ public class ManualElevatorCommand extends Command {
   private final XboxController mainControl;
   double speed;
 
-  public ManualElevatorCommand(ElevatorSubsystem elevator, XboxController mainControl){
+  public 
+  ManualElevatorCommand(ElevatorSubsystem elevator, XboxController mainControl){
     this.elevator = elevator;
     this.mainControl = mainControl;
     addRequirements(elevator);
@@ -36,7 +37,7 @@ public class ManualElevatorCommand extends Command {
       speed = 0;
     }
 
-    elevator.set(speed);
+    elevator.setManual(speed);
   }
 
   @Override

@@ -39,7 +39,7 @@ public class RobotPresetCommand extends Command {
   private double lockedHeading = 0;
   
 
-  public RobotPresetCommand(DriveSubsystem drive, ShooterSubsystem shooter, ElevatorSubsystem elevator, IntakeSubsystem intake, LimelightSubsystem intakeLimelight, LimelightSubsystem shooterLimelight, XboxController control, Joystick auxButtonBoard) {
+  public RobotPresetCommand(DriveSubsystem drive, ShooterSubsystem shooter, ElevatorSubsystem elevator, IntakeSubsystem intake,/* LimelightSubsystem intakeLimelight, LimelightSubsystem shooterLimelight, */XboxController control, Joystick auxButtonBoard) {
     this.drive = drive;
     this.shooter = shooter;
     this.elevator = elevator;
@@ -48,15 +48,15 @@ public class RobotPresetCommand extends Command {
     this.shooterLimelight = shooterLimelight;
     this.control = control;
     this.auxButtonBoard = auxButtonBoard;
-    addRequirements(drive, shooter, elevator, intake, intakeLimelight, shooterLimelight);
+    addRequirements(drive, shooter, elevator, intake/*, intakeLimelight, shooterLimelight*/);
   }
 
   @Override
   public void initialize() {
-    shooter.setSpeedLimit(0.5);
+    //shooter.setSpeedLimit(0.5);
     shooter.setRampRate(0.2);
     elevator.setSpeedLimit(0.5);
-    intake.setSpeedLimit(0.5);
+    //intake.setSpeedLimit(0.5);
     intake.setRampRate(0.2);
     RobotState.setChosenConfiguration(RobotConfiguration.SHOOT_SPEAKER);
   }
@@ -67,7 +67,7 @@ public class RobotPresetCommand extends Command {
     //Set subsystem presets
     if (control.getLeftBumper() || control.getRightBumper()){
       intake.set(RobotState.getChosenRobotConfiguration().intakePos);
-      elevator.set(RobotState.getChosenRobotConfiguration().elevatorPos);
+      //elevator.set(RobotState.getChosenRobotConfiguration().elevatorPos);
       
       if (!RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER)){
         shooter.set(RobotState.getChosenRobotConfiguration().shooterPos);
@@ -76,7 +76,7 @@ public class RobotPresetCommand extends Command {
     else{
       RobotState.setRobotState(RobotConfiguration.TRAVEL);
       intake.set(RobotState.getRobotConfiguration().intakePos);
-      elevator.set(RobotState.getRobotConfiguration().elevatorPos);
+      //elevator.set(RobotState.getRobotConfiguration().elevatorPos);
       shooter.set(RobotState.getRobotConfiguration().shooterPos);
     }
 
@@ -208,10 +208,10 @@ public class RobotPresetCommand extends Command {
 
     //CLIMB PRESET
     if (auxButtonBoard.getRawButton(3)){
-      elevator.set(ElevatorPosition.CLIMB);
+      //elevator.set(ElevatorPosition.CLIMB);
     }
     else{
-      elevator.set(RobotState.getRobotConfiguration().elevatorPos);
+      //elevator.set(RobotState.getRobotConfiguration().elevatorPos);
     }
   }
 

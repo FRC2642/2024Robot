@@ -31,7 +31,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   private DigitalInput beamBreak = new DigitalInput(Constants.BEAM_BREAK_CHANNEL);
 
   private ShooterPosition currentSetPosition = ShooterPosition.TRAVEL;
-  private double speedLimit = 1;
+  private double speedLimit = 0.2;
 
   public static final double MAX_DEGREES = 90;
   public static final double MIN_DEGREES = -40;
@@ -65,9 +65,9 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   public void set(ShooterPosition pos) {
     double speed = tiltPID.calculate(getPitch(), MathR.getDistanceToAngle(getPitch(), pos.angle));
 
-    if (speed < 0 && pos.angle < 0 && ElevatorSubsystem.getPercentElevated() <= 0.2){
+    /*if (speed < 0 && pos.angle < 0 && ElevatorSubsystem.getPercentElevated() <= 0.2){
       speed = 0;
-    }
+    }*/
 
     if (!atSetPosition())
       set(speed);
@@ -124,9 +124,9 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   }
 
   public enum ShooterPosition {
-    TRAVEL(60),
+    TRAVEL(17.5),
     AMP(-20),
-    TRAP(50),
+    TRAP(45),
     MANUAL(-1);
 
     public final double angle;
