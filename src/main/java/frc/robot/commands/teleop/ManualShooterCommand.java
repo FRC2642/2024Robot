@@ -43,7 +43,7 @@ public class ManualShooterCommand extends Command {
       shooter.setFeeder(0);
     }
     
-    shooter.setManual(mainControl.getRightY() * 0.2);
+    shooter.setManual(mainControl.getRightY() * 0.5);
     
 
   }

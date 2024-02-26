@@ -19,7 +19,7 @@ import frc.robot.utils.MathR;
 
 public class ShooterSubsystem extends SubsystemBase implements IPositionable<ShooterSubsystem.ShooterPosition>{
 
-  private PIDController tiltPID = new PIDController(0.2, 0, 0);
+  private PIDController tiltPID = new PIDController(0.05, 0, 0);
   private PIDController shooterPID = new PIDController(0.2, 0, 0);
   
   private TalonFX shooterMotor = new TalonFX(Constants.SHOOTER_SPINNER_ID);
@@ -63,7 +63,8 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   }
 
   public void set(ShooterPosition pos) {
-    double speed = tiltPID.calculate(getPitch(), MathR.getDistanceToAngle(getPitch(), pos.angle));
+    tiltPID.setSetpoint(0);
+    double speed = tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), pos.angle));
 
     /*if (speed < 0 && pos.angle < 0 && ElevatorSubsystem.getPercentElevated() <= 0.2){
       speed = 0;

@@ -22,7 +22,7 @@ public class SetShooterCommand extends Command {
   }
   @Override
   public void initialize() {
-    shooter.setSpeedLimit(0.9);
+    shooter.setSpeedLimit(0.3);
     shooter.setRampRate(0);
   }
   

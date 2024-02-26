@@ -16,6 +16,7 @@ import frc.robot.commands.auto.fullAutos.ChargeAmpN2Pc;
 import frc.robot.commands.auto.fullAutos.HPFive;
 import frc.robot.commands.auto.fullAutos.HPSixAndHalf;
 import frc.robot.commands.auto.positionable.SetIntakeCommand;
+import frc.robot.commands.auto.positionable.SetShooterCommand;
 import frc.robot.commands.teleop.ManualElevatorCommand;
 import frc.robot.commands.teleop.ManualIntakeCommand;
 import frc.robot.commands.teleop.ManualShooterCommand;
@@ -31,6 +32,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
+import frc.robot.subsystems.ShooterSubsystem.ShooterPosition;
 import frc.robot.utils.VectorR;
 
 
@@ -102,7 +104,9 @@ public class RobotContainer {
       
       //Reset Gyro D-Pad
       new POVButton(auxControl, 0).onTrue(new ResetGyroCommand(0).andThen(new ResetDisplacementCommand(new VectorR())));
-      
+      new POVButton(mainControl, 90).onTrue(new SetShooterCommand(shooter, ()->ShooterPosition.TRAVEL));
+      new POVButton(mainControl, 180).onTrue(new SetShooterCommand(shooter, ()->ShooterPosition.TRAP));
+
       //Ground Note Detection
       //new Trigger(()-> mainControl.getRightTriggerAxis() >= 0.2).onTrue(new TurnTowardsGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, mainControl));
 

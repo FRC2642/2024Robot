@@ -20,9 +20,9 @@ import frc.robot.utils.MathR;
 
 public class IntakeSubsystem extends SubsystemBase implements IPositionable<IntakeSubsystem.IntakePosition>{
 
-  private final int TILT_TOLERANCE = 5;
+  private final int TILT_TOLERANCE = 8;
 
-  private PIDController tiltPID = new PIDController(0.2, 0, 0);
+  private PIDController tiltPID = new PIDController(0.007, 0, 0);
 
   private TalonFX intakeSpinnerMotor = new TalonFX(Constants.INTAKE_SPINNER_ID);
   private static CANSparkMax intakeTiltMotor = new CANSparkMax(Constants.INTAKE_PIVOT_ID, MotorType.kBrushless);
@@ -32,8 +32,8 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   private IntakePosition currentSetPosition = IntakePosition.RETRACTED;
   private double speedLimit = 0.2;
 
-  public static final double MAX_DEGREES = 90;
-  public static final double MIN_DEGREES = 0;
+  public static final double MAX_DEGREES = 140;
+  public static final double MIN_DEGREES = -30;
 
   public IntakeSubsystem() {
     tiltEncoder = intakeTiltMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
@@ -61,9 +61,11 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   }
 
   public void set(IntakePosition pos) {
-    tiltPID.setSetpoint(pos.angle);
-    double speed = tiltPID.calculate(getPitch(), MathR.getDistanceToAngle(getPitch(), pos.angle));
+    tiltPID.setSetpoint(0);
+    double speed = -MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), pos.angle)), -1, 1);
   
+    //System.out.println(speed);
+    
     if (!atSetPosition())
       set(speed);
     else
@@ -78,6 +80,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
 
   @Override
   public boolean atSetPosition() {
+    
     return tiltPID.atSetpoint();
   }
 
@@ -105,7 +108,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   }
 
   public enum IntakePosition {
-    RETRACTED(139),
+    RETRACTED(130),
     EXTENDED(0),
     AMP(60),
     MANUAL(-1);
