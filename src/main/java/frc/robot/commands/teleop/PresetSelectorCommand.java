@@ -35,6 +35,13 @@ public class PresetSelectorCommand extends Command {
     }
     else if (mainControl.getLeftBumper()){
       RobotState.setChosenConfiguration(RobotState.RobotConfiguration.INTAKE);
+      RobotState.setRobotState(RobotState.RobotConfiguration.INTAKE);
+    }
+    else if (mainControl.getRightBumper()){
+      RobotState.setRobotState(RobotState.getChosenRobotConfiguration());
+    }
+    else if (mainControl.getPOV() == 90){
+      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.SHOOT_SPEAKER);
     }
     else{
       RobotState.setRobotState(RobotState.RobotConfiguration.TRAVEL);

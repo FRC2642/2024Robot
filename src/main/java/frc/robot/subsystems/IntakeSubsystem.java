@@ -32,8 +32,8 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   private IntakePosition currentSetPosition = IntakePosition.RETRACTED;
   private double speedLimit = 0.2;
 
-  public static final double MAX_DEGREES = 140;
-  public static final double MIN_DEGREES = -30;
+  public static final double MAX_DEGREES = 150;
+  public static final double MIN_DEGREES = -10;
 
   public IntakeSubsystem() {
     tiltEncoder = intakeTiltMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
@@ -55,16 +55,22 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   public void set(double speed) {
     currentSetPosition = IntakePosition.MANUAL;
 
-    intakeTiltMotor.set(
+    intakeTiltMotor.set(speed);
+    /*intakeTiltMotor.set(
         MathR.limitWhenReached(speed, -speedLimit, speedLimit, getPitch() <= MIN_DEGREES,
-            getPitch() >= MAX_DEGREES));
+            getPitch() >= MAX_DEGREES));*/
   }
 
   public void set(IntakePosition pos) {
     tiltPID.setSetpoint(0);
     double speed = -MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), pos.angle)), -1, 1);
-  
-    //System.out.println(speed);
+    
+    if (speed > 0 && getPitch() >= MAX_DEGREES){
+      speed = 0;
+    }
+    else if (speed < 0 && getPitch() <= MIN_DEGREES){
+      speed = 0;
+    }
     
     if (!atSetPosition())
       set(speed);
@@ -108,8 +114,9 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   }
 
   public enum IntakePosition {
-    RETRACTED(130),
+    RETRACTED(140),
     EXTENDED(0),
+    OUT_OF_THE_WAY(110),
     AMP(60),
     MANUAL(-1);
 
@@ -121,6 +128,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
 
   @Override
   public void periodic() {
+    //System.out.println(getPitch());
     
   }
 }
