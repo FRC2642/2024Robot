@@ -105,7 +105,7 @@ public class RobotPresetCommand extends Command {
     //System.out.println(RobotState.getRobotConfiguration() + " " + RobotConfiguration.INTAKE);
     
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE)){
-     
+      maxSpeed = MathR.lerp(0.25, 1.0, 0.0, 1.0, control.getLeftTriggerAxis());
       //if (!shooter.getNoteDetected()){
         intake.setIntake(0.8);
         shooter.setFeeder(0.6);
@@ -120,16 +120,18 @@ public class RobotPresetCommand extends Command {
 
       leftJoystick.setFromCartesian(control.getLeftX(), -control.getLeftY());
       leftJoystick.rotate(-90);
-      rightJoystick.setFromCartesian(-control.getRightX(), -control.getRightY());
-      rightJoystick.rotate(90);
+      rightJoystick.setFromCartesian(control.getRightX(), -control.getRightY());
+      rightJoystick.rotate(-90);
 
       leftJoystick.mult(MathR.lerp(0.25, 1.0, 0.0, 1.0, control.getLeftTriggerAxis()));
 
-      double angleToFace = /*isLocked ? lockedHeading : */rightJoystick.getAngle();
+      double angleToFace = isLocked ? lockedHeading : rightJoystick.getAngle();
 
       double turnPower = MathR.lerp(0.35, 1, 0.2, 1.0, rightJoystick.getMagnitude())  * MathR
-          .limit(TURN_KP * MathR.getDistanceToAngle(DriveSubsystem.getYawDegrees(), angleToFace), -1, 1);
+          .limit(TURN_KP * MathR.getDistanceToAngle(-DriveSubsystem.getYawDegrees(), angleToFace), -1, 1);
 
+      leftJoystick.mult(maxSpeed);
+      
       /*if (intakeLimelight.isDetection && intakeLimelight.confidence() > 0.25) drive.move(leftJoystick, MathR.limit(intakeLimelight.x * -1 * (1d/45d), -0.25, 0.25) );
       else if (leftJoystick.getMagnitude() > 0.1)*/drive.move(leftJoystick, turnPower * maxSpeed);
     }
@@ -141,13 +143,15 @@ public class RobotPresetCommand extends Command {
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER)){ 
       leftJoystick.setFromCartesian(control.getLeftX(), -control.getLeftY());
       leftJoystick.rotate(-90);
-      rightJoystick.setFromCartesian(-control.getRightX(), -control.getRightY());
-      rightJoystick.rotate(90);
+      rightJoystick.setFromCartesian(control.getRightX(), -control.getRightY());
+      rightJoystick.rotate(-90);
+
+      maxSpeed = MathR.lerp(0.25, 1.0, 0.0, 1.0, control.getLeftTriggerAxis());
 
       double turnAngle = rightJoystick.getAngle();
 
       double nonLimelightTurnPower = MathR.lerp(0.35, 1, 0.2, 1.0, rightJoystick.getMagnitude())  * MathR
-          .limit(TURN_KP * MathR.getDistanceToAngle(DriveSubsystem.getYawDegrees(), turnAngle), -1, 1);
+          .limit(TURN_KP * MathR.getDistanceToAngle(-DriveSubsystem.getYawDegrees(), turnAngle), -1, 1);
     
       //shooterLimelight.setDetectionType(DetectionType.FIDUCIAL);
 
@@ -171,6 +175,8 @@ public class RobotPresetCommand extends Command {
 
       double limelightTurnPower = MathR.limit(TURN_KP * MathR.getDistanceToAngle(0, angleToFace), -0.25, 0.25) * -1;
       
+      leftJoystick.mult(maxSpeed);
+
       if (shooterLimelight.isDetection && shooterLimelight.confidence() > 0.2) drive.move(leftJoystick, limelightTurnPower);
       else if (leftJoystick.getMagnitude() > 0.1) drive.move(leftJoystick, nonLimelightTurnPower);
     }
@@ -185,9 +191,6 @@ public class RobotPresetCommand extends Command {
       rightJoystick.rotate(-90);
 
       double yaw = DriveSubsystem.getYawDegrees();
-
-      
-      
 
       if (leftJoystick.getMagnitude() < 0.1 && rightJoystick.getMagnitude() < 0.2) {
         drive.stop();
@@ -210,8 +213,6 @@ public class RobotPresetCommand extends Command {
       
       double turnPower = MathR.lerp(0.35, 1, 0.2, 1.0, rightJoystick.getMagnitude())  * MathR
           .limit(TURN_KP * MathR.getDistanceToAngle(-yaw, angleToFace), -1, 1);
-
-      System.out.println(yaw + " " + angleToFace);
       
       leftJoystick.mult(maxSpeed);
       drive.move(leftJoystick, turnPower * maxSpeed);
