@@ -30,7 +30,7 @@ public class JoystickOrientedDriveCommand extends CommandBase {
   @Override
   public void initialize() {}
 
-  final double TURN_KP = 0.017;
+  final double TURN_KP = 0.01;//0.017;
   private boolean isLocked = false;
   private double lockedHeading = 0;
 
@@ -69,7 +69,7 @@ public class JoystickOrientedDriveCommand extends CommandBase {
       double turnPower = MathR.lerp(0.35, 1, 0.2, 1.0, rightJoystick.getMagnitude())  * MathR
           .limit(TURN_KP * MathR.getDistanceToAngle(yaw, angleToFace), -1, 1);
 
-      System.out.println(yaw + " " + angleToFace);
+      //System.out.println(yaw + " " + angleToFace);
       
       
       leftJoystick.mult(maxSpeed);

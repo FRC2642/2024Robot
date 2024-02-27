@@ -22,7 +22,7 @@ public class SetIntakeCommand extends Command {
   }
   @Override
   public void initialize() {
-    intake.setSpeedLimit(0.2);
+    intake.setSpeedLimit(0.7);
     intake.setRampRate(0);
   }
   
@@ -38,6 +38,7 @@ public class SetIntakeCommand extends Command {
 
   @Override
   public boolean isFinished() {
+    
     return intake.atSetPosition();  
   }
 }

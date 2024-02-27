@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,6 +17,7 @@ import frc.robot.commands.auto.fullAutos.ChargeAmpN2Pc;
 import frc.robot.commands.auto.fullAutos.HPFive;
 import frc.robot.commands.auto.fullAutos.HPSixAndHalf;
 import frc.robot.commands.auto.positionable.SetIntakeCommand;
+import frc.robot.commands.auto.positionable.SetShooterCommand;
 import frc.robot.commands.teleop.ManualElevatorCommand;
 import frc.robot.commands.teleop.ManualIntakeCommand;
 import frc.robot.commands.teleop.ManualShooterCommand;
@@ -31,6 +33,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
+import frc.robot.subsystems.ShooterSubsystem.ShooterPosition;
 import frc.robot.utils.VectorR;
 
 
@@ -44,7 +47,7 @@ public class RobotContainer {
   public final ShooterSubsystem shooter = new ShooterSubsystem();
   public final IntakeSubsystem intake = new IntakeSubsystem();
   public final ElevatorSubsystem elevator = new ElevatorSubsystem();
-  //public final LimelightSubsystem shooterLimelight = new LimelightSubsystem("limelight-shooter");
+  public final LimelightSubsystem shooterLimelight = new LimelightSubsystem("limelight-shooter");
   //public final LimelightSubsystem intakeLimelight = new LimelightSubsystem("limelight-intake");
 
 
@@ -91,18 +94,29 @@ public class RobotContainer {
     
     if (!DEBUG) {
       CommandScheduler.getInstance().schedule(new PresetSelectorCommand(mainControl, auxButtonBoard));
-      //CommandScheduler.getInstance().schedule(new RobotPresetCommand(drive, shooter, elevator, intake, mainControl, auxButtonBoard));
+      CommandScheduler.getInstance().schedule(new RobotPresetCommand(drive, shooter, elevator, intake, shooterLimelight, mainControl, auxButtonBoard));
       //CommandScheduler.getInstance().schedule(new RobotPresetCommand(drive, shooter, elevator, intake, intakeLimelight, intakeLimelight, mainControl, auxButtonBoard));
-      drive.setDefaultCommand(new JoystickOrientedDriveCommand(drive, auxControl));
+      //drive.setDefaultCommand(new JoystickOrientedDriveCommand(drive, auxControl));
       //shooter.setDefaultCommand(new InstantCommand());
-      elevator.setDefaultCommand(new ManualElevatorCommand(elevator, mainControl));
-      intake.setDefaultCommand(new ManualIntakeCommand(intake, mainControl));
-      shooter.setDefaultCommand(new ManualShooterCommand(shooter, mainControl));
+      //elevator.setDefaultCommand(new ManualElevatorCommand(elevator, mainControl));
+      //intake.setDefaultCommand(new ManualIntakeCommand(intake, mainControl));
+      //shooter.setDefaultCommand(new ManualShooterCommand(shooter, mainControl));
       //CommandScheduler.getInstance().schedule(new SetIntakeCommand(intake, () ->IntakePosition.RETRACTED));
       
       //Reset Gyro D-Pad
-      new POVButton(auxControl, 0).onTrue(new ResetGyroCommand(0).andThen(new ResetDisplacementCommand(new VectorR())));
+      new POVButton(mainControl, 0).onTrue(new ResetGyroCommand(0).andThen(new ResetDisplacementCommand(new VectorR())));
+      //new POVButton(mainControl, 90).onTrue(new SetShooterCommand(shooter, ()->ShooterPosition.TRAVEL));
+      //new POVButton(mainControl, 180).onTrue(new SetShooterCommand(shooter, ()->ShooterPosition.TRAP));
+      //new POVButton(mainControl, 90).onTrue(new SetIntakeCommand(intake, ()->IntakePosition.EXTENDED));
+      //new POVButton(mainControl, 180).onTrue(new SetIntakeCommand(intake, ()->IntakePosition.RETRACTED));
+       new POVButton(mainControl, 180).onTrue(new InstantCommand(()->{
+        ElevatorSubsystem.resetEncoder();
+      }));
       
+      new POVButton(mainControl, 270).onTrue(new InstantCommand(()->{
+        System.out.println("interrupt");
+      }, shooter, intake));
+
       //Ground Note Detection
       //new Trigger(()-> mainControl.getRightTriggerAxis() >= 0.2).onTrue(new TurnTowardsGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, mainControl));
 

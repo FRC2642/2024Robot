@@ -20,9 +20,9 @@ import frc.robot.utils.MathR;
 
 public class IntakeSubsystem extends SubsystemBase implements IPositionable<IntakeSubsystem.IntakePosition>{
 
-  private final int TILT_TOLERANCE = 5;
+  private final int TILT_TOLERANCE = 8;
 
-  private PIDController tiltPID = new PIDController(0.2, 0, 0);
+  private PIDController tiltPID = new PIDController(0.007, 0, 0);
 
   private TalonFX intakeSpinnerMotor = new TalonFX(Constants.INTAKE_SPINNER_ID);
   private static CANSparkMax intakeTiltMotor = new CANSparkMax(Constants.INTAKE_PIVOT_ID, MotorType.kBrushless);
@@ -32,8 +32,8 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   private IntakePosition currentSetPosition = IntakePosition.RETRACTED;
   private double speedLimit = 0.2;
 
-  public static final double MAX_DEGREES = 90;
-  public static final double MIN_DEGREES = 0;
+  public static final double MAX_DEGREES = 150;
+  public static final double MIN_DEGREES = -10;
 
   public IntakeSubsystem() {
     tiltEncoder = intakeTiltMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
@@ -55,15 +55,23 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   public void set(double speed) {
     currentSetPosition = IntakePosition.MANUAL;
 
-    intakeTiltMotor.set(
+    intakeTiltMotor.set(speed);
+    /*intakeTiltMotor.set(
         MathR.limitWhenReached(speed, -speedLimit, speedLimit, getPitch() <= MIN_DEGREES,
-            getPitch() >= MAX_DEGREES));
+            getPitch() >= MAX_DEGREES));*/
   }
 
   public void set(IntakePosition pos) {
-    tiltPID.setSetpoint(pos.angle);
-    double speed = tiltPID.calculate(getPitch(), MathR.getDistanceToAngle(getPitch(), pos.angle));
-  
+    tiltPID.setSetpoint(0);
+    double speed = -MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), pos.angle)), -1, 1);
+    
+    if (speed > 0 && getPitch() >= MAX_DEGREES){
+      speed = 0;
+    }
+    else if (speed < 0 && getPitch() <= MIN_DEGREES){
+      speed = 0;
+    }
+    
     if (!atSetPosition())
       set(speed);
     else
@@ -78,6 +86,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
 
   @Override
   public boolean atSetPosition() {
+    
     return tiltPID.atSetpoint();
   }
 
@@ -105,8 +114,9 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   }
 
   public enum IntakePosition {
-    RETRACTED(139),
+    RETRACTED(140),
     EXTENDED(0),
+    OUT_OF_THE_WAY(110),
     AMP(60),
     MANUAL(-1);
 
@@ -118,6 +128,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
 
   @Override
   public void periodic() {
+    //System.out.println(getPitch());
     
   }
 }

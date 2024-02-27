@@ -19,7 +19,7 @@ import frc.robot.utils.MathR;
 
 public class ShooterSubsystem extends SubsystemBase implements IPositionable<ShooterSubsystem.ShooterPosition>{
 
-  private PIDController tiltPID = new PIDController(0.2, 0, 0);
+  private PIDController tiltPID = new PIDController(0.02, 0, 0);
   private PIDController shooterPID = new PIDController(0.2, 0, 0);
   
   private TalonFX shooterMotor = new TalonFX(Constants.SHOOTER_SPINNER_ID);
@@ -33,8 +33,8 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   private ShooterPosition currentSetPosition = ShooterPosition.TRAVEL;
   private double speedLimit = 0.2;
 
-  public static final double MAX_DEGREES = 90;
-  public static final double MIN_DEGREES = -40;
+  public static final double MAX_DEGREES = 70;
+  public static final double MIN_DEGREES = -35;
   private final int TILT_TOLERANCE = 4;
   
   public ShooterSubsystem() {
@@ -57,18 +57,27 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   public void set(double speed) {
     currentSetPosition = ShooterPosition.MANUAL;
 
-    shooterTiltMotor.set(
+    shooterTiltMotor.set(speed);
+    /*shooterTiltMotor.set(
         MathR.limitWhenReached(speed, -speedLimit, speedLimit, getPitch() <= MIN_DEGREES,
-            getPitch() >= MAX_DEGREES));
+            getPitch() >= MAX_DEGREES));*/
   }
 
   public void set(ShooterPosition pos) {
-    double speed = tiltPID.calculate(getPitch(), MathR.getDistanceToAngle(getPitch(), pos.angle));
-
+    tiltPID.setSetpoint(0);
+    double speed = tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), pos.angle));
+    
     /*if (speed < 0 && pos.angle < 0 && ElevatorSubsystem.getPercentElevated() <= 0.2){
       speed = 0;
     }*/
 
+    if (speed > 0 && getPitch() >= MAX_DEGREES){
+      speed = 0;
+    }
+    else if (speed < 0 && getPitch() <= MIN_DEGREES){
+      speed = 0;
+    }
+    
     if (!atSetPosition())
       set(speed);
     else
@@ -86,7 +95,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   }
 
   public void setShooter(double speed){
-    shooterMotor.set(speed);
+    shooterMotor.set(-speed);
   }
 
   public void setShooterRPM(){
@@ -126,7 +135,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   public enum ShooterPosition {
     TRAVEL(17.5),
     AMP(-20),
-    TRAP(45),
+    TRAP(50),
     MANUAL(-1);
 
     public final double angle;
