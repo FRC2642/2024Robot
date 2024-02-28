@@ -17,8 +17,8 @@ public class LimelightSubsystem extends SubsystemBase {
   private final String networkTableName;
 
   public enum DetectionType {
-    NOTE(0),
-    FIDUCIAL(1),
+    NOTE(1),
+    FIDUCIAL(0),
     NONE(-1);
 
     public final int pipeline;
@@ -84,7 +84,7 @@ public class LimelightSubsystem extends SubsystemBase {
     jitterDetectorY.reset();
   }
 
-  private boolean isInitialized() {
+  public boolean isInitialized() {
     return limelightTable != null;
   }
 
@@ -151,6 +151,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
     }
 
+    
     return DetectionError.SUCCESS;
   }
 
@@ -184,6 +185,7 @@ public class LimelightSubsystem extends SubsystemBase {
   public void periodic() {
     if (isInitialized()) {
       detectionError = update();
+      
     } else {
       initialize();
       System.out.println("LIMELIGHT---------Initializing: [" + limelightTable + "] ----------- Error: " + detectionError.toString());

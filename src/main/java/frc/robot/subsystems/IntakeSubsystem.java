@@ -20,9 +20,9 @@ import frc.robot.utils.MathR;
 
 public class IntakeSubsystem extends SubsystemBase implements IPositionable<IntakeSubsystem.IntakePosition>{
 
-  private final int TILT_TOLERANCE = 8;
+  private final int TILT_TOLERANCE = 6;
 
-  private PIDController tiltPID = new PIDController(0.007, 0, 0);
+  private PIDController tiltPID = new PIDController(0.004, 0, 0);
 
   private TalonFX intakeSpinnerMotor = new TalonFX(Constants.INTAKE_SPINNER_ID);
   private static CANSparkMax intakeTiltMotor = new CANSparkMax(Constants.INTAKE_PIVOT_ID, MotorType.kBrushless);

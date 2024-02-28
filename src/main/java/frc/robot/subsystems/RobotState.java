@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorPosition;
 import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
 import frc.robot.subsystems.ShooterSubsystem.ShooterPosition;
+import frc.robot.subsystems.ShooterSubsystem.ShooterSpeed;
 
 /** Add your docs here. */
 public class RobotState {
@@ -30,12 +31,13 @@ public class RobotState {
     }
 
     public enum RobotConfiguration {
-        SHOOT_SPEAKER(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.MANUAL),
-        SHOOT_AMP(ElevatorPosition.AMP, IntakePosition.AMP, ShooterPosition.AMP),
-        SHOOT_TRAP(ElevatorPosition.TRAP, IntakePosition.AMP, ShooterPosition.TRAP),
-        INTAKE(ElevatorPosition.TRAVEL, IntakePosition.EXTENDED, ShooterPosition.TRAVEL),
-        TRAVEL(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.TRAVEL);
+        SHOOT_SPEAKER(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.MANUAL, ShooterSpeed.SPEAKER),
+        SHOOT_AMP(ElevatorPosition.AMP, IntakePosition.OUT_OF_THE_WAY, ShooterPosition.AMP, ShooterSpeed.AMP),
+        SHOOT_TRAP(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.TRAP, ShooterSpeed.TRAP),
+        INTAKE(ElevatorPosition.TRAVEL, IntakePosition.EXTENDED, ShooterPosition.TRAVEL, ShooterSpeed.TRAVEL),
+        TRAVEL(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.TRAVEL, ShooterSpeed.TRAVEL);
 
+        public final ShooterSpeed shooterSpeed;
         public final ShooterPosition shooterPos;
         public final ElevatorPosition elevatorPos;
         public final IntakePosition intakePos;
@@ -43,7 +45,9 @@ public class RobotState {
         private RobotConfiguration( 
         ElevatorPosition elevatorPos,
         IntakePosition intakePos,
-        ShooterPosition shooterPos) {
+        ShooterPosition shooterPos,
+        ShooterSpeed shooterSpeed) {
+        this.shooterSpeed = shooterSpeed;
         this.shooterPos = shooterPos;
         this.elevatorPos = elevatorPos;
         this.intakePos = intakePos;

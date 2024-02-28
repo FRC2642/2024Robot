@@ -38,9 +38,8 @@ import frc.robot.utils.VectorR;
 
 
 public class RobotContainer {
-  private final PowerDistribution pdp = new PowerDistribution();
   public final XboxController mainControl = new XboxController(Constants.DRIVE_CONTROL_PORT);
-  public final XboxController auxControl = new XboxController(1);
+  //public final XboxController auxControl = new XboxController(1);
   public final Joystick auxButtonBoard = new Joystick(Constants.AUX_BUTTON_BOARD_PORT);
 
   public final DriveSubsystem drive = new DriveSubsystem();
@@ -57,7 +56,7 @@ public class RobotContainer {
 
 
   public RobotContainer() {
-    pdp.clearStickyFaults();
+    
   
     SmartDashboard.putNumber("DEBUG MODE", 0);
 
