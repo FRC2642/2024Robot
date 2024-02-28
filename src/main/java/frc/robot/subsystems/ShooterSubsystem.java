@@ -31,6 +31,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   private DigitalInput beamBreak = new DigitalInput(Constants.BEAM_BREAK_CHANNEL);
 
   private ShooterPosition currentSetPosition = ShooterPosition.TRAVEL;
+  private ShooterSpeed currentSetSpeedPosition = ShooterSpeed.TRAVEL;
   private double speedLimit = 0.2;
 
   public static final double MAX_DEGREES = 70;
@@ -51,7 +52,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   }
 
   public void tiltToAngle(double degrees){
-    shooterTiltMotor.set(MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), degrees), 0), -1, 1));
+    shooterTiltMotor.set(MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), degrees), 0), -0.2, 0.2));
   }
 
   public void set(double speed) {
@@ -86,6 +87,18 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
     currentSetPosition = pos;
   }
 
+  public void set(ShooterSpeed speedPreset) {
+    
+    double motorPower = tiltPID.calculate(shooterMotor.getVelocity().getValueAsDouble(), speedPreset.rpm);
+    
+    if (!atSetPosition())
+      shooterMotor.set(motorPower);
+    else
+      shooterMotor.set(0);
+
+    currentSetSpeedPosition = speedPreset;
+  }
+
   public void setManual(double speed) {
     shooterTiltMotor.set(speed);
   }
@@ -99,7 +112,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   }
 
   public void setShooterRPM(){
-    double currentRPM = shooterMotor.getVelocity().getValue();
+    double currentRPM = shooterMotor.getVelocity().getValueAsDouble();
     setShooter(shooterPID.calculate(currentRPM, Constants.SHOOTER_SET_RPM));
   }
 
@@ -133,7 +146,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   }
 
   public enum ShooterPosition {
-    TRAVEL(17.5),
+    TRAVEL(19),
     AMP(-20),
     TRAP(50),
     MANUAL(-1);
@@ -141,6 +154,18 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
     public final double angle;
     private ShooterPosition(double angle) {
       this.angle = angle;
+    }
+  }
+
+  public enum ShooterSpeed {
+    TRAVEL(0),
+    AMP(200),
+    TRAP(300),
+    SPEAKER(510);
+
+    public final double rpm;
+    private ShooterSpeed(double rpm) {
+      this.rpm = rpm;
     }
   }
 

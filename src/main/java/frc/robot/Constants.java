@@ -18,7 +18,7 @@ public final class Constants {
 
     // Controllers
     public static final int DRIVE_CONTROL_PORT = 0;
-    public static final int AUX_BUTTON_BOARD_PORT = 2;
+    public static final int AUX_BUTTON_BOARD_PORT = 1;
 
     // Swerve
     public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(1, 2, 11, 137.2, 1, -1, ModuleLocation.FRONT_RIGHT);
@@ -44,14 +44,15 @@ public final class Constants {
     // Field Dimensions
     public static final double FIELD_X = 54d + 1d/12d;
     public static final double FIELD_Y = 26d + 7d/12d;
+    public static final double SPEAKER_TARGET_HEIGHT = 7.4; //7.83333
 
     // Various Stats
     public static final double SHOOTER_VELOCITY = 7; //NOTE SHOOT FEET PER SECOND //CHANGE
-    public static final double SHOOTER_SET_RPM = 4000; // CHANGE
-    public static final double SPEAKER_TARGET_HEIGHT = 7.8333;
+    public static final double SHOOTER_SET_RPM = 510;
     public static final double SHOOTER_TILT_ENCODER_MAX_VALUE = 1;
     public static final double SHOOTER_TILT_ENCODER_MIN_VALUE = 0;
     public static final double SHOOTER_TILT_ENCODER_OFFSET = 8.8;
+    public static final double SHOOT_ANGLE_OFFSET = 0;
     
     public static final double ELEVATOR_ENCODER_WHEN_AT_TOP = 47.415;
     public static final double ELEVATOR_ENCODER_OFFSET = 0; //CHANGE

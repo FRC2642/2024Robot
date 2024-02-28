@@ -7,6 +7,7 @@ package frc.robot.commands.teleop;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.RobotState;
 
 public class PresetSelectorCommand extends Command {
@@ -24,24 +25,20 @@ public class PresetSelectorCommand extends Command {
 
   @Override
   public void execute() {
-    if (auxButtonBoard.getRawButtonPressed(0)){
+    if (auxButtonBoard.getRawButtonPressed(11)){
       RobotState.setChosenConfiguration(RobotState.RobotConfiguration.SHOOT_SPEAKER);
     }
-    else if (auxButtonBoard.getRawButtonPressed(1)){
+    else if (auxButtonBoard.getRawButtonPressed(12)){
       RobotState.setChosenConfiguration(RobotState.RobotConfiguration.SHOOT_AMP);
     }
-    else if (auxButtonBoard.getRawButtonPressed(2)){
+    else if (auxButtonBoard.getRawButtonPressed(10)){
       RobotState.setChosenConfiguration(RobotState.RobotConfiguration.SHOOT_TRAP);
     }
     else if (mainControl.getLeftBumper()){
-      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.INTAKE);
       RobotState.setRobotState(RobotState.RobotConfiguration.INTAKE);
     }
     else if (mainControl.getRightBumper()){
       RobotState.setRobotState(RobotState.getChosenRobotConfiguration());
-    }
-    else if (mainControl.getPOV() == 90){
-      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.SHOOT_SPEAKER);
     }
     else{
       RobotState.setRobotState(RobotState.RobotConfiguration.TRAVEL);
