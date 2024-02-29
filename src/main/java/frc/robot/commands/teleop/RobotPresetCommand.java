@@ -117,11 +117,14 @@ public class RobotPresetCommand extends Command {
     //Set subsystem presets
     intake.set(RobotState.getRobotConfiguration().intakePos);
     
-    shooter.set(RobotState.getRobotConfiguration().shooterSpeed);
+    if (!RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL)){
+      shooter.set(RobotState.getRobotConfiguration().shooterSpeed);
+    }
+    
     
     //elevator.set(RobotState.getRobotConfiguration().elevatorPos);
     if (control.getRightBumper()){
-      if (!RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.SUBWOOFER) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.POST) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.FAR_POST)){
+      if (!(RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER) )){
         shooter.set(RobotState.getChosenRobotConfiguration().shooterPos);
       }
     }
@@ -134,6 +137,7 @@ public class RobotPresetCommand extends Command {
     if (!(RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE) || RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL))){
       
       if (control.getRightTriggerAxis() >= 0.4){
+      
         shooter.setFeeder(1);
       } 
       else{
@@ -142,7 +146,7 @@ public class RobotPresetCommand extends Command {
     }
     else{
       shooter.setShooter(0);
-      if (!RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.SUBWOOFER) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.POST) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.FAR_POST)){
+      if (RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL)){
         shooter.setFeeder(0);
       }
     }
@@ -150,7 +154,7 @@ public class RobotPresetCommand extends Command {
     //INTAKE PRESET
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE)){
       //if (!shooter.getNoteDetected()){
-        intake.setIntake(0.8);
+        intake.setIntake(0.9);
         shooter.setFeeder(0.6);
       /*} 
       else {
@@ -161,7 +165,8 @@ public class RobotPresetCommand extends Command {
     }
     else{
       intake.setIntake(0);
-      if (!RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.SUBWOOFER) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.POST) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.FAR_POST)){
+      
+      if (RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL)){
         shooter.setFeeder(0);
       }
       
@@ -176,7 +181,7 @@ public class RobotPresetCommand extends Command {
       double angleToSpeaker = Math.toDegrees(Math.atan2(Constants.SPEAKER_TARGET_HEIGHT - elevator.getHeight() - Constants.ELEVATOR_MECHANISM_HEIGHT - Math.sin(shooter.getPitch() - ShooterPosition.TRAVEL.angle) * 0.75, distanceToSpeaker));
       
 
-      System.out.println(RobotState.getRobotConfiguration().shooterAngle.angle);
+      //System.out.println(RobotState.getRobotConfiguration().shooterAngle.angle);
       
       shooter.tiltToAngle(RobotState.getRobotConfiguration().shooterAngle.angle);
       //System.out.println(distanceToSpeaker);
@@ -229,7 +234,7 @@ public class RobotPresetCommand extends Command {
       shooter.setFeeder(-0.4);
     }
     if (control.getAButton()){
-      intake.set(-1);
+      intake.setIntake(-1);
     }
     /*if (control.getRightTriggerAxis() >= 0.2){
       shooter.setFeeder(1);

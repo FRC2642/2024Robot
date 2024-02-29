@@ -58,7 +58,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   public void set(double speed) {
     currentSetPosition = ShooterPosition.MANUAL;
 
-    if (ElevatorSubsystem.getPercentElevated() <= 0.4 && speed <= 0 && getPitch() <= 25){
+    if (ElevatorSubsystem.getPercentElevated() <= 0.4 && speed >= 0 && getPitch() <= 18){
       speed = 0;
     }
 
@@ -70,12 +70,14 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
 
   public void set(ShooterPosition pos) {
     tiltPID.setSetpoint(0);
-    double speed = tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), pos.angle));
+    double speed = tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), pos.angle)) * speedLimit;
     
     /*if (speed < 0 && pos.angle < 0 && ElevatorSubsystem.getPercentElevated() <= 0.2){
       speed = 0;
     }*/
 
+    //System.out.println(speed);
+    
     if (speed > 0 && getPitch() >= MAX_DEGREES){
       speed = 0;
     }
@@ -94,6 +96,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   public void set(ShooterSpeed speedPreset) {
     
     double motorPower = MathR.limit(tiltPID.calculate(shooterMotor.getVelocity().getValueAsDouble(), speedPreset.rpm), -1, 1);
+    
     
     if (!atSetPosition())
       shooterMotor.set(motorPower);
@@ -152,7 +155,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   public enum ShooterPosition {
     TRAVEL(19),
     AMP(-20),
-    TRAP(40),
+    TRAP(51),
     MANUAL(-1);
 
     public final double angle;
@@ -163,9 +166,9 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
 
   public enum ShooterSpeed {
     TRAVEL(0),
-    AMP(-30),
-    TRAP(-40),
-    SPEAKER(-120);
+    AMP(-80),
+    TRAP(-90),
+    SPEAKER(-140);
 
     public final double rpm;
     private ShooterSpeed(double rpm) {
@@ -175,8 +178,8 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
 
   public enum ShooterAngle {
     SUBWOOFER(50),
-    POST(30),
-    FAR_POST(25),
+    POST(28),
+    FAR_POST(22),
     NONE(-1);
 
     public final double angle;
