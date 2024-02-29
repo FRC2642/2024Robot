@@ -28,19 +28,21 @@ public class ManualIntakeCommand extends Command {
 
   @Override
   public void execute() {
+    intake.setIntake(0);
+    intake.setManual(0);
+    
     if(mainControl.getLeftBumper()){
       intake.setIntake(0.6);
-    }
-    else{
-      intake.setIntake(0);
     }
     if (mainControl.getLeftTriggerAxis() >= 0.1){
       intake.setIntake(-1);
     }
-
-    intake.setManual(-mainControl.getLeftY() * 0.2);
-
-    
+    if (mainControl.getPOV() == 270){
+      intake.setManual(-0.4);
+    }
+    else if (mainControl.getPOV() == 90){
+      intake.setManual(0.4);
+    }
   }
 
   @Override

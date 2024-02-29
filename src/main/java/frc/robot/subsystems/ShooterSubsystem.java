@@ -58,6 +58,10 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   public void set(double speed) {
     currentSetPosition = ShooterPosition.MANUAL;
 
+    if (ElevatorSubsystem.getPercentElevated() <= 0.4 && speed <= 0 && getPitch() <= 25){
+      speed = 0;
+    }
+
     shooterTiltMotor.set(speed);
     /*shooterTiltMotor.set(
         MathR.limitWhenReached(speed, -speedLimit, speedLimit, getPitch() <= MIN_DEGREES,
@@ -89,7 +93,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
 
   public void set(ShooterSpeed speedPreset) {
     
-    double motorPower = tiltPID.calculate(shooterMotor.getVelocity().getValueAsDouble(), speedPreset.rpm);
+    double motorPower = MathR.limit(tiltPID.calculate(shooterMotor.getVelocity().getValueAsDouble(), speedPreset.rpm), -1, 1);
     
     if (!atSetPosition())
       shooterMotor.set(motorPower);
@@ -100,7 +104,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   }
 
   public void setManual(double speed) {
-    shooterTiltMotor.set(speed);
+    shooterTiltMotor.set(-speed);
   }
 
   public void setFeeder(double speed){
@@ -148,7 +152,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   public enum ShooterPosition {
     TRAVEL(19),
     AMP(-20),
-    TRAP(50),
+    TRAP(40),
     MANUAL(-1);
 
     public final double angle;
@@ -159,9 +163,9 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
 
   public enum ShooterSpeed {
     TRAVEL(0),
-    AMP(200),
-    TRAP(300),
-    SPEAKER(510);
+    AMP(-30),
+    TRAP(-40),
+    SPEAKER(-120);
 
     public final double rpm;
     private ShooterSpeed(double rpm) {
@@ -169,6 +173,21 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
     }
   }
 
+  public enum ShooterAngle {
+    SUBWOOFER(50),
+    POST(30),
+    FAR_POST(25),
+    NONE(-1);
+
+    public final double angle;
+    private ShooterAngle(double angle) {
+      this.angle = angle;
+    }
+  }
+
   @Override
-  public void periodic() {}
+  public void periodic() {
+    //System.out.println("speed: "+shooterMotor.getVelocity().getValueAsDouble());
+    
+  }
 }

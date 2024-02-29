@@ -10,6 +10,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorPosition;
 import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
+import frc.robot.subsystems.RobotState.RobotConfiguration;
 import frc.robot.subsystems.ShooterSubsystem.ShooterPosition;
 
 public class SetRobotConfigurationCommand extends ParallelCommandGroup {
@@ -26,25 +27,6 @@ public class SetRobotConfigurationCommand extends ParallelCommandGroup {
     
   }
 
-  public enum RobotConfiguration {
-    SHOOT_SPEAKER(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.MANUAL),
-    SHOOT_AMP(ElevatorPosition.AMP, IntakePosition.RETRACTED, ShooterPosition.AMP),
-    SHOOT_TRAP(ElevatorPosition.TRAP, IntakePosition.RETRACTED, ShooterPosition.TRAP),
-    INTAKE(ElevatorPosition.TRAVEL, IntakePosition.EXTENDED, ShooterPosition.TRAVEL),
-    TRAVEL(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.TRAVEL);
+  
 
-    public final ShooterPosition shooterPos;
-    public final ElevatorPosition elevatorPos;
-    public final IntakePosition intakePos;
-    
-    private RobotConfiguration( 
-      ElevatorPosition elevatorPos,
-      IntakePosition intakePos,
-      ShooterPosition shooterPos) {
-      this.shooterPos = shooterPos;
-      this.elevatorPos = elevatorPos;
-      this.intakePos = intakePos;
-    }
-
-  }
 }
