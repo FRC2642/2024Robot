@@ -23,7 +23,6 @@ public class SetIntakeCommand extends Command {
   @Override
   public void initialize() {
     intake.setSpeedLimit(0.7);
-    intake.setRampRate(0);
   }
   
   @Override

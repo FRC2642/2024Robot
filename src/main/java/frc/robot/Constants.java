@@ -12,7 +12,7 @@ import frc.robot.subsystems.swerve.SwerveModules.ModuleLocation;
 public final class Constants {
 
     // Ratios
-    public static final double FEET_PER_DISPLACEMENT = 0.1248804253858982; //CHANGE
+    public static final double FEET_PER_DISPLACEMENT = 0.15462531;
     public static final double MODULE_ANGLE_KP = -0.00524;
     public static final double FOOT_PER_METER = 3.28084;
 
@@ -24,7 +24,7 @@ public final class Constants {
     public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(1, 2, 11, 137.2, 1, -1, ModuleLocation.FRONT_RIGHT);
     public static final SwerveModuleInfo FRONT_LEFT = new SwerveModuleInfo(3, 4, 12,233.9, 1, 1, ModuleLocation.FRONT_LEFT);
     public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(5, 6, 13, 136.1, -1, -1, ModuleLocation.BACK_RIGHT);
-    public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(7, 8, 14, 48, -1, 1, ModuleLocation.BACK_LEFT);
+    public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(7, 8, 14, 53.36, -1, 1, ModuleLocation.BACK_LEFT);
 
     // Shooter
     public static final int SHOOTER_SPINNER_ID = 21;
@@ -52,16 +52,16 @@ public final class Constants {
     public static final double SHOOTER_TILT_ENCODER_MAX_VALUE = 1;
     public static final double SHOOTER_TILT_ENCODER_MIN_VALUE = 0;
     public static final double SHOOTER_TILT_ENCODER_OFFSET = 8.8;
-    public static final double SHOOT_ANGLE_OFFSET = 0;
+    public static final double SHOOTER_STANDARD_HEIGHT = 0.458333;
     
-    public static final double ELEVATOR_ENCODER_WHEN_AT_TOP = 47.415;
+    public static final double ELEVATOR_ENCODER_WHEN_AT_TOP = 51450;
     public static final double ELEVATOR_ENCODER_OFFSET = 0; //CHANGE
     public static final double ELEVATOR_MAX_HEIGHT_FEET = 1.75;
     public static final double ELEVATOR_MECHANISM_HEIGHT = 0.39583333;
 
     public static final double INTAKE_TILT_ENCODER_MAX_VALUE = 1;
     public static final double INTAKE_TILT_ENCODER_MIN_VALUE = 0;
-    public static final double INTAKE_TILT_ENCODER_OFFSET = 88;//87.8;
+    public static final double INTAKE_TILT_ENCODER_OFFSET = 90;//87.8;
 
     public static final int BEAM_BREAK_CHANNEL = 3; //CHANGE
 

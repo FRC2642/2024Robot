@@ -22,7 +22,7 @@ public class SetElevatorCommand extends Command {
   }
   @Override
   public void initialize() {
-    elevator.setSpeedLimit(0.5);
+    elevator.setSpeedLimit(0.4);
   }
   
   @Override

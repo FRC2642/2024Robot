@@ -22,7 +22,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
 
   private final int TILT_TOLERANCE = 6;
 
-  private PIDController tiltPID = new PIDController(0.004, 0, 0);
+  private PIDController tiltPID = new PIDController(0.005, 0, 0);
 
   private TalonFX intakeSpinnerMotor = new TalonFX(Constants.INTAKE_SPINNER_ID);
   private static CANSparkMax intakeTiltMotor = new CANSparkMax(Constants.INTAKE_PIVOT_ID, MotorType.kBrushless);
@@ -86,7 +86,6 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
 
   @Override
   public boolean atSetPosition() {
-    
     return tiltPID.atSetpoint();
   }
 
@@ -105,19 +104,11 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
     return speedLimit;
   }
 
-  public void setRampRate(double rampRate) {
-    intakeTiltMotor.setOpenLoopRampRate(rampRate);
-  }
-
-  public double getRampRate() {
-    return intakeTiltMotor.getOpenLoopRampRate();
-  }
-
   public enum IntakePosition {
-    RETRACTED(140),
+    RETRACTED(135),
     EXTENDED(0),
     OUT_OF_THE_WAY(110),
-    AMP(60),
+    AMP(100),
     MANUAL(-1);
 
     public final double angle;
@@ -127,8 +118,5 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   }
 
   @Override
-  public void periodic() {
-    //System.out.println(getPitch());
-    
-  }
+  public void periodic() {}
 }

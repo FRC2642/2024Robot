@@ -40,6 +40,15 @@ public class PresetSelectorCommand extends Command {
     else if (mainControl.getRightBumper()){
       RobotState.setRobotState(RobotState.getChosenRobotConfiguration());
     }
+    else if (auxButtonBoard.getRawButton(9)){
+      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.SUBWOOFER);
+    }
+    else if (auxButtonBoard.getRawButton(8)){
+      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.POST);
+    }
+    else if (auxButtonBoard.getRawButton(7)){
+      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.FAR_POST);
+    }
     else{
       RobotState.setRobotState(RobotState.RobotConfiguration.TRAVEL);
     }

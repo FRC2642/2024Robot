@@ -19,6 +19,8 @@ import frc.robot.subsystems.LimelightSubsystem.DetectionType;
 import frc.robot.utils.MathR;
 import frc.robot.utils.VectorR;
 import frc.robot.subsystems.RobotState.RobotConfiguration;
+import frc.robot.subsystems.ShooterSubsystem.ShooterAngle;
+import frc.robot.subsystems.ShooterSubsystem.ShooterPosition;
 
 public class RobotPresetCommand extends Command {
   /** Creates a new RobotPresetCommand. */
@@ -36,6 +38,7 @@ public class RobotPresetCommand extends Command {
   private double maxSpeed = 0.25;
   private boolean isLocked = false;
   private double lockedHeading = 0;
+  private boolean stopped = false;
   
 
   public RobotPresetCommand(DriveSubsystem drive, ShooterSubsystem shooter, ElevatorSubsystem elevator, IntakeSubsystem intake, LimelightSubsystem shooterLimelight, XboxController control, Joystick auxButtonBoard) {
@@ -52,15 +55,15 @@ public class RobotPresetCommand extends Command {
   @Override
   public void initialize() {
     shooter.setSpeedLimit(0.5);
-    shooter.setRampRate(0);
     elevator.setSpeedLimit(0.6);
     intake.setSpeedLimit(0.7);
-    intake.setRampRate(0);
-    RobotState.setChosenConfiguration(RobotConfiguration.SHOOT_SPEAKER);
+    RobotState.setChosenConfiguration(RobotConfiguration.SUBWOOFER);
   }
 
   @Override
   public void execute() {
+    
+    
     ///////////////////////////DRIVE///////////////////////////////
     maxSpeed = MathR.lerp(0.25, 1.0, 0.0, 1.0, control.getLeftTriggerAxis());
     leftJoystick.setFromCartesian(control.getLeftX(), -control.getLeftY());
@@ -68,22 +71,32 @@ public class RobotPresetCommand extends Command {
     rightJoystick.setFromCartesian(control.getRightX(), -control.getRightY());
     rightJoystick.rotate(-90);
 
-    if (leftJoystick.getMagnitude() < 0.1 && rightJoystick.getMagnitude() < 0.2) {
+    
+    if (leftJoystick.getMagnitude() < 0.2 && rightJoystick.getMagnitude() < 0.2) {
+        stopped = true;
+      
         drive.stop();
         isLocked = false;
-        return;
+        leftJoystick.setFromCartesian(0, 0);
+        rightJoystick.setFromCartesian(0, 0);
       }
-    else if (leftJoystick.getMagnitude() > 0.1 && rightJoystick.getMagnitude() < 0.2) {
+    else if (leftJoystick.getMagnitude() > 0.2 && rightJoystick.getMagnitude() < 0.2) {
+      stopped = false;
       if (!isLocked) {
         lockedHeading = DriveSubsystem.getYawDegrees();
         isLocked = true;
+        rightJoystick.setFromCartesian(0, 0);
       }
     } 
-    else if (leftJoystick.getMagnitude() < 0.1 && rightJoystick.getMagnitude() > 0.2) {
+    else if (leftJoystick.getMagnitude() < 0.2 && rightJoystick.getMagnitude() > 0.2) {
+      stopped = false;
       isLocked = false;
       leftJoystick.setFromCartesian(0.0, 0.0);
     }
-    else isLocked = false;
+    else {
+      isLocked = false;
+      stopped = false;
+    }
 
     double angleToFace = isLocked ? lockedHeading : rightJoystick.getAngle();
       
@@ -92,16 +105,23 @@ public class RobotPresetCommand extends Command {
     
     leftJoystick.mult(maxSpeed);
     
-    drive.move(leftJoystick, turnPower * maxSpeed);
+    if (!stopped){
+      drive.move(leftJoystick, turnPower * maxSpeed);
+    }
+    
+    
     ////////////////////////////////////////////////////////
 
 
+    
     //Set subsystem presets
     intake.set(RobotState.getRobotConfiguration().intakePos);
+    
     shooter.set(RobotState.getRobotConfiguration().shooterSpeed);
+    
     //elevator.set(RobotState.getRobotConfiguration().elevatorPos);
     if (control.getRightBumper()){
-      if (!RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER)){
+      if (!RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.SUBWOOFER) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.POST) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.FAR_POST)){
         shooter.set(RobotState.getChosenRobotConfiguration().shooterPos);
       }
     }
@@ -112,7 +132,6 @@ public class RobotPresetCommand extends Command {
     
     //SET SHOOTER FOR REQUIRED PRESETS
     if (!(RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE) || RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL))){
-      shooter.setShooterRPM();
       
       if (control.getRightTriggerAxis() >= 0.4){
         shooter.setFeeder(1);
@@ -123,7 +142,9 @@ public class RobotPresetCommand extends Command {
     }
     else{
       shooter.setShooter(0);
-      shooter.setFeeder(0);
+      if (!RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.SUBWOOFER) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.POST) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.FAR_POST)){
+        shooter.setFeeder(0);
+      }
     }
 
     //INTAKE PRESET
@@ -140,46 +161,61 @@ public class RobotPresetCommand extends Command {
     }
     else{
       intake.setIntake(0);
-      shooter.setFeeder(0);
+      if (!RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.SUBWOOFER) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.POST) || !RobotState.getRobotConfiguration().equals(RobotConfiguration.FAR_POST)){
+        shooter.setFeeder(0);
+      }
+      
     }
 
     //SPEAKER PRESET
-    if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER)){ 
-      shooterLimelight.setDetectionType(DetectionType.FIDUCIAL);
+    if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SUBWOOFER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.POST) || RobotState.getRobotConfiguration().equals(RobotConfiguration.FAR_POST)){ 
+      //shooterLimelight.setDetectionType(DetectionType.FIDUCIAL);
       
       //Limelight tracking
       double distanceToSpeaker = Math.sqrt(Math.pow(4.5416 - shooterLimelight.botposeX, 2) + Math.pow(shooterLimelight.botposeY, 2));
-      double angleToSpeaker = Math.toDegrees(Math.atan2(Constants.SPEAKER_TARGET_HEIGHT - elevator.getHeight(), distanceToSpeaker)) - Constants.SHOOT_ANGLE_OFFSET;
+      double angleToSpeaker = Math.toDegrees(Math.atan2(Constants.SPEAKER_TARGET_HEIGHT - elevator.getHeight() - Constants.ELEVATOR_MECHANISM_HEIGHT - Math.sin(shooter.getPitch() - ShooterPosition.TRAVEL.angle) * 0.75, distanceToSpeaker));
       
-      //System.out.println(angleToSpeaker);
+
+      System.out.println(RobotState.getRobotConfiguration().shooterAngle.angle);
       
-      if (shooterLimelight.isDetection && shooterLimelight.confidence() > 0.1){
-        shooter.tiltToAngle(angleToSpeaker);
+      shooter.tiltToAngle(RobotState.getRobotConfiguration().shooterAngle.angle);
+      //System.out.println(distanceToSpeaker);
+      
+      /*if (shooterLimelight.isDetection && shooterLimelight.confidence() > 0.1){
+        shooter.tiltToAngle(angleToSpeaker+10);
       }
       else{
         shooter.setManual(0);
-      }
+      }*/
+
       
 
       VectorR direction = DriveSubsystem.getRelativeVelocity();
       direction.div(DriveSubsystem.getRelativeVelocity().getMagnitude());
       
-      double adjustedAngle = shooterLimelight.x /*+ 90 - Math.toDegrees(Math.atan2(Constants.SHOOTER_VELOCITY - DriveSubsystem.getRelativeVelocity().getY(), DriveSubsystem.getRelativeVelocity().getX() + 0.000001))*/;
+      double adjustedAngle = shooterLimelight.x /*+ 90 - Math.toDegrees(Math.atan2(Constants.SHOOTER_VELOCITY - DriveSubsystem.getRelativeVelocity().getY(), DriveSubsystem.getRelativeVelocity().getX()))*/;
 
       double limelightTurnPower = MathR.limit(TURN_KP * MathR.getDistanceToAngle(0, adjustedAngle), -0.25, 0.25) * -1;
       
-      System.out.println(shooterLimelight.x);
+      //System.out.println(shooterLimelight.x);
 
-      /*if (shooterLimelight.isDetection && shooterLimelight.confidence() > 0.1) drive.move(leftJoystick, limelightTurnPower);
-      else if (leftJoystick.getMagnitude() > 0.1)*/ drive.move(leftJoystick, turnPower);
+      //if (shooterLimelight.isDetection) drive.move(leftJoystick, limelightTurnPower)
+      //drive.move(leftJoystick, turnPower);
+      
+      
     }
 
     //CLIMB PRESET
-    if (auxButtonBoard.getRawButton(3)){
+    if (control.getPOV() == 90){
+      elevator.setManual(0.6);
       //elevator.set(ElevatorPosition.CLIMB);
     }
-    else{
+    else if (control.getPOV() == 270){
+      elevator.setManual(-0.6);
       //elevator.set(RobotState.getRobotConfiguration().elevatorPos);
+    }
+    else{
+      elevator.setManual(0);
     }
   }
 
@@ -192,6 +228,12 @@ public class RobotPresetCommand extends Command {
     if (control.getXButton()){
       shooter.setFeeder(-0.4);
     }
+    if (control.getAButton()){
+      intake.set(-1);
+    }
+    /*if (control.getRightTriggerAxis() >= 0.2){
+      shooter.setFeeder(1);
+    }*/
     return false;
   }
 }
