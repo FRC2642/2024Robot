@@ -15,6 +15,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorPosition;
+import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
 import frc.robot.subsystems.LimelightSubsystem.DetectionType;
 import frc.robot.utils.MathR;
 import frc.robot.utils.VectorR;
@@ -153,17 +154,18 @@ public class RobotPresetCommand extends Command {
 
     //INTAKE PRESET
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE)){
-      //if (!shooter.getNoteDetected()){
+      if (!shooter.getNoteDetected()){
         intake.setIntake(0.9);
         shooter.setFeeder(0.6);
-      /*} 
+      } 
       else {
         intake.setIntake(0);
         shooter.setFeeder(0);
-        //RobotState.setRobotState(RobotConfiguration.TRAVEL); <-TEST
-      }*/
+        intake.set(IntakePosition.RETRACTED);
+
+      }
     }
-    else{
+    else if (!RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE)){
       intake.setIntake(0);
       
       if (RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL)){
@@ -171,6 +173,7 @@ public class RobotPresetCommand extends Command {
       }
       
     }
+    
 
     //SPEAKER PRESET
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SUBWOOFER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.POST) || RobotState.getRobotConfiguration().equals(RobotConfiguration.FAR_POST)){ 

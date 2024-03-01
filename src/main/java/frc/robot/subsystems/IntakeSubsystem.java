@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.AudioConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
@@ -82,6 +83,10 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
 
   public void setManual(double speed) {
     intakeTiltMotor.set(speed);
+  }
+
+  public double getVelocity(){
+    return intakeSpinnerMotor.getVelocity().getValueAsDouble();
   }
 
   @Override

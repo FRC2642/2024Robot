@@ -189,8 +189,5 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   }
 
   @Override
-  public void periodic() {
-    //System.out.println("speed: "+shooterMotor.getVelocity().getValueAsDouble());
-    
-  }
+  public void periodic() {}
 }
