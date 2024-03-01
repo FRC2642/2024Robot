@@ -68,14 +68,15 @@ public class DriveSubsystem extends SubsystemBase {
 
       // position tracking
       var inc = module.getPositionIncrement();
+      inc = VectorR.fromCartesian(inc.getX(), -inc.getY());
       inc.mult(1d / 4d);
-      inc.rotate(getYawDegrees());
+      inc.rotate(-getYawDegrees());
       displacement.add(inc);
       increment.add(inc);
 
       var velocityMeasured = module.getVelocity();
       velocityMeasured.mult(1d / 4d);
-      velocityMeasured.rotate(getYawDegrees());
+      velocityMeasured.rotate(-getYawDegrees());
       velocity.add(velocityMeasured);
     }
     acceleration.update();
