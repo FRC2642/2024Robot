@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.auto.fullAutos.OnePieceTest;
 import frc.robot.commands.teleop.ManualElevatorCommand;
 import frc.robot.commands.teleop.ManualIntakeCommand;
 import frc.robot.commands.teleop.ManualShooterCommand;
@@ -51,6 +52,7 @@ public class RobotContainer {
     // Auto options
     autoChooser.setDefaultOption("NO AUTO SELECTED!", new WaitCommand(15));
     
+    autoChooser.addOption("1 Piece", new OnePieceTest(drive, shooter, intake));
     //autoChooser.addOption("6.5 Pc HP Side", new HPSixAndHalf(drive, shooter, intake, intakeLimelight, elevator));
     //autoChooser.addOption("5 Pc HP Side", new HPFive(drive, shooter, intake, intakeLimelight, elevator));
     //autoChooser.addOption("5 Pc Amp Side", new AmpFive(drive, shooter, intake, intakeLimelight, elevator));
