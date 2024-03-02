@@ -57,7 +57,7 @@ public class RobotPresetCommand extends Command {
   public void initialize() {
     shooter.setSpeedLimit(0.5);
     elevator.setSpeedLimit(0.6);
-    intake.setSpeedLimit(0.7);
+    intake.setSpeedLimit(0.65);
     RobotState.setChosenConfiguration(RobotConfiguration.SUBWOOFER);
   }
 
@@ -236,8 +236,15 @@ public class RobotPresetCommand extends Command {
     if (control.getXButton()){
       shooter.setFeeder(-0.4);
     }
-    if (control.getAButton()){
+    if (control.getBButton()){
       intake.setIntake(-1);
+    }
+    if (control.getAButton()){
+      shooter.setFeeder(0.4);
+    }
+    if (control.getRawButton(8)){
+      shooter.setShooter(-0.2);
+      shooter.tiltToAngle(50);
     }
     /*if (control.getRightTriggerAxis() >= 0.2){
       shooter.setFeeder(1);

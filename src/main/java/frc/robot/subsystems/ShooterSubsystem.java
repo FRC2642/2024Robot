@@ -19,7 +19,7 @@ import frc.robot.utils.MathR;
 
 public class ShooterSubsystem extends SubsystemBase implements IPositionable<ShooterSubsystem.ShooterPosition>{
 
-  private PIDController tiltPID = new PIDController(0.02, 0, 0);
+  private PIDController tiltPID = new PIDController(0.018, 0, 0);
   private PIDController shooterPID = new PIDController(0.2, 0, 0);
   
   private TalonFX shooterMotor = new TalonFX(Constants.SHOOTER_SPINNER_ID);
