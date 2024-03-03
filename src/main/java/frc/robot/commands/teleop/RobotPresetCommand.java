@@ -22,6 +22,7 @@ import frc.robot.utils.VectorR;
 import frc.robot.subsystems.RobotState.RobotConfiguration;
 import frc.robot.subsystems.ShooterSubsystem.ShooterAngle;
 import frc.robot.subsystems.ShooterSubsystem.ShooterPosition;
+import frc.robot.subsystems.ShooterSubsystem.ShooterSpeed;
 
 public class RobotPresetCommand extends Command {
   /** Creates a new RobotPresetCommand. */
@@ -40,6 +41,7 @@ public class RobotPresetCommand extends Command {
   private boolean isLocked = false;
   private double lockedHeading = 0;
   private boolean stopped = false;
+  private boolean revUp = false;
   
 
   public RobotPresetCommand(DriveSubsystem drive, ShooterSubsystem shooter, ElevatorSubsystem elevator, IntakeSubsystem intake, LimelightSubsystem shooterLimelight, XboxController control, Joystick auxButtonBoard) {
@@ -118,8 +120,15 @@ public class RobotPresetCommand extends Command {
     //Set subsystem presets
     intake.set(RobotState.getRobotConfiguration().intakePos);
     
-    if (!RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL)){
+    if (!RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) && !auxButtonBoard.getRawButton(11)){
       shooter.set(RobotState.getRobotConfiguration().shooterSpeed);
+    }
+    if (auxButtonBoard.getRawButton(11)){
+      revUp = true;
+      shooter.set(RobotState.getShooterSpeed());
+    }
+    else{
+      revUp = false;
     }
     
     
@@ -146,7 +155,10 @@ public class RobotPresetCommand extends Command {
       }
     }
     else{
-      shooter.setShooter(0);
+      if (!revUp){
+        shooter.setShooter(0);
+      }
+      
       if (RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL)){
         shooter.setFeeder(0);
       }
@@ -246,7 +258,11 @@ public class RobotPresetCommand extends Command {
       shooter.setShooter(-0.2);
       shooter.tiltToAngle(50);
     }
-    /*if (control.getRightTriggerAxis() >= 0.2){
+    /*if (control.getLeftBumper()){
+      RobotState.setRobotState(RobotConfiguration.INTAKE);
+      intake.set(RobotState.getRobotConfiguration().intakePos);
+    }*/
+    /*if (control.getRightTriggerAxis() >= 0.2){S
       shooter.setFeeder(1);
     }*/
     return false;

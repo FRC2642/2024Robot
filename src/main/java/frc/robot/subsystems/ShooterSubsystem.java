@@ -178,6 +178,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
 
   public enum ShooterAngle {
     SUBWOOFER(50),
+    SUBWOOFER_AUTO(50),
     POST(28),
     FAR_POST(22),
     NONE(-1);
