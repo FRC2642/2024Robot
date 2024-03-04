@@ -197,8 +197,9 @@ public class RobotPresetCommand extends Command {
       //shooterLimelight.setDetectionType(DetectionType.FIDUCIAL);
       
       //Limelight tracking
-      double distanceToSpeaker = Math.sqrt(Math.pow(4.5416 - shooterLimelight.botposeX, 2) + Math.pow(shooterLimelight.botposeY, 2));
-      double angleToSpeaker = Math.toDegrees(Math.atan2(Constants.SPEAKER_TARGET_HEIGHT - elevator.getHeight() - Constants.ELEVATOR_MECHANISM_HEIGHT - Math.sin(shooter.getPitch() - ShooterPosition.TRAVEL.angle) * 0.75, distanceToSpeaker));
+      double distanceToSpeakerFloor = Math.sqrt(Math.pow(/*4.5416 -*/ shooterLimelight.botposeX, 2) + Math.pow(shooterLimelight.botposeY, 2));
+      double distanceToSpeakerTop = Math.sqrt(Math.pow(distanceToSpeakerFloor, 2) + Math.pow(Constants.SPEAKER_TARGET_HEIGHT - elevator.getHeight() - Constants.ELEVATOR_MECHANISM_HEIGHT - Math.sin(shooter.getPitch() - ShooterPosition.TRAVEL.angle), 2));
+      double angleToSpeaker = Math.toDegrees(Math.acos(distanceToSpeakerFloor / distanceToSpeakerTop));
       
 
       //System.out.println(RobotState.getRobotConfiguration().shooterAngle.angle);
