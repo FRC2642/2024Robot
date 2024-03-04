@@ -166,15 +166,20 @@ public class RobotPresetCommand extends Command {
 
     //INTAKE PRESET
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE)){
-      if (!shooter.getNoteDetected()){
-        intake.setIntake(0.9);
-        shooter.setFeeder(0.6);
-      } 
-      else {
-        intake.setIntake(0);
-        shooter.setFeeder(0);
-        intake.set(IntakePosition.RETRACTED);
-
+      if (RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP)){
+        intake.setIntake(0.4);
+      }
+      
+      else{
+        if (!shooter.getNoteDetected()){
+          intake.setIntake(0.9);
+          shooter.setFeeder(0.6);
+        } 
+        else {
+          intake.setIntake(0);
+          shooter.setFeeder(0);
+          intake.set(IntakePosition.RETRACTED);
+        }
       }
     }
     else if (!RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE)){
@@ -227,11 +232,11 @@ public class RobotPresetCommand extends Command {
 
     //CLIMB PRESET
     if (control.getPOV() == 90){
-      elevator.setManual(0.6);
+      elevator.setManual(0.8);
       //elevator.set(ElevatorPosition.CLIMB);
     }
     else if (control.getPOV() == 270){
-      elevator.setManual(-0.6);
+      elevator.setManual(-0.8);
       //elevator.set(RobotState.getRobotConfiguration().elevatorPos);
     }
     else{

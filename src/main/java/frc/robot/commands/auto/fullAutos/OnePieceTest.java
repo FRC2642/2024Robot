@@ -62,7 +62,7 @@ public class OnePieceTest extends SequentialCommandGroup {
           shooter.setFeeder(0);
         }, shooter),
 
-        //new DriveDistanceCommand(drive, VectorR.fromPolar(0.2, 0), 5),
+        new DriveDistanceCommand(drive, VectorR.fromPolar(0.2, 0), 5),
         new StopCommand(drive)
         
     );
