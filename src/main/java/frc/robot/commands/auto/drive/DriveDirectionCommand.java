@@ -43,17 +43,24 @@ public class DriveDirectionCommand extends Command {
 
   @Override
   public void execute() {
+    System.out.println("gyro: "+DriveSubsystem.getYawDegrees());
+    
+    
+
+    
     localDisplacement.add(DriveSubsystem.getRelativeIncrement());
 
-    if (turnSpeed == null) turnSpeed = TURN_KP * MathR.getDistanceToAngle(DriveSubsystem.getYawDegrees(), heading);
+    if (turnSpeed == null) turnSpeed = TURN_KP * MathR.getDistanceToAngle(-DriveSubsystem.getYawDegrees(), heading);
 
+    System.out.println(turnSpeed);
     VectorR rotatedDisplacement = localDisplacement.clone();
     rotatedDisplacement.rotate(-velocity.getAngle());
-    VectorR antiStrafe = VectorR.fromPolar(rotatedDisplacement.getY(), velocity.getAngle() - 90);
-    antiStrafe.mult(DRIVE_KP);
-    VectorR driveSpeed = VectorR.addVectors(velocity, antiStrafe);
+    //VectorR antiStrafe = VectorR.fromPolar(rotatedDisplacement.getY(), velocity.getAngle() - 90);
+    //antiStrafe.mult(DRIVE_KP);
+    //VectorR driveSpeed = VectorR.addVectors(velocity, antiStrafe);
+    
 
-    drive.move(driveSpeed,  MathR.limit(turnSpeed, -1, 1));
+    drive.move(velocity,  MathR.limit(0, -1, 1));
     turnSpeed = null;
   }
 

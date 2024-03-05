@@ -26,8 +26,6 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     RobotContainer.DEBUG = (int)SmartDashboard.getNumber("DEBUG MODE", 0) != 0;
-    SmartDashboard.putBoolean("RED", DriverStation.getAlliance().get() == Alliance.Red);
-    SmartDashboard.putBoolean("BLUE", DriverStation.getAlliance().get() == Alliance.Blue);
   }
 
   @Override

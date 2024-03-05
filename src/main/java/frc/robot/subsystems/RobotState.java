@@ -31,9 +31,13 @@ public class RobotState {
         return chosenConfiguration;
     }
 
+    public static ShooterSpeed getShooterSpeed(){
+        return chosenConfiguration.shooterSpeed;
+    }
+
     public enum RobotConfiguration {
         SHOOT_SPEAKER(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.MANUAL, ShooterSpeed.SPEAKER, ShooterAngle.NONE),
-        SHOOT_AMP(ElevatorPosition.TRAVEL, IntakePosition.AMP, ShooterPosition.TRAVEL, ShooterSpeed.AMP, ShooterAngle.NONE),
+        SHOOT_AMP(ElevatorPosition.TRAVEL, IntakePosition.AMP, ShooterPosition.TRAVEL, ShooterSpeed.TRAVEL, ShooterAngle.NONE),
         SHOOT_TRAP(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.TRAP, ShooterSpeed.TRAP, ShooterAngle.NONE),
         INTAKE(ElevatorPosition.TRAVEL, IntakePosition.EXTENDED, ShooterPosition.TRAVEL, ShooterSpeed.TRAVEL, ShooterAngle.NONE),
         TRAVEL(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.TRAVEL, ShooterSpeed.TRAVEL, ShooterAngle.NONE),

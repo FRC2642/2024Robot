@@ -63,6 +63,6 @@ public final class Constants {
     public static final double INTAKE_TILT_ENCODER_MIN_VALUE = 0;
     public static final double INTAKE_TILT_ENCODER_OFFSET = 90;//87.8;
 
-    public static final int BEAM_BREAK_CHANNEL = 3; //CHANGE
+    public static final int BEAM_BREAK_CHANNEL = 9;
 
 }

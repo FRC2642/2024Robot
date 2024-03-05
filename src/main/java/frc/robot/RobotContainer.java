@@ -10,6 +10,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.auto.fullAutos.FrontTwoPiece;
+import frc.robot.commands.auto.fullAutos.MoveCommand;
+import frc.robot.commands.auto.fullAutos.OnePiecePath;
+import frc.robot.commands.auto.fullAutos.OnePieceTest;
 import frc.robot.commands.teleop.ManualElevatorCommand;
 import frc.robot.commands.teleop.ManualIntakeCommand;
 import frc.robot.commands.teleop.ManualShooterCommand;
@@ -51,6 +55,10 @@ public class RobotContainer {
     // Auto options
     autoChooser.setDefaultOption("NO AUTO SELECTED!", new WaitCommand(15));
     
+    autoChooser.addOption("1 Piece", new OnePieceTest(drive, shooter, intake));
+    autoChooser.addOption("2 Piece", new FrontTwoPiece(drive, shooter, intake, elevator));
+    autoChooser.addOption("PATH 1 piece", new OnePiecePath(drive, shooter, intake));
+    autoChooser.addOption("Move", new MoveCommand(drive));
     //autoChooser.addOption("6.5 Pc HP Side", new HPSixAndHalf(drive, shooter, intake, intakeLimelight, elevator));
     //autoChooser.addOption("5 Pc HP Side", new HPFive(drive, shooter, intake, intakeLimelight, elevator));
     //autoChooser.addOption("5 Pc Amp Side", new AmpFive(drive, shooter, intake, intakeLimelight, elevator));
@@ -60,10 +68,12 @@ public class RobotContainer {
   }
 
   public void autonomousInit() {
-    drive.setDefaultCommand(new RunCommand(() -> drive.stop(), drive));
-    shooter.setDefaultCommand(new RunCommand(()-> shooter.set(0.0), shooter));
-    elevator.setDefaultCommand(new RunCommand(()-> elevator.set(0.0), elevator));
-    intake.setDefaultCommand(new RunCommand(()-> intake.set(0.0), intake));
+    drive.setDefaultCommand(new InstantCommand(() -> {
+      drive.stop();
+    }, drive));
+    shooter.setDefaultCommand(new InstantCommand(()-> shooter.set(0.0), shooter));
+    elevator.setDefaultCommand(new InstantCommand(()-> elevator.set(0.0), elevator));
+    intake.setDefaultCommand(new InstantCommand(()-> intake.set(0.0), intake));
   }
 
   public void teleopInit() {

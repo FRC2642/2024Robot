@@ -68,6 +68,7 @@ public class DriveSubsystem extends SubsystemBase {
 
       // position tracking
       var inc = module.getPositionIncrement();
+      inc = VectorR.fromCartesian(inc.getX(), -inc.getY());
       inc.mult(1d / 4d);
       inc.rotate(getYawDegrees());
       displacement.add(inc);
@@ -148,6 +149,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    //System.out.println(displacement);
+    
     modules.debugSmartDashboard();
 
     SmartDashboard.putNumber("gyro", getYawDegrees());

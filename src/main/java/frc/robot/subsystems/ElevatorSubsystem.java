@@ -74,7 +74,7 @@ public class ElevatorSubsystem extends SubsystemBase implements IPositionable<El
 
   public void setManual(double speed) {
     
-    System.out.println("encoder: "+elevatorEncoder.getRaw());
+    //System.out.println("encoder: "+elevatorEncoder.getRaw());
     elevatorMotor1.set(speed);
     elevatorMotor2.set(-speed);
   }

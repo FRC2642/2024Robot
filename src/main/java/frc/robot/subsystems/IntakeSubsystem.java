@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.AudioConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
@@ -22,7 +23,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
 
   private final int TILT_TOLERANCE = 6;
 
-  private PIDController tiltPID = new PIDController(0.005, 0, 0);
+  private PIDController tiltPID = new PIDController(0.007, 0, 0);
 
   private TalonFX intakeSpinnerMotor = new TalonFX(Constants.INTAKE_SPINNER_ID);
   private static CANSparkMax intakeTiltMotor = new CANSparkMax(Constants.INTAKE_PIVOT_ID, MotorType.kBrushless);
@@ -32,7 +33,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   private IntakePosition currentSetPosition = IntakePosition.RETRACTED;
   private double speedLimit = 0.2;
 
-  public static final double MAX_DEGREES = 150;
+  public static final double MAX_DEGREES = 152;
   public static final double MIN_DEGREES = -10;
 
   public IntakeSubsystem() {
@@ -63,7 +64,10 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
 
   public void set(IntakePosition pos) {
     tiltPID.setSetpoint(0);
-    double speed = -MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), pos.angle)), -1, 1);
+    double speed = -MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), pos.angle)), -speedLimit, speedLimit);
+   
+    
+
     
     if (speed > 0 && getPitch() >= MAX_DEGREES){
       speed = 0;
@@ -82,6 +86,14 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
 
   public void setManual(double speed) {
     intakeTiltMotor.set(speed);
+  }
+
+  public double getPower(){
+    return intakeSpinnerMotor.get();
+  }
+
+  public double getVelocity(){
+    return intakeSpinnerMotor.getVelocity().getValueAsDouble();
   }
 
   @Override
@@ -108,7 +120,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
     RETRACTED(135),
     EXTENDED(0),
     OUT_OF_THE_WAY(110),
-    AMP(100),
+    AMP(110),
     MANUAL(-1);
 
     public final double angle;

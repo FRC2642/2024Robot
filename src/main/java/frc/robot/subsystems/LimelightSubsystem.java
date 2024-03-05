@@ -156,14 +156,16 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   private DetectionError updateBotposeMeasurements() {
+    
     NetworkTableEntry botpose = limelightTable.getEntry("botpose");
+    NetworkTableEntry campose = limelightTable.getEntry("campose");
     if (botpose == null)
       return DetectionError.NO_BOTPOSE;
     double[] transform = botpose.getDoubleArray(new double[6]);
 
-    botposeX = transform[0] * Constants.FOOT_PER_METER + 27.0416; 
-    botposeY = transform[1] * Constants.FOOT_PER_METER + 13.2916;
-    botposeZ = transform[2] * Constants.FOOT_PER_METER + 0.0;
+    botposeX = transform[0] * Constants.FOOT_PER_METER; //+ 27.0416;
+    botposeY = transform[1] * Constants.FOOT_PER_METER; //+ 13.2916;
+    botposeZ = transform[2] * Constants.FOOT_PER_METER; //+ 0.0;
     botposeXRot = transform[3];
     botposeYRot = transform[4];
     botposeZRot = transform[5];
