@@ -4,11 +4,14 @@
 
 package frc.robot.commands.teleop;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.subsystems.RobotState;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -17,6 +20,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorPosition;
 import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
 import frc.robot.subsystems.LimelightSubsystem.DetectionType;
+import frc.robot.utils.LimelightHelpers;
 import frc.robot.utils.MathR;
 import frc.robot.utils.VectorR;
 import frc.robot.subsystems.RobotState.RobotConfiguration;
@@ -59,7 +63,7 @@ public class RobotPresetCommand extends Command {
   public void initialize() {
     shooter.setSpeedLimit(0.5);
     elevator.setSpeedLimit(0.6);
-    intake.setSpeedLimit(0.65);
+    intake.setSpeedLimit(0.8);
     RobotState.setChosenConfiguration(RobotConfiguration.SUBWOOFER);
   }
 
@@ -173,7 +177,7 @@ public class RobotPresetCommand extends Command {
       else{
         if (!shooter.getNoteDetected()){
           intake.setIntake(0.9);
-          shooter.setFeeder(0.6);
+          shooter.setFeeder(0.8);
         } 
         else {
           intake.setIntake(0);
@@ -196,10 +200,32 @@ public class RobotPresetCommand extends Command {
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SUBWOOFER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.POST) || RobotState.getRobotConfiguration().equals(RobotConfiguration.FAR_POST)){ 
       //shooterLimelight.setDetectionType(DetectionType.FIDUCIAL);
       
+      double x;
+      double y;
+      double speaker_x;
+      double speaker_y;
       //Limelight tracking
-      double distanceToSpeakerFloor = Math.sqrt(Math.pow(/*4.5416 -*/ shooterLimelight.botposeX, 2) + Math.pow(shooterLimelight.botposeY, 2));
+      if (DriverStation.getAlliance().get() == Alliance.Blue){
+        x = LimelightHelpers.getBotPose2d_wpiBlue("limelight-shooter").getX() * Constants.FOOT_PER_METER;
+        y = LimelightHelpers.getBotPose2d_wpiBlue("limelight-shooter").getY() * Constants.FOOT_PER_METER;
+        speaker_x = 0;
+        speaker_y = 19.33333;
+      }
+      else{
+        x = LimelightHelpers.getBotPose2d_wpiRed("limelight-shooter").getX() * Constants.FOOT_PER_METER;
+        y = LimelightHelpers.getBotPose2d_wpiRed("limelight-shooter").getY() * Constants.FOOT_PER_METER;
+        speaker_x = Constants.FIELD_X;
+        speaker_y = 19.33333;
+      }
+
+      
+      
+      double distanceToSpeakerFloor = Math.sqrt(Math.pow(x - speaker_x, 2) + Math.pow(speaker_y - y, 2));
       double distanceToSpeakerTop = Math.sqrt(Math.pow(distanceToSpeakerFloor, 2) + Math.pow(Constants.SPEAKER_TARGET_HEIGHT - elevator.getHeight() - Constants.ELEVATOR_MECHANISM_HEIGHT - Math.sin(shooter.getPitch() - ShooterPosition.TRAVEL.angle), 2));
       double angleToSpeaker = Math.toDegrees(Math.acos(distanceToSpeakerFloor / distanceToSpeakerTop));
+      
+      //System.out.println(x - speaker_x);
+      
       
 
       //System.out.println(RobotState.getRobotConfiguration().shooterAngle.angle);

@@ -2,6 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.auto.drive.StopCommand;
+import frc.robot.commands.auto.fullAutos.FrontThreePiece;
 import frc.robot.commands.auto.fullAutos.FrontTwoPiece;
 import frc.robot.commands.auto.fullAutos.MoveCommand;
 import frc.robot.commands.auto.fullAutos.OnePiecePath;
@@ -49,6 +53,8 @@ public class RobotContainer {
 
   public RobotContainer() {
     SmartDashboard.putNumber("DEBUG MODE", 0);
+    
+    
 
     // Default commands
 
@@ -57,6 +63,7 @@ public class RobotContainer {
     
     autoChooser.addOption("1 Piece", new OnePieceTest(drive, shooter, intake));
     autoChooser.addOption("2 Piece", new FrontTwoPiece(drive, shooter, intake, elevator));
+    autoChooser.addOption("3 Piece", new FrontThreePiece(drive, shooter, intake, elevator));
     autoChooser.addOption("PATH 1 piece", new OnePiecePath(drive, shooter, intake));
     autoChooser.addOption("Move", new MoveCommand(drive));
     //autoChooser.addOption("6.5 Pc HP Side", new HPSixAndHalf(drive, shooter, intake, intakeLimelight, elevator));
@@ -68,9 +75,7 @@ public class RobotContainer {
   }
 
   public void autonomousInit() {
-    drive.setDefaultCommand(new InstantCommand(() -> {
-      drive.stop();
-    }, drive));
+    drive.setDefaultCommand(new RunCommand(()->{drive.move(new VectorR(), 0);}, drive));
     shooter.setDefaultCommand(new InstantCommand(()-> shooter.set(0.0), shooter));
     elevator.setDefaultCommand(new InstantCommand(()-> elevator.set(0.0), elevator));
     intake.setDefaultCommand(new InstantCommand(()-> intake.set(0.0), intake));

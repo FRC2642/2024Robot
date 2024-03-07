@@ -23,7 +23,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
 
   private final int TILT_TOLERANCE = 6;
 
-  private PIDController tiltPID = new PIDController(0.007, 0, 0);
+  private PIDController tiltPID = new PIDController(0.011, 0, 0);
 
   private TalonFX intakeSpinnerMotor = new TalonFX(Constants.INTAKE_SPINNER_ID);
   private static CANSparkMax intakeTiltMotor = new CANSparkMax(Constants.INTAKE_PIVOT_ID, MotorType.kBrushless);
@@ -117,10 +117,10 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   }
 
   public enum IntakePosition {
-    RETRACTED(135),
+    RETRACTED(138),
     EXTENDED(0),
     OUT_OF_THE_WAY(110),
-    AMP(110),
+    AMP(115),
     MANUAL(-1);
 
     public final double angle;

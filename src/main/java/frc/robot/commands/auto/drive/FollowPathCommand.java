@@ -17,7 +17,7 @@ import frc.robot.path.*;
 public class FollowPathCommand extends Command {
 
   public static final double HEADING_KP = 0.00027925;
-  public static final double MOVEMENT_KP = .016;
+  public static final double MOVEMENT_KP = 0.07;//.016;
   public static final double BASE_PRECISION = 0.05;
   public static final double TIME_TO_CORRECT_FROM_START = 1.5;
 
@@ -74,6 +74,10 @@ public class FollowPathCommand extends Command {
       DriveSubsystem.resetDisplacement(path.getFirst().position);
       DriveSubsystem.resetGyro(path.getFirst().holonomicRotation);
     }
+    
+    
+    
+    
     return true;
   }
 
@@ -93,6 +97,9 @@ public class FollowPathCommand extends Command {
       drive.stop();
       return;
     }
+    
+    
+    
 
     if (startingLookAheadTime == null) lookAheadTime = BASE_PRECISION;
     else {
@@ -105,14 +112,17 @@ public class FollowPathCommand extends Command {
     while ((nextPoint == null || nextPoint.time - currentTime < lookAheadTime) && iterator.hasNext())
       nextPoint = iterator.next();
 
+    //System.out.println("gyro: "+DriveSubsystem.getYawDegrees());
+    //System.out.println(nextPoint.holonomicRotation);
     var delta_t = nextPoint.time - currentTime;
     if (delta_t < lookAheadTime) delta_t = lookAheadTime;
     
     var velocity = nextPoint.position.clone();
     velocity.sub(DriveSubsystem.getRelativeFieldPosition());
     velocity.mult(MOVEMENT_KP / delta_t);
+    
 
-    double turn = MathR.getDistanceToAngle(DriveSubsystem.getYawDegrees(), nextPoint.holonomicRotation) / delta_t;
+    double turn = MathR.getDistanceToAngle(360-DriveSubsystem.getYawDegrees(), nextPoint.holonomicRotation) / delta_t;
 
     drive.move(velocity, turn * HEADING_KP);
   }

@@ -11,6 +11,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
 import frc.robot.subsystems.RobotState.RobotConfiguration;
+import frc.robot.subsystems.ShooterSubsystem.ShooterPosition;
 
 public class IntakeUntilFound extends Command {
   /** Creates a new IntakeUntilFound. */
@@ -35,8 +36,10 @@ public class IntakeUntilFound extends Command {
   @Override
   public void execute() {
     intake.set(position.get());
+    shooter.set(ShooterPosition.TRAVEL);
     intake.setIntake(0.9);
-    shooter.setFeeder(1);
+    shooter.setFeeder(0.2);
+    shooter.stopShooter();
   }
 
   // Called once the command ends or is interrupted.

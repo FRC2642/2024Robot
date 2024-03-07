@@ -19,8 +19,9 @@ import frc.robot.utils.MathR;
 
 public class ShooterSubsystem extends SubsystemBase implements IPositionable<ShooterSubsystem.ShooterPosition>{
 
-  private PIDController tiltPID = new PIDController(0.018, 0, 0);
+  private PIDController tiltPID = new PIDController(0.015, 0, 0);
   private PIDController shooterPID = new PIDController(0.2, 0, 0);
+  private PIDController stopPID = new PIDController(0.1, 0, 0);
   
   private TalonFX shooterMotor = new TalonFX(Constants.SHOOTER_SPINNER_ID);
   private CANSparkMax shooterTiltMotor = new CANSparkMax(Constants.SHOOTER_PIVOT_ID, MotorType.kBrushless);
@@ -36,11 +37,12 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
 
   public static final double MAX_DEGREES = 70;
   public static final double MIN_DEGREES = -35;
-  private final int TILT_TOLERANCE = 4;
+  public static final int TILT_TOLERANCE = 3;
   
   public ShooterSubsystem() {
     tiltEncoder = shooterTiltMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
     tiltPID.setTolerance(TILT_TOLERANCE);
+    stopPID.setTolerance(10);
   }
 
   public double getPitch(){
@@ -123,6 +125,16 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
     setShooter(shooterPID.calculate(currentRPM, Constants.SHOOTER_SET_RPM));
   }
 
+  public void stopShooter(){
+    double currentRPM = shooterMotor.getVelocity().getValueAsDouble();
+    double speed = MathR.limit(stopPID.calculate(currentRPM, 0), -1, 1);
+    
+    if (Math.abs(speed) <= 0.3){
+      speed = 0;
+    }
+    shooterMotor.set(speed);
+  }
+
 
   @Override
   public boolean atSetPosition() {
@@ -168,7 +180,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
     TRAVEL(0),
     AMP(-80),
     TRAP(-90),
-    SPEAKER(-140);
+    SPEAKER(-150);
 
     public final double rpm;
     private ShooterSpeed(double rpm) {
@@ -177,10 +189,13 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   }
 
   public enum ShooterAngle {
-    SUBWOOFER(50),
+    TRAVEL(19),
+    AMP(-20),
+    TRAP(51),
+    SUBWOOFER(60),
     SUBWOOFER_AUTO(46),
-    POST(49),//POST(30),
-    FAR_POST(51),//FAR_POST(24),
+    POST(30),
+    FAR_POST(27),
     NONE(-1);
 
     public final double angle;
@@ -190,5 +205,6 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+  }
 }

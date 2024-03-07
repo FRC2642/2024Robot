@@ -21,7 +21,9 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.LimelightSubsystem.DetectionType;
+import frc.robot.subsystems.ShooterSubsystem.ShooterAngle;
 import frc.robot.subsystems.ShooterSubsystem.ShooterPosition;
+import frc.robot.subsystems.ShooterSubsystem.ShooterSpeed;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorPosition;
 import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
@@ -90,7 +92,7 @@ public class ChargeAmpN2Pc extends SequentialCommandGroup {
       //Drive To Amp And Prep For Shoot
       new FollowPathCommand(drive, driveToAmp1, false, 0.25).alongWith(
           new SetElevatorCommand(elevator, ()->ElevatorPosition.AMP),
-          new SetShooterCommand(shooter, ()->ShooterPosition.AMP),
+          new SetShooterCommand(shooter, ()->ShooterAngle.AMP, ()->ShooterSpeed.AMP),
           new InstantCommand(()->{
             shooter.setShooterRPM();
           }, shooter)
@@ -125,7 +127,7 @@ public class ChargeAmpN2Pc extends SequentialCommandGroup {
       //Drive To Amp And Prep For Shoot
       new FollowPathCommand(drive, driveToAmp2, false, 0.25).alongWith(
         new SetElevatorCommand(elevator, ()->ElevatorPosition.AMP),
-        new SetShooterCommand(shooter, ()->ShooterPosition.AMP),
+        new SetShooterCommand(shooter, ()->ShooterAngle.AMP, ()->ShooterSpeed.AMP),
         new InstantCommand(()->{
           shooter.setShooterRPM();
         }, shooter)

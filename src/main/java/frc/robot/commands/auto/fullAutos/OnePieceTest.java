@@ -42,7 +42,7 @@ public class OnePieceTest extends SequentialCommandGroup {
       new ResetGyroCommand(0),
       
 
-        new InstantCommand(()->{
+        /*new InstantCommand(()->{
           shooter.set(ShooterSpeed.SPEAKER);
         }, shooter),
 
@@ -60,7 +60,7 @@ public class OnePieceTest extends SequentialCommandGroup {
           
           shooter.setShooter(0);
           shooter.setFeeder(0);
-        }, shooter),
+        }, shooter),*/
 
         new DriveDistanceCommand(drive, VectorR.fromPolar(0.2, 0), 5),
         new StopCommand(drive)

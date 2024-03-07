@@ -23,7 +23,7 @@ public class AutoIntakeCommand extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetShooterCommand(shooter, () -> config.shooterPos),
+      new SetShooterCommand(shooter, () -> config.shooterAngle, ()->config.shooterSpeed),
       new SetIntakeCommand(intake, () -> config.intakePos)
     );
   }

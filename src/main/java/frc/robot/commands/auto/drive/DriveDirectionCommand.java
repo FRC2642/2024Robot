@@ -43,7 +43,7 @@ public class DriveDirectionCommand extends Command {
 
   @Override
   public void execute() {
-    System.out.println("gyro: "+DriveSubsystem.getYawDegrees());
+    //System.out.println("gyro: "+DriveSubsystem.getYawDegrees());
     
     
 
@@ -52,7 +52,7 @@ public class DriveDirectionCommand extends Command {
 
     if (turnSpeed == null) turnSpeed = TURN_KP * MathR.getDistanceToAngle(-DriveSubsystem.getYawDegrees(), heading);
 
-    System.out.println(turnSpeed);
+    //System.out.println(turnSpeed);
     VectorR rotatedDisplacement = localDisplacement.clone();
     rotatedDisplacement.rotate(-velocity.getAngle());
     //VectorR antiStrafe = VectorR.fromPolar(rotatedDisplacement.getY(), velocity.getAngle() - 90);

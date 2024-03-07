@@ -38,7 +38,7 @@ public class OnePiecePath extends SequentialCommandGroup {
       new InstantCommand(() -> {
         drive.setDefensiveMode(true);
       }, drive),
-      new ResetGyroCommand(0),
+      
       
 
         new InstantCommand(()->{
@@ -59,7 +59,7 @@ public class OnePiecePath extends SequentialCommandGroup {
           shooter.setFeeder(0);
         }, shooter),
 
-        new FollowPathCommand(drive, move, true, 0.25),
+        new FollowPathCommand(drive, move, true, 0),
         new StopCommand(drive)
         
     );

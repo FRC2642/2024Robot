@@ -8,16 +8,19 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.ShooterSpeed;
 
 
 public class SetShooterCommand extends Command {
 
   private final ShooterSubsystem shooter;
-  private final Supplier<ShooterSubsystem.ShooterPosition> position;
+  private final Supplier<ShooterSubsystem.ShooterAngle> angle;
+  private final Supplier<ShooterSubsystem.ShooterSpeed> speed;
   
-  public SetShooterCommand(ShooterSubsystem shooter, Supplier<ShooterSubsystem.ShooterPosition> position) {
+  public SetShooterCommand(ShooterSubsystem shooter, Supplier<ShooterSubsystem.ShooterAngle> angle, Supplier<ShooterSubsystem.ShooterSpeed> speed) {
     this.shooter = shooter;
-    this.position = position;
+    this.angle = angle;
+    this.speed = speed;
     addRequirements(shooter);
   }
   @Override
@@ -33,11 +36,14 @@ public class SetShooterCommand extends Command {
   
   @Override
   public void execute() {
-    shooter.set(position.get());
+    shooter.tiltToAngle(angle.get().angle);
+    shooter.set(speed.get());
   }
 
   @Override
   public boolean isFinished() {
-    return shooter.atSetPosition();  
+    //System.out.println("angle: "+angle.get().angle + " pitch: "+shooter.getPitch());
+    
+    return shooter.getPitch() >= angle.get().angle - 2 && shooter.getPitch() <= angle.get().angle + 2;
   }
 }
