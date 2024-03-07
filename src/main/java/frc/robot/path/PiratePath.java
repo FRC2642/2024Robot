@@ -46,15 +46,15 @@ public class PiratePath extends TreeSet<PiratePoint> {
      */
     public PiratePath(String name, boolean choreo) {
         this.name = name;
-        this.choreo = choreo;
+        this.choreo = choreo; //This doesn't matter anymore
         Exception e;
-        if (choreo){
+        if (choreo){ //Nobody likes or uses choreo. This code is useless.
             e = trySetFromPathPlannerJSON(new File(PARENT_DIRECTORY, name + ".json"));
         }
-        else{
+        else{ //Reads the path and stores each point. "e" just stores the error code that it hands back, if it hands one back.
             e = trySetFromPathPlannerJSON(new File(PARENT_DIRECTORY, name + ".wpilib.json"));
         }
-        if (e != null) {
+        if (e != null) { //If there's an error code, tell the user.
             e.printStackTrace();
             add(DEFAULT_VALUE);
         }
@@ -64,10 +64,11 @@ public class PiratePath extends TreeSet<PiratePoint> {
     public Exception trySetFromPathPlannerJSON(File jsonFile) {
        
         try {
-            JsonNode root = JSON_MAPPER.readTree(jsonFile);
+            JsonNode root = JSON_MAPPER.readTree(jsonFile); //Creates a tree of values from the generated JSON from earlier. Imagine a list, but it branches.
             var pointIterator = root.elements();
-            boolean first = true;
+            boolean first = true; //We start with the first point of the path, where the robot stops.
 
+            //A couple definitions, explained below
             double t = 0.0;
             double x = 0.0;
             double y = 0.0;
@@ -77,7 +78,7 @@ public class PiratePath extends TreeSet<PiratePoint> {
             while (pointIterator.hasNext()) {
                 var point = pointIterator.next();
                 
-                if (choreo){
+                if (choreo){ //Literally does not matter. We'll delete this later.
                     t = point.get("timestamp").asDouble();
                     x = (Constants.FIELD_X) - (point.get("x").asDouble() * Constants.FOOT_PER_METER);
                     y = (Constants.FIELD_Y) - (point.get("y").asDouble() * Constants.FOOT_PER_METER);
@@ -85,56 +86,57 @@ public class PiratePath extends TreeSet<PiratePoint> {
                     stop = point.get("velocityX").asDouble() == 0.0 && point.get("velocityY").asDouble() == 0.0 && !first;
                 }
                 else{
-                    JsonNode pose = point.get("pose");
+                    JsonNode pose = point.get("pose"); //Get pose and translation, which are two branches containing the rest of the stuff in the while loop below
                     JsonNode translation = pose.get("translation");
 
-                    t = point.get("time").asDouble();
-                    x = (Constants.FIELD_X) - (translation.get("x").asDouble() * Constants.FOOT_PER_METER);
-                    y = (Constants.FIELD_Y) - (translation.get("y").asDouble() * Constants.FOOT_PER_METER);
-                    r = point.get("holonomicRotation").asDouble() + 180;
-                    stop = point.get("velocity").asDouble() == 0.0 && !first;
+                    t = point.get("time").asDouble(); //Gets time in seconds
+                    x = (Constants.FIELD_X) - (translation.get("x").asDouble() * Constants.FOOT_PER_METER); //Gets absolute x position in feet. X is the width axis of the feild.
+                    y = (Constants.FIELD_Y) - (translation.get("y").asDouble() * Constants.FOOT_PER_METER); //Gets absolute y position in feet. Y is the length axis of the feild, from red to blue
+                    //Do not ask me where the origin is, I do not know.
+                    r = point.get("holonomicRotation").asDouble() + 180; //Gets absolute rotation 
+                    stop = point.get("velocity").asDouble() == 0.0 && !first; //This gets if the point is a stop point, which is a special thing you can do in PathPlanner
                 }
 
-                PiratePoint pt = new PiratePoint(x, y, r, t, stop);
+                PiratePoint pt = new PiratePoint(x, y, r, t, stop); //Creates a point from the above information; see PiratePoint for specifics
                 add(pt);
-                first = false;
+                first = false; //We are, after the while loop runs for the first time, no longer on the first point of the path.
             }
         } catch (Exception e) {
-            return e;
+            return e; //If this doesn't work for whatever reason, we hand back the error code.
         }
-        return null;
+        return null; //Otherwise, we don't had back an error code.
     }
 
-    public PiratePath getBlueAlliance() {
+    public PiratePath getBlueAlliance() { //Since the red and blue alliances in a competition are inverted versions of each other on the Y axis, we need to make all of the Y values inverted.
 
         PiratePath bluePath = new PiratePath(true);
         bluePath.name = "BLUE " + this.name;
 
-        for (var pt : this) {
+        for (var pt : this) { //TODO figure out how this works
             double Y = pt.position.getY();
             var newPt = pt.clone();
             newPt.position.setY(Constants.FIELD_Y - Y);
             newPt.holonomicRotation = -newPt.holonomicRotation;
             bluePath.add(newPt);
-        }
+        } 
 
         return bluePath;
     }
 
-    public ArrayList<PiratePath> getSubPaths() {
-        ArrayList<PiratePath> paths = new ArrayList<>();
+    public ArrayList<PiratePath> getSubPaths() { //I have no idea why there are two getSubPaths functions; probably for different arg lengths. I didn't make this okay?
+        ArrayList<PiratePath> paths = new ArrayList<>(); //Makes an array to store the mutliple paths (?)
 
-        PiratePath current = new PiratePath(true);
+        PiratePath current = new PiratePath(true); //Reads the path, as explained above
         int index = 0;
-        for (var pt : this) {
-            current.add(pt);
+        for (var pt : this) { //For those who don't use java, this is "for each point in the array"
+            current.add(pt); //Add it to the path (huh?)
             
-            if (pt.stopPoint && pt.time != 0.0) {
+            if (pt.stopPoint && pt.time != 0.0) { //If it's the last point
                 current.name = this.name + "[" + index + "]";
                 paths.add(current);
                 current = new PiratePath(true);
                 index++;
-            }
+            } //Okay I've got nothing. TODO
         }
         return paths;
     }
@@ -143,17 +145,17 @@ public class PiratePath extends TreeSet<PiratePoint> {
         ArrayList<PiratePath> paths = new ArrayList<>();
         HashMap<Double, Double> separatedAtTime = new HashMap<>(separatePathAtTimes.size());
 
-        PiratePath current = new PiratePath(true);
+        PiratePath current = new PiratePath(true); //Creates a new path, like the other one
         int index = 0;
         if (separatePathAtTimes.isEmpty()){
-            return getSubPaths();
+            return getSubPaths(); //TF man. TODO what is this?
         }
         else{
             for (var pt : this) {
                 current.add(pt);
                 for (Double time : separatePathAtTimes){
-                    if (pt.stopPoint || MathR.range(time, pt.time, rangeToSeparate) && pt.time != 0.0) {
-                        if (!separatedAtTime.containsKey(time) && MathR.range(separatedAtTime.get(time), pt.time, rangeToSeparate)){
+                    if (pt.stopPoint || MathR.range(time, pt.time, rangeToSeparate) && pt.time != 0.0) { //If it's a stop point OR just look at mathr to decipher that part AND it isnt the first point (?)
+                        if (!separatedAtTime.containsKey(time) && MathR.range(separatedAtTime.get(time), pt.time, rangeToSeparate)){ //I'm sorry, WHY are there more conditions? TODO And what do they mean?
                             separatedAtTime.put(time, pt.time);
                             current.name = this.name + "[" + index + "]";
                             paths.add(current);
@@ -170,7 +172,7 @@ public class PiratePath extends TreeSet<PiratePoint> {
     
 
     @Override
-    public String toString() {
+    public String toString() { //Turns a path into a printable string of points
         ArrayList<String> s = new ArrayList<>();
         for (var pt : this) {
             s.add(pt.toString());
@@ -178,31 +180,31 @@ public class PiratePath extends TreeSet<PiratePoint> {
         return name + "\n" + String.join("\n", s);
     }
 
-    public void print() {
+    public void print() { //Prints whatever you want it to print, but *fancy*
         System.out.println("--------------------------------------------------------------------------------------------------------------");
         System.out.println(toString());
         System.out.println("--------------------------------------------------------------------------------------------------------------");
     }
     
-    public static void print(ArrayList<PiratePath> paths) {
+    public static void print(ArrayList<PiratePath> paths) { //Prints out everything in the list, using the function above.
         for (var p : paths) {
             p.print();
         } 
     }
     
-    public static void print(ArrayList<PiratePath> paths, int index) {
+    public static void print(ArrayList<PiratePath> paths, int index) { //Seriously. How much debug do we need here? Prints the index.
         paths.get(index).print();
     }
 
-    public void fillWithSubPointsEasing(double timeBetweenPts, Easings.Functions interpolationEasing) {
+    public void fillWithSubPointsEasing(double timeBetweenPts, Easings.Functions interpolationEasing) { //Interpolates between points. Basically, smoothes out the stuff between points so the robot isn't jerky
 
         ArrayList<PiratePoint> points = new ArrayList<>(this);
 
-        for (int i = 0; i < points.size() - 1; i++) {
+        for (int i = 0; i < points.size() - 1; i++) { //For each pair of consecutive points
             PiratePoint current = points.get(i);
             PiratePoint next = points.get(i + 1);
 
-            for (double time = current.time; time < next.time; time += timeBetweenPts) {
+            for (double time = current.time; time < next.time; time += timeBetweenPts) { //Creates a bunch of in-between points with interpolated, average-ish values. Check out easings in utils for more :) (this is dumb)
                 double x = Easings.interpolate(current.position.getX(), next.position.getX(), current.time, next.time,
                         time, interpolationEasing);
                 double y = Easings.interpolate(current.position.getY(), next.position.getY(), current.time, next.time,
@@ -214,11 +216,13 @@ public class PiratePath extends TreeSet<PiratePoint> {
         }
     }
 
-    public double getLastTime() {
+    public double getLastTime() { //Gets the last time
         return last().time;
     }
 
-    public PiratePoint getFirst() {
+    public PiratePoint getFirst() { //Gets the first point
         return first();
     }
 }
+
+//Lots to be done here next year.

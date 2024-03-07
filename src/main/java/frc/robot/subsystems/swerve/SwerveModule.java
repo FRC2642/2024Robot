@@ -20,6 +20,10 @@ import frc.robot.utils.VectorR;
  * Thic class represents a single swerve module. It allows for a desired speed
  * and angle to be set. Motor controllers are interfaced with directly from the
  * update() method.
+ * 
+ * To be noted, this is the main class for handeling each drive. 
+ * SwerveModules and SwerveModuleInfo only organize the types and 
+ * variables of the stuff here to be used elsewhere.
  */
 public class SwerveModule {
 
@@ -34,6 +38,7 @@ public class SwerveModule {
   private double wheelOrientation = 0.0;
 
 
+  //Oh jesus, this is gonna be a long one.
 
   public SwerveModule(SwerveModuleInfo info) {
     this.info = info;
@@ -45,7 +50,7 @@ public class SwerveModule {
     orientationEncoder.setPosition(0);
     
     MagnetSensorConfigs config = new MagnetSensorConfigs();
-  // set units of the CANCoder to radians, with velocity being radians per second
+  // sets the units of the CANCoder to radians, with ANGULAR velocity being radians per second
   
     config = config.withAbsoluteSensorRange(AbsoluteSensorRangeValue.Signed_PlusMinusHalf);
   
@@ -55,7 +60,7 @@ public class SwerveModule {
   }
 
   //RESET METHODS
-  public void resetDriveEncoder() {
+  public void resetDriveEncoder() { //Useless, TODO delete
     //driveMotor.getPosition
   }
 
@@ -64,7 +69,7 @@ public class SwerveModule {
     return driveMotor.getVelocity().getValue() * Constants.FEET_PER_DISPLACEMENT * (100d/1d);
   }
 
-  private double getWheelPosition() {
+  private double getWheelPosition() { //Gets the number of rotations of the wheel and it's current angle
     
     return driveMotor.getPosition().getValue() * Constants.FEET_PER_DISPLACEMENT;
   }
@@ -72,23 +77,24 @@ public class SwerveModule {
   /*
    * positive (+) = left turn CCW
    * negative (-) = right turn CW
+   * Does that make sense to you?
    */
   public double getWheelOrientationDegrees() {
     return wheelOrientation - info.ABS_ENCODER_VALUE_WHEN_STRAIGHT;
   }
 
-  public VectorR getVelocity() {
+  public VectorR getVelocity() { //Get how fast the wheel's going (?)
     return VectorR.fromPolar(getWheelSpeed(), getWheelOrientationDegrees());
   }
 
-  public double getWheelPower(){
+  public double getWheelPower(){ 
     return driveMotor.get();
   }
 
   private double lastWheelPosition = 0;
   private double increment = 0;
 
-  public VectorR getPositionIncrement() {
+  public VectorR getPositionIncrement() { 
     return VectorR.fromPolar(increment, getWheelOrientationDegrees());
   }
   
@@ -102,18 +108,18 @@ public class SwerveModule {
   private VectorR desired = new VectorR();
   private boolean reversed = false;
 
-  private void reverse() {
+  private void reverse() { //Reverse the robot
     reversed = !reversed;
   }
 
-  private double desiredSpeed() {
+  private double desiredSpeed() { //Get how fast you want the wheel to go, for PID shenanigans
     if (reversed)
       return desired.getTerminalMagnitude();
     else
       return desired.getMagnitude();
   }
 
-  private double desiredAngle() {
+  private double desiredAngle() { //Gets the angle we want the wheel to be turned at
     if (reversed)
       return desired.getTerminalAngle();
     else
@@ -125,7 +131,7 @@ public class SwerveModule {
    * speed 0 min - 1 max, turns module drive wheel
    * angle radians follows coordinate plane standards, sets module wheel to angle
    */
-  public void update(double speed, double angleDegrees) {
+  public void update(double speed, double angleDegrees) { //Get the current status of the wheel, and then change it however might be nessecary
     
     
     wheelOrientation = ((orientationEncoder.getAbsolutePosition().getValueAsDouble() + 0.5)/1.49975585938) * 360; 
@@ -145,7 +151,7 @@ public class SwerveModule {
     updateIncrementMeasurement();
   }
 
-  public void stop() {
+  public void stop() { //Stop the wheels
     angleMotor.set(0);
     driveMotor.set(0);
     
@@ -153,7 +159,29 @@ public class SwerveModule {
     updateIncrementMeasurement();
   }
 
-  public void stopDefensively() {
+  public void stopDefensively() { //Since we're using swerve, turning the wheels in a diamond pattern stops the bot from moving entirely
     update(0.0000001,  defensiveAngleDeg);
   }
 }
+
+/* ~~A very short nessecary crash course on Swerve~~
+ * 
+ * In a swerve drive robot, each wheel has two motors, one controlling the wheel itself
+ * and the other controlling the direction the wheel is facing. Each of these motors operates
+ * independently, meaning that you can move in any direction, pivot, defend, and more just by
+ * reorienting each wheel, which can be turned 360 degrees.
+ * 
+ * -   -   |    |   /    /    In order to drive in a single direction, the wheels must all be
+ *                            oriented in the same direction. By changing all of the wheel
+ * -   -   |    |   /    /    directions together, you can drive the robot without turning.
+ * 
+ * \   /      /   \    These two positions are useful for specific scenarios. The X pattern
+ *                     stops the robot where it is and prevents it from being moved by others.
+ * /   \      \   /    The diamond pattern allows the robot to pivot in place
+ * 
+ *   =   Note that each wheel only needs to rotate 180 degrees, not 360. If you reverse the
+ *  \\   direction of the drive motors, it willbe able to drive the opposite direction of the
+ *  //   180 degrees you can go forward, saving the robot time. To drive a certain direction,
+ *  ||   the wheels should optimally rotate no more than 90 degrees in any direction.
+ * 
+ */
