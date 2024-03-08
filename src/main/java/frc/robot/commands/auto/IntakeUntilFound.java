@@ -19,10 +19,14 @@ public class IntakeUntilFound extends Command {
   ShooterSubsystem shooter;
   RobotConfiguration configuration;
   Supplier<IntakeSubsystem.IntakePosition> position;
-  public IntakeUntilFound(Supplier<IntakeSubsystem.IntakePosition> position, IntakeSubsystem intake, ShooterSubsystem shooter) {
+  Supplier<ShooterSubsystem.ShooterAngle> angle;
+  boolean revShooter;
+  public IntakeUntilFound(Supplier<IntakeSubsystem.IntakePosition> position, IntakeSubsystem intake, ShooterSubsystem shooter, boolean revShooter, Supplier<ShooterSubsystem.ShooterAngle> angle) {
     this.intake = intake;
     this.shooter = shooter;
-    this.position = position;                                                                                                                                                                         
+    this.position = position;       
+    this.angle = angle;              
+    this.revShooter = revShooter;                                                                                                                                                    
     addRequirements(intake, shooter);
   }
 
@@ -38,8 +42,15 @@ public class IntakeUntilFound extends Command {
     intake.set(position.get());
     shooter.set(ShooterPosition.TRAVEL);
     intake.setIntake(0.9);
+    if (revShooter){
+      shooter.tiltToAngle(angle.get().angle);
+    }
+    else{
+      shooter.stopShooter();
+    }
+    
     shooter.setFeeder(0.2);
-    shooter.stopShooter();
+    
   }
 
   // Called once the command ends or is interrupted.

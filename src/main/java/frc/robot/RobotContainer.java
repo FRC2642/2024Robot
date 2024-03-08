@@ -13,11 +13,13 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auto.drive.StopCommand;
+import frc.robot.commands.auto.fullAutos.FourPieceCommand;
 import frc.robot.commands.auto.fullAutos.FrontThreePiece;
 import frc.robot.commands.auto.fullAutos.FrontTwoPiece;
 import frc.robot.commands.auto.fullAutos.MoveCommand;
+import frc.robot.commands.auto.fullAutos.OnePieceCommand;
 import frc.robot.commands.auto.fullAutos.OnePiecePath;
-import frc.robot.commands.auto.fullAutos.OnePieceTest;
+import frc.robot.commands.auto.fullAutos.OptimizedThreePiece;
 import frc.robot.commands.teleop.ManualElevatorCommand;
 import frc.robot.commands.teleop.ManualIntakeCommand;
 import frc.robot.commands.teleop.ManualShooterCommand;
@@ -54,31 +56,25 @@ public class RobotContainer {
   public RobotContainer() {
     SmartDashboard.putNumber("DEBUG MODE", 0);
     
-    
-
-    // Default commands
-
     // Auto options
     autoChooser.setDefaultOption("NO AUTO SELECTED!", new WaitCommand(15));
     
-    autoChooser.addOption("1 Piece", new OnePieceTest(drive, shooter, intake));
-    autoChooser.addOption("2 Piece", new FrontTwoPiece(drive, shooter, intake, elevator));
-    autoChooser.addOption("3 Piece", new FrontThreePiece(drive, shooter, intake, elevator));
-    autoChooser.addOption("PATH 1 piece", new OnePiecePath(drive, shooter, intake));
-    autoChooser.addOption("Move", new MoveCommand(drive));
-    //autoChooser.addOption("6.5 Pc HP Side", new HPSixAndHalf(drive, shooter, intake, intakeLimelight, elevator));
-    //autoChooser.addOption("5 Pc HP Side", new HPFive(drive, shooter, intake, intakeLimelight, elevator));
-    //autoChooser.addOption("5 Pc Amp Side", new AmpFive(drive, shooter, intake, intakeLimelight, elevator));
-    //autoChooser.addOption("Charged Amp and 2 Pc Amp Side", new ChargeAmpN2Pc(drive, shooter, intake, intakeLimelight, elevator));
+    autoChooser.addOption("1 Piece Stop", new OnePieceCommand(shooter));
+    autoChooser.addOption("1 Piece Move", new OnePiecePath(drive, shooter));
+    autoChooser.addOption("2 Piece", new FrontTwoPiece(drive, shooter, intake));
+    autoChooser.addOption("3 Piece", new FrontThreePiece(drive, shooter, intake));
+    autoChooser.addOption("3 Piece Optimized", new OptimizedThreePiece(drive, shooter, intake));
+    autoChooser.addOption("4 Piece", new FourPieceCommand(drive, shooter, intake));
+    
     
     SmartDashboard.putData(autoChooser);
   }
 
   public void autonomousInit() {
-    drive.setDefaultCommand(new RunCommand(()->{drive.move(new VectorR(), 0);}, drive));
-    shooter.setDefaultCommand(new InstantCommand(()-> shooter.set(0.0), shooter));
-    elevator.setDefaultCommand(new InstantCommand(()-> elevator.set(0.0), elevator));
-    intake.setDefaultCommand(new InstantCommand(()-> intake.set(0.0), intake));
+    drive.setDefaultCommand(new RunCommand(() -> drive.stop(), drive));
+    shooter.setDefaultCommand(new RunCommand(()-> shooter.set(0.0), shooter));
+    elevator.setDefaultCommand(new RunCommand(()-> elevator.set(0.0), elevator));
+    intake.setDefaultCommand(new RunCommand(()-> intake.set(0.0), intake));
   }
 
   public void teleopInit() {
@@ -95,10 +91,6 @@ public class RobotContainer {
       new POVButton(mainControl, 180).onTrue(new InstantCommand(()->{
         ElevatorSubsystem.resetEncoder();
       }));
-      /*//Interrupt
-      new POVButton(mainControl, 270).onTrue(new InstantCommand(()->{
-        System.out.println("interrupt");
-      }, shooter, intake));*/
 
     } 
     

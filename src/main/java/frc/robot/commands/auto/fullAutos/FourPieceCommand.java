@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.auto.IntakeUntilFound;
 import frc.robot.commands.auto.drive.FollowPathCommand;
 import frc.robot.commands.auto.drive.StopCommand;
+import frc.robot.commands.auto.positionable.SetIntakeCommand;
 import frc.robot.commands.auto.positionable.SetRobotConfigurationCommand;
 import frc.robot.commands.auto.positionable.SetShooterCommand;
 import frc.robot.commands.teleop.resetters.ResetDisplacementCommand;
@@ -30,17 +31,18 @@ import frc.robot.utils.VectorR;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class FrontThreePiece extends SequentialCommandGroup {
+public class FourPieceCommand extends SequentialCommandGroup {
   /** Creates a new FrontTwoPiece. */
-  public FrontThreePiece(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake) {
-    PiratePath path = new PiratePath("ThreePiecePath", false);
+  public FourPieceCommand(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake) {
+    PiratePath path = new PiratePath("FourPiecePath", false);
     var paths = path.getSubPaths();
-    var getNote = paths.get(0);
-    var getNote2 = paths.get(1);
-    var shootNote = paths.get(2);
+    var shootNote = paths.get(0);
+    var getNoteShootNote = paths.get(1);
+    var getNote = paths.get(2);
+    var shootNote2 = paths.get(3);
+    var getNote2 = paths.get(4);
+    var shootNote3 = paths.get(5);
 
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new InstantCommand(() -> {
         drive.setDefensiveMode(true);
@@ -50,45 +52,44 @@ public class FrontThreePiece extends SequentialCommandGroup {
       }, drive, intake, shooter),
 
         //1ST NOTE
-        new SetShooterCommand(shooter, ()->ShooterAngle.SUBWOOFER, ()->ShooterSpeed.SPEAKER),
+        new FollowPathCommand(drive, shootNote, true, 0.25).alongWith(
+          new SetShooterCommand(shooter, ()->ShooterAngle.LINE, ()->ShooterSpeed.SPEAKER),
+          new SetIntakeCommand(intake, ()->IntakePosition.EXTENDED)
+        ),
       
-        new WaitCommand(0.7),
         new InstantCommand(()->{
           shooter.setFeeder(1);
-        }, shooter),
+          drive.move(new VectorR(), 0);
+        }, shooter, drive),
 
         new WaitCommand(0.1),
 
-        new InstantCommand(()->{
-          shooter.setFeeder(0);
-        }, shooter),
-
         //2ND NOTE
-        new FollowPathCommand(drive, getNote, true, 0.25).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false, ()->ShooterAngle.TRAVEL)
+        new FollowPathCommand(drive, getNoteShootNote, false, 0.25).alongWith(
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, true, ()->ShooterAngle.AMP_NOTE)
         ).withTimeout(3),
 
         
-        new InstantCommand(()->{
+        /*new InstantCommand(()->{
           intake.setIntake(0);
           shooter.setFeeder(-0.2);
           drive.move(new VectorR(), 0);
         }, intake, shooter, drive),
 
-        new WaitCommand(0.3),
+        new WaitCommand(0.2),
         new InstantCommand(()->{
           shooter.setFeeder(0);
         }, shooter),
 
-        new SetShooterCommand(shooter, ()->ShooterAngle.POST, ()->ShooterSpeed.SPEAKER),
+        new SetShooterCommand(shooter, ()->ShooterAngle.AMP_NOTE, ()->ShooterSpeed.SPEAKER),
         
 
-        new WaitCommand(0.5),
+        new WaitCommand(0.3),
         new InstantCommand(()->{
           shooter.setFeeder(1);
         }, shooter),
-
-        new WaitCommand(0.1),
+        */
+        new WaitCommand(0.4),
 
         //3RD NOTE
         new InstantCommand(()->{
@@ -96,8 +97,8 @@ public class FrontThreePiece extends SequentialCommandGroup {
           shooter.setFeeder(0);
         }, shooter),
 
-        new FollowPathCommand(drive, getNote2, false, 0.25).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false, ()->ShooterAngle.TRAVEL)
+        new FollowPathCommand(drive, getNote, false, 0.25).alongWith(
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false, ()->ShooterAngle.AMP_NOTE)
         ).withTimeout(3),
 
         new InstantCommand(()->{
@@ -105,32 +106,54 @@ public class FrontThreePiece extends SequentialCommandGroup {
           shooter.setFeeder(-0.2);
         }, intake, shooter, drive),
 
-        new WaitCommand(0.1),
-        new InstantCommand(()->{
-          shooter.setFeeder(0);
-          shooter.setShooterRPM();
-        }, shooter),
-
-        new FollowPathCommand(drive, shootNote, false, 0.25).alongWith(
-          new SetShooterCommand(shooter, ()->ShooterAngle.POST, ()->ShooterSpeed.SPEAKER)
+        new WaitCommand(0.1).alongWith(
+          new FollowPathCommand(drive, shootNote2, false, 0.25),
+          new SetShooterCommand(shooter, ()->ShooterAngle.NOTE2, ()->ShooterSpeed.SPEAKER).andThen(
+            new InstantCommand(()->{
+              shooter.setFeeder(1);
+            }, shooter)
+          )
         ),
-        
-        new InstantCommand(()->{
-          drive.move(new VectorR(), 0);
-        }),
 
-        new WaitCommand(0.8),
-        new InstantCommand(()->{
-          shooter.setFeeder(1);
-        
-        }, shooter),
-
-        new WaitCommand(0.1),
+        new WaitCommand(0.3),
         new InstantCommand(()->{
           shooter.setShooter(0);
           shooter.setFeeder(0);
         }),
 
+        //4TH NOTE
+        new FollowPathCommand(drive, getNote2, false, 0.25).alongWith(
+          new IntakeUntilFound(()->IntakePosition.RUNNING_EXTENDED, intake, shooter, false, ()->ShooterAngle.TRAVEL)
+        ).withTimeout(3),
+
+        
+        new InstantCommand(()->{
+          intake.setIntake(0);
+          shooter.setFeeder(-0.2);
+          drive.move(new VectorR(), 0);
+        }, intake, shooter, drive),
+
+        new WaitCommand(0.2),
+        new InstantCommand(()->{
+          shooter.setFeeder(0);
+        }, shooter),
+
+        new FollowPathCommand(drive, shootNote3, false, 0.25).alongWith(
+          new SetShooterCommand(shooter, ()->ShooterAngle.POST, ()->ShooterSpeed.SPEAKER),
+          new SetIntakeCommand(intake, ()->IntakePosition.RETRACTED)
+        ),
+
+        new WaitCommand(0.1),
+
+        new InstantCommand(()->{
+          shooter.setFeeder(1);
+        }, shooter),
+
+        new WaitCommand(0.4),
+        new InstantCommand(()->{
+          shooter.setShooter(0);
+          shooter.setFeeder(0);
+        }),
 
         new StopCommand(drive)
     );

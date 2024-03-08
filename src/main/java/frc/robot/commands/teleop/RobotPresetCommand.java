@@ -175,6 +175,7 @@ public class RobotPresetCommand extends Command {
       }
       
       else{
+        shooter.stopShooter();
         if (!shooter.getNoteDetected()){
           intake.setIntake(0.9);
           shooter.setFeeder(0.8);

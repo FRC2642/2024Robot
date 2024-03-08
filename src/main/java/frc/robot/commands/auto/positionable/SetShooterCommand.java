@@ -44,6 +44,7 @@ public class SetShooterCommand extends Command {
   public boolean isFinished() {
     //System.out.println("angle: "+angle.get().angle + " pitch: "+shooter.getPitch());
     
-    return shooter.getPitch() >= angle.get().angle - 2 && shooter.getPitch() <= angle.get().angle + 2;
+    
+    return shooter.getPitch() >= angle.get().angle - 3 && shooter.getPitch() <= angle.get().angle + 3;
   }
 }

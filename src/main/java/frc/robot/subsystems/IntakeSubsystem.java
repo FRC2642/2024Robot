@@ -121,6 +121,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
     EXTENDED(0),
     OUT_OF_THE_WAY(110),
     AMP(115),
+    RUNNING_EXTENDED(2),
     MANUAL(-1);
 
     public final double angle;

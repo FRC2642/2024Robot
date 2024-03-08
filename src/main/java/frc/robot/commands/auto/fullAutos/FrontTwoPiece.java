@@ -12,7 +12,6 @@ import frc.robot.commands.auto.IntakeUntilFound;
 import frc.robot.commands.auto.drive.FollowPathCommand;
 import frc.robot.commands.auto.drive.StopCommand;
 import frc.robot.commands.auto.positionable.SetRobotConfigurationCommand;
-import frc.robot.commands.auto.positionable.SetShooterAngleCommand;
 import frc.robot.commands.auto.positionable.SetShooterCommand;
 import frc.robot.commands.teleop.resetters.ResetDisplacementCommand;
 import frc.robot.commands.teleop.resetters.ResetGyroCommand;
@@ -33,7 +32,7 @@ import frc.robot.utils.VectorR;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class FrontTwoPiece extends SequentialCommandGroup {
   /** Creates a new FrontTwoPiece. */
-  public FrontTwoPiece(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, ElevatorSubsystem elevator) {
+  public FrontTwoPiece(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake) {
     PiratePath path = new PiratePath("TwoPiecePath", false);
     var paths = path.getSubPaths();
     var getNote = paths.get(0);
@@ -47,60 +46,56 @@ public class FrontTwoPiece extends SequentialCommandGroup {
         shooter.setSpeedLimit(0.5);
       }, drive, intake, shooter),
 
-        new InstantCommand(()->{
-          shooter.set(ShooterSpeed.SPEAKER);
-        }, shooter),
+      new SetShooterCommand(shooter, ()->ShooterAngle.SUBWOOFER, ()->ShooterSpeed.SPEAKER),
+    
+      new WaitCommand(0.7),
+      new InstantCommand(()->{
+        shooter.setFeeder(1);
+      }, shooter),
 
-        new SetShooterAngleCommand(shooter, ()->ShooterAngle.SUBWOOFER),
+      new WaitCommand(0.3),
+
+      new InstantCommand(()->{
+        shooter.setFeeder(0);
+      }, shooter),
+
       
-        new WaitCommand(0.7),
-        new InstantCommand(()->{
-          shooter.setFeeder(1);
-        }, shooter),
+      new FollowPathCommand(drive, getNote, true, 0.25).alongWith(
+        new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false, ()->ShooterAngle.TRAVEL)
+      ).withTimeout(3),
 
-        new WaitCommand(0.5),
-
-        new InstantCommand(()->{
-          shooter.setFeeder(0);
-        }, shooter),
-
-        
-        new FollowPathCommand(drive, getNote, true, 0.25).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
-        ).withTimeout(3),
-
-        
+      
 
 
-        new InstantCommand(()->{
-          intake.setIntake(0);
-          shooter.setFeeder(-0.2);
-          drive.move(new VectorR(), 0);
-        }, intake, shooter, drive),
+      new InstantCommand(()->{
+        intake.setIntake(0);
+        shooter.setFeeder(-0.2);
+        drive.move(new VectorR(), 0);
+      }, intake, shooter, drive),
 
-        new WaitCommand(0.3),
-        new InstantCommand(()->{
-          shooter.setFeeder(0);
-        }, shooter),
+      new WaitCommand(0.3),
+      new InstantCommand(()->{
+        shooter.setFeeder(0);
+      }, shooter),
 
 
-        new SetShooterCommand(shooter, ()->ShooterAngle.POST, ()->ShooterSpeed.SPEAKER).alongWith(),
-        
+      new SetShooterCommand(shooter, ()->ShooterAngle.POST, ()->ShooterSpeed.SPEAKER).alongWith(),
+      
 
-        new WaitCommand(1),
-        new InstantCommand(()->{
-          shooter.setFeeder(1);
-        }, shooter),
+      new WaitCommand(1),
+      new InstantCommand(()->{
+        shooter.setFeeder(1);
+      }, shooter),
 
-        new WaitCommand(0.3),
+      new WaitCommand(0.3),
 
-        new InstantCommand(()->{
-          shooter.setShooter(0);
-          shooter.setFeeder(0);
-        }, shooter),
-        
+      new InstantCommand(()->{
+        shooter.setShooter(0);
+        shooter.setFeeder(0);
+      }, shooter),
+      
 
-        new StopCommand(drive)
+      new StopCommand(drive)
     );
   }
 }

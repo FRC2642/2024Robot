@@ -124,7 +124,7 @@ public class FollowPathCommand extends Command {
 
     double turn = MathR.getDistanceToAngle(360-DriveSubsystem.getYawDegrees(), nextPoint.holonomicRotation) / delta_t;
 
-    drive.move(velocity, turn * HEADING_KP);
+    drive.move(velocity, turn * HEADING_KP * 3);
   }
 
   @Override

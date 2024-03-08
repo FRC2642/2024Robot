@@ -19,7 +19,7 @@ import frc.robot.utils.MathR;
 
 public class ShooterSubsystem extends SubsystemBase implements IPositionable<ShooterSubsystem.ShooterPosition>{
 
-  private PIDController tiltPID = new PIDController(0.015, 0, 0);
+  private PIDController tiltPID = new PIDController(0.01, 0, 0);
   private PIDController shooterPID = new PIDController(0.2, 0, 0);
   private PIDController stopPID = new PIDController(0.1, 0, 0);
   
@@ -179,8 +179,8 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   public enum ShooterSpeed {
     TRAVEL(0),
     AMP(-80),
-    TRAP(-90),
-    SPEAKER(-150);
+    TRAP(-120),
+    SPEAKER(-200);
 
     public final double rpm;
     private ShooterSpeed(double rpm) {
@@ -193,9 +193,12 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
     AMP(-20),
     TRAP(51),
     SUBWOOFER(60),
-    SUBWOOFER_AUTO(46),
     POST(30),
     FAR_POST(27),
+    LINE(45),
+    AMP_NOTE(37),
+    NOTE2(37),
+
     NONE(-1);
 
     public final double angle;
@@ -206,5 +209,7 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
 
   @Override
   public void periodic() {
+    //System.out.println(getNoteDetected());
+    
   }
 }
