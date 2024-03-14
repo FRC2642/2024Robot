@@ -17,7 +17,7 @@ import frc.robot.path.*;
 public class FollowPathCommand extends Command {
 
   public static final double HEADING_KP = 0.00027925;
-  public static final double MOVEMENT_KP = 0.07;//.016;
+  public static final double MOVEMENT_KP = 0.07;
   public static final double BASE_PRECISION = 0.05;
   public static final double TIME_TO_CORRECT_FROM_START = 1.5;
 
@@ -112,8 +112,6 @@ public class FollowPathCommand extends Command {
     while ((nextPoint == null || nextPoint.time - currentTime < lookAheadTime) && iterator.hasNext())
       nextPoint = iterator.next();
 
-    //System.out.println("gyro: "+DriveSubsystem.getYawDegrees());
-    //System.out.println(nextPoint.holonomicRotation);
     var delta_t = nextPoint.time - currentTime;
     if (delta_t < lookAheadTime) delta_t = lookAheadTime;
     
@@ -124,7 +122,7 @@ public class FollowPathCommand extends Command {
 
     double turn = MathR.getDistanceToAngle(360-DriveSubsystem.getYawDegrees(), nextPoint.holonomicRotation) / delta_t;
 
-    drive.move(velocity, turn * HEADING_KP * 3);
+    drive.move(velocity, turn * HEADING_KP);
   }
 
   @Override

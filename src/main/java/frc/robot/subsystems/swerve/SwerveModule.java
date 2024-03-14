@@ -40,7 +40,7 @@ public class SwerveModule {
 
   // MODULE WHEEL MEASUREMENTS
   public double getWheelSpeed() {
-    return driveMotor.getVelocity().getValue() * Constants.FEET_PER_DISPLACEMENT * (100d/1d);
+    return driveMotor.getVelocity().getValue() * Constants.FEET_PER_DISPLACEMENT; /* * (100d/1d);*/
   }
 
   private double getWheelPosition() {

@@ -7,27 +7,21 @@ package frc.robot.commands.auto.fullAutos;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.auto.drive.DriveDistanceCommand;
 import frc.robot.commands.auto.drive.FollowPathCommand;
 import frc.robot.commands.auto.drive.StopCommand;
-import frc.robot.commands.auto.positionable.SetShooterCommand;
-import frc.robot.commands.teleop.resetters.ResetGyroCommand;
+import frc.robot.commands.auto.positionable.AutoAimShooterCommand;
 import frc.robot.path.PiratePath;
-import frc.robot.path.PiratePoint;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.ShooterSubsystem.ShooterAngle;
 import frc.robot.subsystems.ShooterSubsystem.ShooterSpeed;
-import frc.robot.utils.Easings.Functions;
-import frc.robot.utils.VectorR;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class OnePiecePath extends SequentialCommandGroup {
   /** Creates a new OnePiecePath. */
-  public OnePiecePath(DriveSubsystem drive, ShooterSubsystem shooter) {
+  public OnePiecePath(DriveSubsystem drive, ShooterSubsystem shooter, LimelightSubsystem shooterLimelight) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     PiratePath path = new PiratePath("OnePiecePath", false);
@@ -41,7 +35,7 @@ public class OnePiecePath extends SequentialCommandGroup {
       
       
 
-        new SetShooterCommand(shooter, ()->ShooterAngle.SUBWOOFER, ()->ShooterSpeed.SPEAKER),
+        new AutoAimShooterCommand(shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
       
         new WaitCommand(2),
         new InstantCommand(()->{

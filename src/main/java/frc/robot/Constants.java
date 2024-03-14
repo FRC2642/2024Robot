@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.swerve.SwerveModules.ModuleLocation;
 
 import frc.robot.subsystems.swerve.SwerveModuleInfo;
 import frc.robot.subsystems.swerve.SwerveModules.ModuleLocation;

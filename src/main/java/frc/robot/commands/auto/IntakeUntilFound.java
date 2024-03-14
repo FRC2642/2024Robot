@@ -11,7 +11,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
 import frc.robot.subsystems.RobotState.RobotConfiguration;
-import frc.robot.subsystems.ShooterSubsystem.ShooterPosition;
+import frc.robot.subsystems.ShooterSubsystem.ShooterAngle;
 
 public class IntakeUntilFound extends Command {
   /** Creates a new IntakeUntilFound. */
@@ -40,7 +40,7 @@ public class IntakeUntilFound extends Command {
   @Override
   public void execute() {
     intake.set(position.get());
-    shooter.set(ShooterPosition.TRAVEL);
+    shooter.tiltToAngle(ShooterAngle.TRAVEL.angle);
     intake.setIntake(0.9);
     if (revShooter){
       shooter.tiltToAngle(angle.get().angle);
@@ -49,7 +49,7 @@ public class IntakeUntilFound extends Command {
       shooter.stopShooter();
     }
     
-    shooter.setFeeder(0.2);
+    shooter.setFeeder(0.8);
     
   }
 

@@ -7,9 +7,9 @@ package frc.robot.commands.auto.fullAutos;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.auto.positionable.SetShooterCommand;
+import frc.robot.commands.auto.positionable.AutoAimShooterCommand;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.ShooterSubsystem.ShooterAngle;
 import frc.robot.subsystems.ShooterSubsystem.ShooterSpeed;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -17,14 +17,14 @@ import frc.robot.subsystems.ShooterSubsystem.ShooterSpeed;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class OnePieceCommand extends SequentialCommandGroup {
   /** Creates a new OnePieceCommand. */
-  public OnePieceCommand(ShooterSubsystem shooter) {
+  public OnePieceCommand(ShooterSubsystem shooter, LimelightSubsystem shooterLimelight) {
     
     addCommands(
       new InstantCommand(() -> {
         shooter.setSpeedLimit(0.5);
       }, shooter),
 
-        new SetShooterCommand(shooter, ()->ShooterAngle.SUBWOOFER, ()->ShooterSpeed.SPEAKER),
+        new AutoAimShooterCommand(shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
       
         new WaitCommand(0.5),
         new InstantCommand(()->{

@@ -7,20 +7,20 @@ package frc.robot.commands.auto.positionable;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.ShooterSubsystem.ShooterSpeed;
 
 
-public class SetShooterCommand extends Command {
+public class AutoAimShooterCommand extends Command {
 
   private final ShooterSubsystem shooter;
-  private final Supplier<ShooterSubsystem.ShooterAngle> angle;
   private final Supplier<ShooterSubsystem.ShooterSpeed> speed;
+  private final LimelightSubsystem shooterLimelight;
   
-  public SetShooterCommand(ShooterSubsystem shooter, Supplier<ShooterSubsystem.ShooterAngle> angle, Supplier<ShooterSubsystem.ShooterSpeed> speed) {
+  public AutoAimShooterCommand(ShooterSubsystem shooter, Supplier<ShooterSubsystem.ShooterSpeed> speed, LimelightSubsystem shooterLimelight) {
     this.shooter = shooter;
-    this.angle = angle;
     this.speed = speed;
+    this.shooterLimelight = shooterLimelight;
     addRequirements(shooter);
   }
   @Override
@@ -33,7 +33,7 @@ public class SetShooterCommand extends Command {
   
   @Override
   public void execute() {
-    shooter.tiltToAngle(angle.get().angle);
+    shooter.tiltToAngle(shooter.getAutoAngle(shooterLimelight.y));
     shooter.set(speed.get());
   }
 
@@ -42,6 +42,6 @@ public class SetShooterCommand extends Command {
     //System.out.println("angle: "+angle.get().angle + " pitch: "+shooter.getPitch());
     
     
-    return shooter.getPitch() >= angle.get().angle - 3 && shooter.getPitch() <= angle.get().angle + 3;
+    return shooter.getPitch() >= shooter.getAutoAngle(shooterLimelight.y) - 3 && shooter.getPitch() <= shooter.getAutoAngle(shooterLimelight.y) + 3;
   }
 }

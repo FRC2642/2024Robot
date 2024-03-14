@@ -5,26 +5,20 @@
 package frc.robot.commands.auto.fullAutos;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.auto.IntakeUntilFound;
 import frc.robot.commands.auto.drive.FollowPathCommand;
 import frc.robot.commands.auto.drive.StopCommand;
+import frc.robot.commands.auto.positionable.AutoAimShooterCommand;
 import frc.robot.commands.auto.positionable.SetIntakeCommand;
-import frc.robot.commands.auto.positionable.SetRobotConfigurationCommand;
-import frc.robot.commands.auto.positionable.SetShooterCommand;
-import frc.robot.commands.teleop.resetters.ResetDisplacementCommand;
-import frc.robot.commands.teleop.resetters.ResetGyroCommand;
 import frc.robot.path.PiratePath;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
-import frc.robot.subsystems.RobotState.RobotConfiguration;
 import frc.robot.subsystems.ShooterSubsystem.ShooterAngle;
-import frc.robot.subsystems.ShooterSubsystem.ShooterPosition;
 import frc.robot.subsystems.ShooterSubsystem.ShooterSpeed;
 import frc.robot.utils.VectorR;
 
@@ -33,7 +27,7 @@ import frc.robot.utils.VectorR;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class FourPieceCommand extends SequentialCommandGroup {
   /** Creates a new FrontTwoPiece. */
-  public FourPieceCommand(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake) {
+  public FourPieceCommand(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem shooterLimelight) {
     PiratePath path = new PiratePath("FourPiecePath", false);
     var paths = path.getSubPaths();
     var shootNote = paths.get(0);
@@ -53,7 +47,7 @@ public class FourPieceCommand extends SequentialCommandGroup {
 
         //1ST NOTE
         new FollowPathCommand(drive, shootNote, true, 0.25).alongWith(
-          new SetShooterCommand(shooter, ()->ShooterAngle.LINE, ()->ShooterSpeed.SPEAKER),
+          new AutoAimShooterCommand(shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
           new SetIntakeCommand(intake, ()->IntakePosition.EXTENDED)
         ),
       
@@ -66,7 +60,7 @@ public class FourPieceCommand extends SequentialCommandGroup {
 
         //2ND NOTE
         new FollowPathCommand(drive, getNoteShootNote, false, 0.25).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, true, ()->ShooterAngle.AMP_NOTE)
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, true, ()->ShooterAngle.TRAVEL)
         ).withTimeout(3),
 
         
@@ -98,7 +92,7 @@ public class FourPieceCommand extends SequentialCommandGroup {
         }, shooter),
 
         new FollowPathCommand(drive, getNote, false, 0.25).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false, ()->ShooterAngle.AMP_NOTE)
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false, ()->ShooterAngle.TRAVEL)
         ).withTimeout(3),
 
         new InstantCommand(()->{
@@ -108,7 +102,7 @@ public class FourPieceCommand extends SequentialCommandGroup {
 
         new WaitCommand(0.1).alongWith(
           new FollowPathCommand(drive, shootNote2, false, 0.25),
-          new SetShooterCommand(shooter, ()->ShooterAngle.NOTE2, ()->ShooterSpeed.SPEAKER).andThen(
+          new AutoAimShooterCommand(shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight).andThen(
             new InstantCommand(()->{
               shooter.setFeeder(1);
             }, shooter)
@@ -139,7 +133,7 @@ public class FourPieceCommand extends SequentialCommandGroup {
         }, shooter),
 
         new FollowPathCommand(drive, shootNote3, false, 0.25).alongWith(
-          new SetShooterCommand(shooter, ()->ShooterAngle.POST, ()->ShooterSpeed.SPEAKER),
+          new AutoAimShooterCommand(shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
           new SetIntakeCommand(intake, ()->IntakePosition.RETRACTED)
         ),
 
