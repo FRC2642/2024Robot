@@ -6,6 +6,7 @@ package frc.robot.commands.teleop;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class ManualShooterCommand extends Command {
@@ -47,6 +48,13 @@ public class ManualShooterCommand extends Command {
     }
     else if (mainControl.getPOV() == 180){
       shooter.setManual(-0.5);
+    }
+
+    if (mainControl.getRawButton(8)){
+      shooter.tiltToAngle(RobotContainer.ANGLE);
+    }
+    else{
+      shooter.setManual(0);
     }
     
     

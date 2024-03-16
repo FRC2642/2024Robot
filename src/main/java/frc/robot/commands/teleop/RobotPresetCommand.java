@@ -8,8 +8,10 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.RobotState;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -70,7 +72,7 @@ public class RobotPresetCommand extends Command {
 
   @Override
   public void execute() {
-    
+    control.setRumble(RumbleType.kBothRumble, 0);
     
     ///////////////////////////DRIVE///////////////////////////////
     maxSpeed = MathR.lerp(0.25, 1.0, 0.0, 1.0, control.getLeftTriggerAxis());
@@ -155,6 +157,7 @@ public class RobotPresetCommand extends Command {
       
     }
     else if (shooterLimelight.isDetection){
+      //shooter.setManual(0);
       shooter.tiltToAngle(shooter.getAutoAngle(shooterLimelight.y));
     }
     else{
@@ -184,6 +187,7 @@ public class RobotPresetCommand extends Command {
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE)){
       if (RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP)){
         intake.setIntake(0.4);
+        drive.move(leftJoystick, turnPower * maxSpeed);
       }
       
       else{
@@ -200,7 +204,7 @@ public class RobotPresetCommand extends Command {
             intakeTimer.reset();
             intakeTimer.start();
           }
-          if (intakeTimer.get() <= 0.2){
+          if (intakeTimer.get() <= 0.1){
             shooter.setFeeder(-0.3);
           }
           else{
@@ -209,6 +213,7 @@ public class RobotPresetCommand extends Command {
           intake.setIntake(0);
           
           intake.set(IntakePosition.RETRACTED);
+          control.setRumble(RumbleType.kBothRumble, 0.5);
         }
 
         double limelightTurnPower = MathR.limit(LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, intakeLimelight.x), -0.10, 0.10) * -1;
@@ -224,6 +229,8 @@ public class RobotPresetCommand extends Command {
         }
         
       }
+      
+      
     }
     else if (!(RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP))){
       intake.setIntake(0);

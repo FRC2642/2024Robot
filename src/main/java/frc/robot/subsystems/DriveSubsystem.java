@@ -153,7 +153,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     //System.out.println(displacement);
     
-    modules.debugSmartDashboard();
+    modules.debugSmartDashboard();    
 
     SmartDashboard.putNumber("gyro", getYawDegrees());
 

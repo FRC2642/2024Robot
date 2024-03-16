@@ -24,12 +24,12 @@ public class FollowPathCommand extends Command {
   public double lookAheadTime = BASE_PRECISION;
   public final Double startingLookAheadTime;
 
-  private final DriveSubsystem drive;
-  private final Timer timer = new Timer();
+  protected final DriveSubsystem drive;
+  protected final Timer timer = new Timer();
   private final PiratePath notAdjustedPath;
 
   protected Iterator<PiratePoint> iterator = null;
-  private PiratePath path;
+  protected PiratePath path;
   public double currentTime;
   private final boolean recenterDisplacementToFirstPoint;
 

@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auto.drive.StopCommand;
 import frc.robot.commands.auto.fullAutos.FourPieceCommand;
@@ -75,6 +76,7 @@ public class RobotContainer {
   }
 
   public void autonomousInit() {
+    CommandScheduler.getInstance().cancelAll();
     drive.setDefaultCommand(new StopCommand(drive));
     shooter.setDefaultCommand(new RunCommand(()-> shooter.setShooter(0.0), shooter));
     elevator.setDefaultCommand(new RunCommand(()-> elevator.set(0.0), elevator));
@@ -104,6 +106,15 @@ public class RobotContainer {
       elevator.setDefaultCommand(new ManualElevatorCommand(elevator, mainControl));
       intake.setDefaultCommand(new ManualIntakeCommand(intake, mainControl));
       shooter.setDefaultCommand(new ManualShooterCommand(shooter, mainControl));     
+      
+      new JoystickButton(mainControl, 7).onTrue(new InstantCommand(()->{
+        ShooterSubsystem.dataArray.add(new Double[]{ANGLE, shooterLimelight.a});
+        for (int i = 0; i < ShooterSubsystem.dataArray.size(); i++){
+          System.out.println(ShooterSubsystem.dataArray.get(i)[0] + ","+ShooterSubsystem.dataArray.get(i)[1]);          
+        }
+        System.out.println("");
+      }));
+
     }
   }
 
