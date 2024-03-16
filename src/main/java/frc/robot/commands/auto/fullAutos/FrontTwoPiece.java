@@ -40,7 +40,7 @@ public class FrontTwoPiece extends SequentialCommandGroup {
         shooter.setSpeedLimit(0.5);
       }, drive, intake, shooter),
 
-      new AutoAimShooterCommand(shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
+      new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
     
       new WaitCommand(0.7),
       new InstantCommand(()->{
@@ -55,7 +55,7 @@ public class FrontTwoPiece extends SequentialCommandGroup {
 
       
       new FollowPathCommand(drive, getNote, true, 0.25).alongWith(
-        new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false, ()->ShooterAngle.TRAVEL)
+        new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
       ).withTimeout(3),
 
       
@@ -73,7 +73,7 @@ public class FrontTwoPiece extends SequentialCommandGroup {
       }, shooter),
 
 
-      new AutoAimShooterCommand(shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
+      new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
       
 
       new WaitCommand(1),

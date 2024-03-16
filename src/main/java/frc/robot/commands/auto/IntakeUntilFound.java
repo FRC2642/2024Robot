@@ -8,8 +8,8 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
 import frc.robot.subsystems.RobotState.RobotConfiguration;
 import frc.robot.subsystems.ShooterSubsystem.ShooterAngle;
 
@@ -21,12 +21,11 @@ public class IntakeUntilFound extends Command {
   Supplier<IntakeSubsystem.IntakePosition> position;
   Supplier<ShooterSubsystem.ShooterAngle> angle;
   boolean revShooter;
-  public IntakeUntilFound(Supplier<IntakeSubsystem.IntakePosition> position, IntakeSubsystem intake, ShooterSubsystem shooter, boolean revShooter, Supplier<ShooterSubsystem.ShooterAngle> angle) {
+  LimelightSubsystem shooterLimelight;
+  public IntakeUntilFound(Supplier<IntakeSubsystem.IntakePosition> position, IntakeSubsystem intake, ShooterSubsystem shooter) {
     this.intake = intake;
     this.shooter = shooter;
-    this.position = position;       
-    this.angle = angle;              
-    this.revShooter = revShooter;                                                                                                                                                    
+    this.position = position;                                                                                                                                             
     addRequirements(intake, shooter);
   }
 
@@ -41,15 +40,10 @@ public class IntakeUntilFound extends Command {
   public void execute() {
     intake.set(position.get());
     shooter.tiltToAngle(ShooterAngle.TRAVEL.angle);
-    intake.setIntake(0.9);
-    if (revShooter){
-      shooter.tiltToAngle(angle.get().angle);
-    }
-    else{
-      shooter.stopShooter();
-    }
     
-    shooter.setFeeder(0.8);
+    intake.setIntake(0.7);
+    shooter.stopShooter();
+    shooter.setFeeder(0.6);
     
   }
 
@@ -60,6 +54,10 @@ public class IntakeUntilFound extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shooter.getNoteDetected();
+    if (ShooterSubsystem.getNoteDetected()){
+      shooter.setFeeder(0);
+      intake.setIntake(0);
+    }
+    return ShooterSubsystem.getNoteDetected();
   }
 }

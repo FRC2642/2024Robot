@@ -117,7 +117,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   }
 
   public enum IntakePosition {
-    RETRACTED(138),
+    RETRACTED(133),
     EXTENDED(0),
     OUT_OF_THE_WAY(110),
     AMP(105),

@@ -45,7 +45,7 @@ public class OptimizedThreePiece extends SequentialCommandGroup {
 
         //1ST NOTE
         new FollowPathCommand(drive, shootNote, true, 0.25).alongWith(
-          new AutoAimShooterCommand(shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
+          new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
           new SetIntakeCommand(intake, ()->IntakePosition.EXTENDED)
         ),
       
@@ -58,7 +58,7 @@ public class OptimizedThreePiece extends SequentialCommandGroup {
 
         //2ND NOTE
         new FollowPathCommand(drive, getNoteShootNote, false, 0.25).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false, ()->ShooterAngle.TRAVEL)
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
         ).withTimeout(3),
 
         
@@ -73,7 +73,7 @@ public class OptimizedThreePiece extends SequentialCommandGroup {
           shooter.setFeeder(0);
         }, shooter),
 
-        new AutoAimShooterCommand(shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
+        new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
         
 
         new WaitCommand(0.5),
@@ -90,7 +90,7 @@ public class OptimizedThreePiece extends SequentialCommandGroup {
         }, shooter),
 
         new FollowPathCommand(drive, getNote, false, 0.25).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false, ()->ShooterAngle.TRAVEL)
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
         ).withTimeout(3),
 
         new InstantCommand(()->{
@@ -107,7 +107,7 @@ public class OptimizedThreePiece extends SequentialCommandGroup {
           }, shooter)
         ),
         
-        new AutoAimShooterCommand(shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
+        new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
 
         new InstantCommand(()->{
           shooter.setFeeder(1);

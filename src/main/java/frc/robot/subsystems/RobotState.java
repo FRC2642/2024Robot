@@ -38,8 +38,8 @@ public class RobotState {
         SHOOT_SPEAKER(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterSpeed.SPEAKER, ShooterAngle.NONE),
         SHOOT_AMP(ElevatorPosition.TRAVEL, IntakePosition.AMP, ShooterSpeed.TRAVEL, ShooterAngle.NONE),
         SHOOT_TRAP(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterSpeed.TRAP, ShooterAngle.NONE),
-        INTAKE(ElevatorPosition.TRAVEL, IntakePosition.EXTENDED, ShooterSpeed.TRAVEL, ShooterAngle.NONE),
-        TRAVEL(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.NONE);
+        INTAKE(ElevatorPosition.TRAVEL, IntakePosition.EXTENDED, ShooterSpeed.TRAVEL, ShooterAngle.TRAVEL),
+        TRAVEL(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.TRAVEL);
         
         public final ShooterSpeed shooterSpeed;
         public final ShooterAngle shooterAngle;

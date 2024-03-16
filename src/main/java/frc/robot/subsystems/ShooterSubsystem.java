@@ -16,17 +16,17 @@ import frc.robot.utils.MathR;
 
 public class ShooterSubsystem extends SubsystemBase{
 
-  private PIDController tiltPID = new PIDController(0.01, 0, 0);
+  private PIDController tiltPID = new PIDController(0.02, 0, 0);
   private PIDController shooterPID = new PIDController(0.2, 0, 0);
-  private PIDController stopPID = new PIDController(0.18, 0, 0);
+  private PIDController stopPID = new PIDController(0.2, 0, 0);
   
-  private TalonFX shooterMotor = new TalonFX(Constants.SHOOTER_SPINNER_ID);
+  private static TalonFX shooterMotor = new TalonFX(Constants.SHOOTER_SPINNER_ID);
   private CANSparkMax shooterTiltMotor = new CANSparkMax(Constants.SHOOTER_PIVOT_ID, MotorType.kBrushless);
   private CANSparkMax feederMotor = new CANSparkMax(Constants.FEEDER_WHEELS_ID, MotorType.kBrushless);
 
   private static SparkAbsoluteEncoder tiltEncoder;
 
-  private DigitalInput beamBreak = new DigitalInput(Constants.BEAM_BREAK_CHANNEL);
+  private static DigitalInput beamBreak = new DigitalInput(Constants.BEAM_BREAK_CHANNEL);
 
 
   public static final double MAX_DEGREES = 70;
@@ -46,6 +46,7 @@ public class ShooterSubsystem extends SubsystemBase{
 
   public void set(ShooterSpeed speedPreset) {
     double motorPower = MathR.limit(shooterPID.calculate(shooterMotor.getVelocity().getValueAsDouble(), speedPreset.rpm), -1, 1);
+    //System.out.println(motorPower);
     
     if (!shooterPID.atSetpoint())
       shooterMotor.set(motorPower);
@@ -57,8 +58,17 @@ public class ShooterSubsystem extends SubsystemBase{
     return MathR.getDistanceToAngle(0, tiltEncoder.getPosition() / (Constants.SHOOTER_TILT_ENCODER_MAX_VALUE - Constants.SHOOTER_TILT_ENCODER_MIN_VALUE) * 360 + Constants.SHOOTER_TILT_ENCODER_OFFSET, 180);
   }
 
-  public boolean getNoteDetected(){
+  public static double getMotorVelocity(){
+    return shooterMotor.getVelocity().getValueAsDouble();
+  }
+
+  public static boolean getNoteDetected(){
     return !beamBreak.get();
+  }
+
+  public boolean atSetSpeed(){
+    
+    return (shooterMotor.getVelocity().getValue() >= RobotState.getRobotConfiguration().shooterSpeed.rpm - 10) && (shooterMotor.getVelocity().getValue() <= RobotState.getRobotConfiguration().shooterSpeed.rpm + 10);
   }
 
   public void tiltToAngle(double degrees){
@@ -104,6 +114,7 @@ public class ShooterSubsystem extends SubsystemBase{
     AMP(-80),
     TRAP(-50),
     SPEAKER(-200);
+
 
     public final double rpm;
     private ShooterSpeed(double rpm) {

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.auto.drive.StopCommand;
 import frc.robot.commands.auto.fullAutos.FourPieceCommand;
 import frc.robot.commands.auto.fullAutos.FrontThreePiece;
 import frc.robot.commands.auto.fullAutos.FrontTwoPiece;
@@ -56,24 +57,25 @@ public class RobotContainer {
     SmartDashboard.putNumber("DEBUG MODE", 0);
     SmartDashboard.putNumber("ANGLE", 0);
     
+    
     // Auto options
     autoChooser.setDefaultOption("NO AUTO SELECTED!", new WaitCommand(15));
     
-    autoChooser.addOption("1 Piece Stop", new OnePieceCommand(shooter, shooterLimelight));
+    autoChooser.addOption("1 Piece Stop", new OnePieceCommand(drive, shooter, shooterLimelight));
     autoChooser.addOption("1 Piece Move", new OnePiecePath(drive, shooter, shooterLimelight));
     autoChooser.addOption("2 Piece", new FrontTwoPiece(drive, shooter, intake, shooterLimelight));
     autoChooser.addOption("3 Piece", new FrontThreePiece(drive, shooter, intake, shooterLimelight));
     autoChooser.addOption("3 Piece Optimized", new OptimizedThreePiece(drive, shooter, intake, shooterLimelight));
-    autoChooser.addOption("4 Piece", new FourPieceCommand(drive, shooter, intake, shooterLimelight));
+    autoChooser.addOption("4 Piece", new FourPieceCommand(drive, shooter, intake, shooterLimelight, intakeLimelight));
     autoChooser.addOption("Side 2 Piece", new SideTwoPiece(drive, shooter, intake, shooterLimelight));
-    autoChooser.addOption("Move", new MoveCommand(drive));
+    autoChooser.addOption("Move", new MoveCommand(drive, intakeLimelight, intake));
     
     
     SmartDashboard.putData(autoChooser);
   }
 
   public void autonomousInit() {
-    drive.setDefaultCommand(new RunCommand(() -> drive.stop(), drive));
+    drive.setDefaultCommand(new StopCommand(drive));
     shooter.setDefaultCommand(new RunCommand(()-> shooter.setShooter(0.0), shooter));
     elevator.setDefaultCommand(new RunCommand(()-> elevator.set(0.0), elevator));
     intake.setDefaultCommand(new RunCommand(()-> intake.set(0.0), intake));

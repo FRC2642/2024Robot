@@ -43,7 +43,7 @@ public class SideTwoPiece extends SequentialCommandGroup {
       }, drive, intake, shooter),
 
         //1ST NOTE
-        new AutoAimShooterCommand(shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
+        new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
       
         new WaitCommand(0.7),
         new InstantCommand(()->{
@@ -61,7 +61,7 @@ public class SideTwoPiece extends SequentialCommandGroup {
 
         //2ND NOTE
         new FollowPathCommand(drive, getNote, false, 0.25).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false, ()->ShooterAngle.TRAVEL)
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
         ).withTimeout(3),
         
         new InstantCommand(()->{
@@ -77,7 +77,7 @@ public class SideTwoPiece extends SequentialCommandGroup {
 
         new FollowPathCommand(drive, moveBack, false, 0.25),
 
-        new AutoAimShooterCommand(shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
+        new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
 
         new WaitCommand(0.8),
         new InstantCommand(()->{

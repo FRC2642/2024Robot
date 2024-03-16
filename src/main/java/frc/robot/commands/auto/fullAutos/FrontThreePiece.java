@@ -44,7 +44,7 @@ public class FrontThreePiece extends SequentialCommandGroup {
       }, drive, intake, shooter),
 
         //1ST NOTE
-        new AutoAimShooterCommand(shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
+        new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
       
         new WaitCommand(0.7),
         new InstantCommand(()->{
@@ -59,7 +59,7 @@ public class FrontThreePiece extends SequentialCommandGroup {
 
         //2ND NOTE
         new FollowPathCommand(drive, getNote, true, 0.25).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false, ()->ShooterAngle.TRAVEL)
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
         ).withTimeout(3),
 
         
@@ -74,7 +74,7 @@ public class FrontThreePiece extends SequentialCommandGroup {
           shooter.setFeeder(0);
         }, shooter),
 
-        new AutoAimShooterCommand(shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
+        new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
         
 
         new WaitCommand(0.5),
@@ -91,7 +91,7 @@ public class FrontThreePiece extends SequentialCommandGroup {
         }, shooter),
 
         new FollowPathCommand(drive, getNote2, false, 0.25).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false, ()->ShooterAngle.TRAVEL)
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
         ).withTimeout(3),
 
         new InstantCommand(()->{
@@ -105,7 +105,7 @@ public class FrontThreePiece extends SequentialCommandGroup {
         }, shooter),
 
         new FollowPathCommand(drive, shootNote, false, 0.25).alongWith(
-          new AutoAimShooterCommand(shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight)
+          new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight)
         ),
         
         new InstantCommand(()->{

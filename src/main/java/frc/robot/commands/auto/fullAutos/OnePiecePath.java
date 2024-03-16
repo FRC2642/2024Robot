@@ -35,7 +35,7 @@ public class OnePiecePath extends SequentialCommandGroup {
       
       
 
-        new AutoAimShooterCommand(shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
+        new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
       
         new WaitCommand(2),
         new InstantCommand(()->{
