@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.LimelightSubsystem.DetectionType;
@@ -27,7 +26,6 @@ public class RobotPresetCommand extends Command {
   /** Creates a new RobotPresetCommand. */
   DriveSubsystem drive;
   ShooterSubsystem shooter;
-  ElevatorSubsystem elevator;
   IntakeSubsystem intake;
   LimelightSubsystem shooterLimelight;
   LimelightSubsystem intakeLimelight;
@@ -48,22 +46,20 @@ public class RobotPresetCommand extends Command {
   private boolean intakeTimerStarted = false;
   
 
-  public RobotPresetCommand(DriveSubsystem drive, ShooterSubsystem shooter, ElevatorSubsystem elevator, IntakeSubsystem intake, LimelightSubsystem shooterLimelight, LimelightSubsystem intakeLimelight, XboxController control, Joystick auxButtonBoard) {
+  public RobotPresetCommand(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem shooterLimelight, LimelightSubsystem intakeLimelight, XboxController control, Joystick auxButtonBoard) {
     this.drive = drive;
     this.shooter = shooter;
-    this.elevator = elevator;
     this.intake = intake;
     this.shooterLimelight = shooterLimelight;
     this.intakeLimelight = intakeLimelight;
     this.control = control;
     this.auxButtonBoard = auxButtonBoard;
-    addRequirements(drive, shooter, elevator, intake, shooterLimelight, intakeLimelight);
+    addRequirements(drive, shooter, intake, shooterLimelight, intakeLimelight);
   }
 
   @Override
   public void initialize() {
     shooter.setSpeedLimit(0.5);
-    elevator.setSpeedLimit(0.6);
     intake.setSpeedLimit(0.8);
     shooterLimelight.setDetectionType(DetectionType.FIDUCIAL);
     intakeLimelight.setDetectionType(DetectionType.NOTE);
@@ -286,15 +282,10 @@ public class RobotPresetCommand extends Command {
 
     //CLIMB PRESET
     if (control.getPOV() == 90){
-      elevator.setManual(0.8);
-      //elevator.set(ElevatorPosition.CLIMB);
+      shooter.setManual(0.8);
     }
     else if (control.getPOV() == 270){
-      elevator.setManual(-0.8);
-      //elevator.set(RobotState.getRobotConfiguration().elevatorPos);
-    }
-    else{
-      elevator.setManual(0);
+      shooter.setManual(-0.8);
     }
   }
 

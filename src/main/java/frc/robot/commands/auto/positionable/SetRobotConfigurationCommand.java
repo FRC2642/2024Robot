@@ -5,7 +5,6 @@
 package frc.robot.commands.auto.positionable;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.RobotState.RobotConfiguration;
@@ -13,12 +12,11 @@ import frc.robot.subsystems.RobotState.RobotConfiguration;
 public class SetRobotConfigurationCommand extends ParallelCommandGroup {
   private final RobotConfiguration configuration;
 
-  public SetRobotConfigurationCommand(RobotConfiguration config, ShooterSubsystem shooter, ElevatorSubsystem elevator, IntakeSubsystem intake) {
+  public SetRobotConfigurationCommand(RobotConfiguration config, ShooterSubsystem shooter, IntakeSubsystem intake) {
     configuration = config;
    
     addCommands(
       new SetShooterCommand(shooter, () -> configuration.shooterAngle, ()->configuration.shooterSpeed),
-      new SetElevatorCommand(elevator, () -> configuration.elevatorPos),
       new SetIntakeCommand(intake, () -> configuration.intakePos)
     );
     

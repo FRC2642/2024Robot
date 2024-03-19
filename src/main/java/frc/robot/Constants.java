@@ -27,14 +27,11 @@ public final class Constants {
 
     // Shooter
     public static final int SHOOTER_SPINNER_ID = 21;
-    public static final int SHOOTER_PIVOT_ID = 22;
-    public static final int FEEDER_WHEELS_ID = 23;
-
-    // Elevator
-    public static final int ELEVATOR_MOTOR_1_ID = 31;
-    public static final int ELEVATOR_MOTOR_2_ID = 32;
-    public static final int ELEVATOR_ENCODER_DIGITAL_PORT_A = 0;
-    public static final int ELEVATOR_ENCODER_DIGITAL_PORT_B = 1;
+    public static final int SHOOTER_PIVOT_ID_1 = 22;
+    public static final int SHOOTER_PIVOT_ID_2 = 23;
+    public static final int FEEDER_WHEELS_ID = 24;
+    public static final int SHOOTER_ENCODER_DIGITAL_PORT_A = 0;
+    public static final int SHOOTER_ENCODER_DIGITAL_PORT_B = 1;
 
     // Intake
     public static final int INTAKE_PIVOT_ID = 41;
@@ -53,11 +50,6 @@ public final class Constants {
     public static final double SHOOTER_TILT_ENCODER_OFFSET = 8.8;
     public static final double SHOOTER_STANDARD_HEIGHT = 0.458333;
     
-    public static final double ELEVATOR_ENCODER_WHEN_AT_TOP = 51450;
-    public static final double ELEVATOR_ENCODER_OFFSET = 0; //CHANGE
-    public static final double ELEVATOR_MAX_HEIGHT_FEET = 1.75;
-    public static final double ELEVATOR_MECHANISM_HEIGHT = 0.39583333;
-
     public static final double INTAKE_TILT_ENCODER_MAX_VALUE = 1;
     public static final double INTAKE_TILT_ENCODER_MIN_VALUE = 0;
     public static final double INTAKE_TILT_ENCODER_OFFSET = 88;

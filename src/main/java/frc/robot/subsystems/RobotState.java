@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.subsystems.ElevatorSubsystem.ElevatorPosition;
 import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
 import frc.robot.subsystems.ShooterSubsystem.ShooterAngle;
 import frc.robot.subsystems.ShooterSubsystem.ShooterSpeed;
@@ -35,24 +34,21 @@ public class RobotState {
     }
 
     public enum RobotConfiguration {
-        SHOOT_SPEAKER(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterSpeed.SPEAKER, ShooterAngle.NONE),
-        SHOOT_AMP(ElevatorPosition.TRAVEL, IntakePosition.AMP, ShooterSpeed.TRAVEL, ShooterAngle.NONE),
-        SHOOT_TRAP(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterSpeed.TRAP, ShooterAngle.NONE),
-        INTAKE(ElevatorPosition.TRAVEL, IntakePosition.EXTENDED, ShooterSpeed.TRAVEL, ShooterAngle.TRAVEL),
-        TRAVEL(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.TRAVEL);
+        SHOOT_SPEAKER(IntakePosition.RETRACTED, ShooterSpeed.SPEAKER, ShooterAngle.NONE),
+        SHOOT_AMP(IntakePosition.AMP, ShooterSpeed.TRAVEL, ShooterAngle.NONE),
+        SHOOT_TRAP(IntakePosition.RETRACTED, ShooterSpeed.TRAP, ShooterAngle.NONE),
+        INTAKE(IntakePosition.EXTENDED, ShooterSpeed.TRAVEL, ShooterAngle.TRAVEL),
+        TRAVEL(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.TRAVEL);
         
         public final ShooterSpeed shooterSpeed;
         public final ShooterAngle shooterAngle;
-        public final ElevatorPosition elevatorPos;
         public final IntakePosition intakePos;
         
         private RobotConfiguration( 
-        ElevatorPosition elevatorPos,
         IntakePosition intakePos,
         ShooterSpeed shooterSpeed,
         ShooterAngle shooterAngle) {
         this.shooterSpeed = shooterSpeed;
-        this.elevatorPos = elevatorPos;
         this.intakePos = intakePos;
         this.shooterAngle = shooterAngle;
         }
