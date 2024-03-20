@@ -56,11 +56,11 @@ public class AutoAimShooterCommand extends Command {
     //System.out.println("angle: "+angle.get().angle + " pitch: "+shooter.getPitch());
   
     boolean robotReady = Math.abs(turnPower) <= 0.1;
-    boolean shooterRevReady = (ShooterSubsystem.getMotorVelocity() <= -70) && (ShooterSubsystem.getMotorVelocity() >= -94);
+    //boolean shooterRevReady = (ShooterSubsystem.getMotorVelocity() <= -70) && (ShooterSubsystem.getMotorVelocity() >= -94);
     boolean shooterAngleReady = (shooter.getPitch() >= shooter.getAutoAngle(shooterLimelight.y) - 0.9 && shooter.getPitch() <= shooter.getAutoAngle(shooterLimelight.y) + 0.9);
     System.out.println("robot: " + robotReady);
     //System.out.println("shooter: "+shooterAngleReady);
-    System.out.println("shooter rev: "+shooterRevReady);
+    //System.out.println("shooter rev: "+shooterRevReady);
     
     
     

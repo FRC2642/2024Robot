@@ -20,7 +20,8 @@ public class ShooterSubsystem extends SubsystemBase{
   private PIDController shooterPID = new PIDController(0.3, 0, 0);
   private PIDController stopPID = new PIDController(0.2, 0, 0);
   
-  private static TalonFX shooterMotor = new TalonFX(Constants.SHOOTER_SPINNER_ID);
+  private static TalonFX shooterMotor1 = new TalonFX(Constants.SHOOTER_SPINNER_ID_1);
+  private static TalonFX shooterMotor2 = new TalonFX(Constants.SHOOTER_SPINNER_ID_2);
   private TalonFX shooterTiltMotor1 = new TalonFX(Constants.SHOOTER_PIVOT_ID_1);
   private TalonFX shooterTiltMotor2 = new TalonFX(Constants.SHOOTER_PIVOT_ID_2);
   private TalonFX feederMotor = new TalonFX(Constants.FEEDER_WHEELS_ID);
@@ -49,13 +50,18 @@ public class ShooterSubsystem extends SubsystemBase{
   }
 
   public void set(ShooterSpeed speedPreset) {
-    double motorPower = MathR.limit(shooterPID.calculate(shooterMotor.getVelocity().getValueAsDouble(), speedPreset.rpm), -1, 1);
-    //System.out.println(motorPower);
+    double motorPower1 = MathR.limit(shooterPID.calculate(shooterMotor1.getVelocity().getValueAsDouble(), speedPreset.rpm), -1, 1);
+    double motorPower2 = MathR.limit(shooterPID.calculate(shooterMotor2.getVelocity().getValueAsDouble(), speedPreset.rpm), -1, 1);
+
     
-    if (!shooterPID.atSetpoint())
-      shooterMotor.set(motorPower);
-    else
-      shooterMotor.set(0);
+    if (!shooterPID.atSetpoint()){
+      shooterMotor1.set(motorPower1);
+      shooterMotor2.set(motorPower2);
+    }
+    else{
+      shooterMotor1.set(0);
+      shooterMotor2.set(0);
+      }
   }
 
   public double getPitch(){
@@ -63,7 +69,7 @@ public class ShooterSubsystem extends SubsystemBase{
   }
 
   public static double getMotorVelocity(){
-    return shooterMotor.getVelocity().getValueAsDouble();
+    return shooterMotor1.getVelocity().getValueAsDouble();
   }
 
   public static boolean getNoteDetected(){
@@ -71,8 +77,8 @@ public class ShooterSubsystem extends SubsystemBase{
   }
 
   public boolean atSetSpeed(){
+    return MathR.range(shooterMotor1.getVelocity().getValue(), RobotState.getRobotConfiguration().shooterSpeed.rpm, 10) && MathR.range(shooterMotor2.getVelocity().getValue(), RobotState.getRobotConfiguration().shooterSpeed.rpm, 10);
     
-    return (shooterMotor.getVelocity().getValue() >= RobotState.getRobotConfiguration().shooterSpeed.rpm - 10) && (shooterMotor.getVelocity().getValue() <= RobotState.getRobotConfiguration().shooterSpeed.rpm + 10);
   }
 
   public void tiltToAngle(double degrees){
@@ -92,17 +98,26 @@ public class ShooterSubsystem extends SubsystemBase{
   public void setShooter(double speed){
     //NEGATIVE = OUT
     //POSITIVE = IN
-    shooterMotor.set(-speed);
+    shooterMotor1.set(-speed);
+    shooterMotor2.set(speed);
+
   }
 
   public void stopShooter(){
-    double currentRPM = shooterMotor.getVelocity().getValueAsDouble();
-    double speed = MathR.limit(stopPID.calculate(currentRPM, 0), -1, 1);
+    double currentRPM1 = shooterMotor1.getVelocity().getValueAsDouble();
+    double speed1 = MathR.limit(stopPID.calculate(currentRPM1, 0), -1, 1);
+
+    double currentRPM2 = shooterMotor2.getVelocity().getValueAsDouble();
+    double speed2 = MathR.limit(stopPID.calculate(currentRPM2, 0), -1, 1);
     
-    if (Math.abs(speed) <= 0.2){
-      speed = 0;
+    if (Math.abs(speed1) <= 0.2){
+      speed1 = 0;
     }
-    shooterMotor.set(speed);
+    if (Math.abs(speed2) <= 0.2){
+      speed2 = 0;
+    }
+    shooterMotor1.set(speed1);
+    shooterMotor2.set(speed2);
   }
 
 

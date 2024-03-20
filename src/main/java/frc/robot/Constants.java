@@ -26,10 +26,11 @@ public final class Constants {
     public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(7, 8, 14, 53.36, -1, 1, ModuleLocation.BACK_LEFT);
 
     // Shooter
-    public static final int SHOOTER_SPINNER_ID = 21;
-    public static final int SHOOTER_PIVOT_ID_1 = 22;
-    public static final int SHOOTER_PIVOT_ID_2 = 23;
-    public static final int FEEDER_WHEELS_ID = 24;
+    public static final int SHOOTER_SPINNER_ID_1 = 21;
+    public static final int SHOOTER_SPINNER_ID_2 = 22;
+    public static final int SHOOTER_PIVOT_ID_1 = 23;
+    public static final int SHOOTER_PIVOT_ID_2 = 24;
+    public static final int FEEDER_WHEELS_ID = 25;
     public static final int SHOOTER_ENCODER_DIGITAL_PORT_A = 0;
     public static final int SHOOTER_ENCODER_DIGITAL_PORT_B = 1;
 
