@@ -37,6 +37,8 @@ public final class Constants {
     // Intake
     public static final int INTAKE_PIVOT_ID = 41;
     public static final int INTAKE_SPINNER_ID = 42;
+    public static final int INTAKE_ENCODER_DIGITAL_PORT_A = 2;
+    public static final int INTAKE_ENCODER_DIGITAL_PORT_B = 3;
 
     // Field Dimensions
     public static final double FIELD_X = 54d + 1d/12d;
@@ -48,12 +50,12 @@ public final class Constants {
     public static final double SHOOTER_SET_RPM = 510;
     public static final double SHOOTER_TILT_ENCODER_MAX_VALUE = 1;
     public static final double SHOOTER_TILT_ENCODER_MIN_VALUE = 0;
-    public static final double SHOOTER_TILT_ENCODER_OFFSET = 8.8;
-    public static final double SHOOTER_STANDARD_HEIGHT = 0.458333;
+    public static final double SHOOTER_TILT_ENCODER_OFFSET = -105;
+    //public static final double SHOOTER_STANDARD_HEIGHT = 0.458333;
     
     public static final double INTAKE_TILT_ENCODER_MAX_VALUE = 1;
     public static final double INTAKE_TILT_ENCODER_MIN_VALUE = 0;
-    public static final double INTAKE_TILT_ENCODER_OFFSET = 88;
+    public static final double INTAKE_TILT_ENCODER_OFFSET = 85;
 
     public static final int BEAM_BREAK_CHANNEL = 9;
 

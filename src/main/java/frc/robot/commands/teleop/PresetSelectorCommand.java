@@ -37,6 +37,12 @@ public class PresetSelectorCommand extends Command {
     else if (auxButtonBoard.getRawButtonPressed(10)){
       RobotState.setChosenConfiguration(RobotState.RobotConfiguration.SHOOT_TRAP);
     }
+    else if (auxButtonBoard.getRawButtonPressed(8)){
+      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.SHOOT_OVER);
+    }
+    else if (auxButtonBoard.getRawButtonPressed(7)){
+      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.CLIMB);
+    }
     else if (mainControl.getLeftBumper()){
       RobotState.setRobotState(RobotState.RobotConfiguration.INTAKE);
     }

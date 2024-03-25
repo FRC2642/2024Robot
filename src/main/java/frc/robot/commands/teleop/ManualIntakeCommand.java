@@ -38,10 +38,10 @@ public class ManualIntakeCommand extends Command {
       intake.setIntake(-1);
     }
     if (mainControl.getPOV() == 270){
-      intake.setManual(-0.4);
+      intake.setManual(-0.6);
     }
     else if (mainControl.getPOV() == 90){
-      intake.setManual(0.4);
+      intake.setManual(0.6);
     }
   }
 

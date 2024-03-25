@@ -44,15 +44,15 @@ public class ManualShooterCommand extends Command {
     }
     
     if (mainControl.getPOV() == 0){
-      shooter.setManual(0.5);
+      shooter.setManual(.5);
     }
     else if (mainControl.getPOV() == 180){
-      shooter.setManual(-0.5);
+      shooter.setManual(-.5);
     }
 
-    if (mainControl.getRawButton(8)){
+    /*if (mainControl.getRawButton(8)){
       shooter.tiltToAngle(RobotContainer.ANGLE);
-    }
+    }*/
     else{
       shooter.setManual(0);
     }

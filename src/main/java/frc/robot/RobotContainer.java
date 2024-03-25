@@ -42,7 +42,7 @@ public class RobotContainer {
   public final ShooterSubsystem shooter = new ShooterSubsystem();
   public final IntakeSubsystem intake = new IntakeSubsystem();
   public final LimelightSubsystem shooterLimelight = new LimelightSubsystem("limelight-shooter");
-  public final LimelightSubsystem intakeLimelight = new LimelightSubsystem("limelight-intake");
+  public final LimelightSubsystem intakeLimelight = new LimelightSubsystem("limelight");
 
 
   public final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
@@ -59,7 +59,7 @@ public class RobotContainer {
     // Auto options
     autoChooser.setDefaultOption("NO AUTO SELECTED!", new WaitCommand(15));
     
-    autoChooser.addOption("1 Piece Stop", new OnePieceCommand(drive, shooter, shooterLimelight));
+    /*autoChooser.addOption("1 Piece Stop", new OnePieceCommand(drive, shooter, shooterLimelight));
     autoChooser.addOption("1 Piece Move", new OnePiecePath(drive, shooter, shooterLimelight));
     autoChooser.addOption("2 Piece", new FrontTwoPiece(drive, shooter, intake, shooterLimelight));
     autoChooser.addOption("3 Piece", new FrontThreePiece(drive, shooter, intake, shooterLimelight));
@@ -67,10 +67,11 @@ public class RobotContainer {
     autoChooser.addOption("4 Piece", new FourPieceCommand(drive, shooter, intake, shooterLimelight, intakeLimelight));
     autoChooser.addOption("Side 2 Piece", new SideTwoPiece(drive, shooter, intake, shooterLimelight));
     autoChooser.addOption("Move", new MoveCommand(drive, intakeLimelight, intake));
-    
+    */
     
     SmartDashboard.putData(autoChooser);
   }
+  
 
   public void autonomousInit() {
     CommandScheduler.getInstance().cancelAll();
@@ -90,6 +91,13 @@ public class RobotContainer {
       //Reset Gyro D-Pad
       new POVButton(mainControl, 0).onTrue(new ResetGyroCommand(0).andThen(new ResetDisplacementCommand(new VectorR())));
       
+      new JoystickButton(mainControl, 7).onTrue(new InstantCommand(()->{
+        ShooterSubsystem.dataArray.add(new Double[]{ANGLE, shooterLimelight.a});
+        for (int i = 0; i < ShooterSubsystem.dataArray.size(); i++){
+          System.out.println(ShooterSubsystem.dataArray.get(i)[0] + ","+ShooterSubsystem.dataArray.get(i)[1]);          
+        }
+        System.out.println("");
+      }));
 
     } 
     

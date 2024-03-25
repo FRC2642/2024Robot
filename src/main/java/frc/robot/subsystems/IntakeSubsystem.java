@@ -9,6 +9,10 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.DutyCycle;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.IPositionable;
@@ -16,14 +20,15 @@ import frc.robot.utils.MathR;
 
 public class IntakeSubsystem extends SubsystemBase implements IPositionable<IntakeSubsystem.IntakePosition>{
 
-  private final int TILT_TOLERANCE = 6;
+  private final int TILT_TOLERANCE = 2;
 
   private PIDController tiltPID = new PIDController(0.01, 0, 0);
 
   private TalonFX intakeSpinnerMotor = new TalonFX(Constants.INTAKE_SPINNER_ID);
-  private static CANSparkMax intakeTiltMotor = new CANSparkMax(Constants.INTAKE_PIVOT_ID, MotorType.kBrushless);
+  private static TalonFX intakeTiltMotor = new TalonFX(Constants.INTAKE_PIVOT_ID);
   
-  private static SparkAbsoluteEncoder tiltEncoder;
+  private static DutyCycleEncoder tiltEncoder = new DutyCycleEncoder(Constants.INTAKE_ENCODER_DIGITAL_PORT_A);
+
 
   private IntakePosition currentSetPosition = IntakePosition.RETRACTED;
   private double speedLimit = 0.2;
@@ -32,12 +37,11 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   public static final double MIN_DEGREES = -10;
 
   public IntakeSubsystem() {
-    tiltEncoder = intakeTiltMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
     tiltPID.setTolerance(TILT_TOLERANCE);
   }
 
   public static double getPitch(){
-    return MathR.getDistanceToAngle(0, tiltEncoder.getPosition() / (Constants.INTAKE_TILT_ENCODER_MAX_VALUE - Constants.INTAKE_TILT_ENCODER_MIN_VALUE) * 360 + Constants.INTAKE_TILT_ENCODER_OFFSET, 180);
+    return MathR.getDistanceToAngle(0, tiltEncoder.getAbsolutePosition() / (Constants.INTAKE_TILT_ENCODER_MAX_VALUE - Constants.INTAKE_TILT_ENCODER_MIN_VALUE) * 360 + Constants.INTAKE_TILT_ENCODER_OFFSET, 180);
   }
 
   public void tiltToAngle(double degrees){
@@ -112,10 +116,9 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   }
 
   public enum IntakePosition {
-    RETRACTED(133),
-    EXTENDED(0),
+    RETRACTED(134),
+    EXTENDED(1),
     OUT_OF_THE_WAY(110),
-    AMP(105),
     RUNNING_EXTENDED(2),
     MANUAL(-1);
 
@@ -126,5 +129,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    
+  }
 }

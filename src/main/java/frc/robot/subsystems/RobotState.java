@@ -35,10 +35,12 @@ public class RobotState {
 
     public enum RobotConfiguration {
         SHOOT_SPEAKER(IntakePosition.RETRACTED, ShooterSpeed.SPEAKER, ShooterAngle.NONE),
-        SHOOT_AMP(IntakePosition.AMP, ShooterSpeed.TRAVEL, ShooterAngle.NONE),
+        SHOOT_OVER(IntakePosition.RETRACTED, ShooterSpeed.SPEAKER, ShooterAngle.TOP),
+        SHOOT_AMP(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.AMP),
         SHOOT_TRAP(IntakePosition.RETRACTED, ShooterSpeed.TRAP, ShooterAngle.NONE),
         INTAKE(IntakePosition.EXTENDED, ShooterSpeed.TRAVEL, ShooterAngle.TRAVEL),
-        TRAVEL(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.TRAVEL);
+        TRAVEL(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.TRAVEL),
+        CLIMB(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.NONE);
         
         public final ShooterSpeed shooterSpeed;
         public final ShooterAngle shooterAngle;
