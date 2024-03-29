@@ -47,7 +47,7 @@ public class AutoAimShooterCommand extends Command {
     }
     
     shooter.set(speed.get());
-    turnPower = MathR.limit(LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, shooterLimelight.x), -0.15, 0.15) * -1;
+    turnPower = MathR.limit(LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, shooterLimelight.x), -0.19, 0.19) * -1;
     drive.move(new VectorR(), turnPower);
   }
 
@@ -55,9 +55,9 @@ public class AutoAimShooterCommand extends Command {
   public boolean isFinished() {
     //System.out.println("angle: "+angle.get().angle + " pitch: "+shooter.getPitch());
   
-    boolean robotReady = Math.abs(turnPower) <= 0.1;
+    boolean robotReady = Math.abs(turnPower) <= 0.05;
     //boolean shooterRevReady = (ShooterSubsystem.getMotorVelocity() <= -70) && (ShooterSubsystem.getMotorVelocity() >= -94);
-    boolean shooterAngleReady = (shooter.getPitch() >= shooter.getAutoAngle(shooterLimelight.y) - 0.9 && shooter.getPitch() <= shooter.getAutoAngle(shooterLimelight.y) + 0.9);
+    boolean shooterAngleReady = shooter.atPitch(shooter.getAutoAngle(shooterLimelight.y));
     System.out.println("robot: " + robotReady);
     //System.out.println("shooter: "+shooterAngleReady);
     //System.out.println("shooter rev: "+shooterRevReady);

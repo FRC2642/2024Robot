@@ -48,7 +48,6 @@ public class DivertToGamePieceCommand extends FollowPathCommand {
     visionTimer.start();
     intakeTimer.reset();
     intakeTimer.start();
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -59,7 +58,6 @@ public class DivertToGamePieceCommand extends FollowPathCommand {
       drive.move(VectorR.fromPolar(visionSpeed, -DriveSubsystem.getYawDegrees() - limelight.x), MathR.limit(LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, limelight.x), -0.07, 0.7) * -1);
     }
     else if (super.isFinished()){
-      
       drive.move(VectorR.fromPolar(0.20, -DriveSubsystem.getYawDegrees() - limelight.x), MathR.limit(LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, limelight.x), -0.07, 0.07) * -1);
     }
 

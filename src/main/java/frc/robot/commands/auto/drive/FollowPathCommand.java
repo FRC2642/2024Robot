@@ -47,9 +47,7 @@ public class FollowPathCommand extends Command {
   @Override
   public void initialize() {
      if (notAdjustedPath.allianceDependent && DriverStation.getAlliance().get() == Alliance.Red){
-
       setPath(notAdjustedPath.getRedAlliance());
-    
      }
      else{
       setPath(notAdjustedPath);
@@ -72,11 +70,8 @@ public class FollowPathCommand extends Command {
     nextPoint = null;
     if (recenterDisplacementToFirstPoint) {
       DriveSubsystem.resetDisplacement(path.getFirst().position);
-      DriveSubsystem.resetGyro(path.getFirst().holonomicRotation);
+      DriveSubsystem.resetGyro(-path.getFirst().holonomicRotation);
     }
-    
-    
-    
     
     return true;
   }
@@ -98,8 +93,6 @@ public class FollowPathCommand extends Command {
       return;
     }
     
-    
-    
 
     if (startingLookAheadTime == null) lookAheadTime = BASE_PRECISION;
     else {
@@ -120,8 +113,8 @@ public class FollowPathCommand extends Command {
     velocity.mult(MOVEMENT_KP / delta_t);
     
 
-    double turn = MathR.getDistanceToAngle(360-DriveSubsystem.getYawDegrees(), nextPoint.holonomicRotation) / delta_t;
-
+    double turn = MathR.getDistanceToAngle(-DriveSubsystem.getYawDegrees(), nextPoint.holonomicRotation) / delta_t;
+    
     drive.move(velocity, turn * HEADING_KP);
   }
 

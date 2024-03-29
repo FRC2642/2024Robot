@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
@@ -33,8 +34,8 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   private IntakePosition currentSetPosition = IntakePosition.RETRACTED;
   private double speedLimit = 0.2;
 
-  public static final double MAX_DEGREES = 152;
-  public static final double MIN_DEGREES = -10;
+  public static final double MAX_DEGREES = 135;
+  public static final double MIN_DEGREES = 0;
 
   public IntakeSubsystem() {
     tiltPID.setTolerance(TILT_TOLERANCE);
@@ -49,7 +50,7 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
   }
 
   public void setIntake(double speed){
-    intakeSpinnerMotor.set(speed);
+    intakeSpinnerMotor.setControl(new DutyCycleOut(speed, true, false, false, false));
   }
 
   public void set(double speed) {
@@ -66,14 +67,13 @@ public class IntakeSubsystem extends SubsystemBase implements IPositionable<Inta
     double speed = -MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), pos.angle)), -speedLimit, speedLimit);
    
     
-
-    
     if (speed > 0 && getPitch() >= MAX_DEGREES){
       speed = 0;
     }
     else if (speed < 0 && getPitch() <= MIN_DEGREES){
       speed = 0;
     }
+
     
     if (!atSetPosition())
       set(speed);

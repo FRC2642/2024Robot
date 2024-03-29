@@ -50,7 +50,7 @@ public final class Constants {
     public static final double SHOOTER_SET_RPM = 510;
     public static final double SHOOTER_TILT_ENCODER_MAX_VALUE = 1;
     public static final double SHOOTER_TILT_ENCODER_MIN_VALUE = 0;
-    public static final double SHOOTER_TILT_ENCODER_OFFSET = -105;
+    public static final double SHOOTER_TILT_ENCODER_OFFSET = -170;
     //public static final double SHOOTER_STANDARD_HEIGHT = 0.458333;
     
     public static final double INTAKE_TILT_ENCODER_MAX_VALUE = 1;

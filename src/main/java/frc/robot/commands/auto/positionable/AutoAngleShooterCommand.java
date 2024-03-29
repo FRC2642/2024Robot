@@ -7,6 +7,7 @@ package frc.robot.commands.auto.positionable;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.utils.MathR;
 
 public class AutoAngleShooterCommand extends Command {
   /** Creates a new AutoAngleShooterCommand. */
@@ -38,6 +39,10 @@ public class AutoAngleShooterCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    System.out.println(shooter.getAutoAngle(shooterLimelight.y) + " "+shooter.getPitch());
+    System.out.println(shooter.atPitch(shooter.getAutoAngle(shooterLimelight.y)));
+    
+    
+    return shooter.atPitch(shooter.getAutoAngle(shooterLimelight.y));
   }
 }

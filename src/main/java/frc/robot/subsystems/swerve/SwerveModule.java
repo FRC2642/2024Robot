@@ -4,7 +4,11 @@
 
 package frc.robot.subsystems.swerve;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix6.controls.ControlRequest;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import frc.robot.Constants;
 import frc.robot.utils.MathR;
@@ -26,6 +30,7 @@ public class SwerveModule {
   public final SwerveModuleInfo info;
   private final double defensiveAngleDeg;
   private double wheelOrientation = 0.0;
+  
 
   public SwerveModule(SwerveModuleInfo info) {
     this.info = info;
@@ -34,7 +39,6 @@ public class SwerveModule {
     this.orientationEncoder = new CANCoder(info.ENCODER_ID);
     this.defensiveAngleDeg = VectorR.fromCartesian(info.X, info.Y).getAngle();
     orientationEncoder.setPosition(0);
-
   }
 
 
@@ -111,8 +115,10 @@ public class SwerveModule {
         .limit(Constants.MODULE_ANGLE_KP * MathR.getDistanceToAngle(getWheelOrientationDegrees(), desiredAngle()), -1, 1);
   
     
-    driveMotor.set(speed_power); 
-    angleMotor.set(angle_power);
+    driveMotor.setControl(new DutyCycleOut(speed_power, true, false, false, false));
+    angleMotor.setControl(new DutyCycleOut(angle_power, true, false, false, false));
+    //driveMotor.set(speed_power); 
+    //angleMotor.set(angle_power);
 
     updateIncrementMeasurement();
   }

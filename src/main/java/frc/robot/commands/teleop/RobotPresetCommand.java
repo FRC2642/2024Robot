@@ -36,7 +36,8 @@ public class RobotPresetCommand extends Command {
   private final VectorR rightJoystick = new VectorR();
   final double TURN_KP = 0.017;
   final double LOCK_TURN_KP = 0.1;
-  final double LIMELIGHT_TURN_KP = 0.01;//0.0088;
+  final double SHOOTER_LIMELIGHT_TURN_KP = 0.01;//0.0088;
+  final double INTAKE_LIMELIGHT_TURN_KP = 0.02;//0.0088;
   private double maxSpeed = 0.25;
   private boolean isLocked = false;
   private double lockedHeading = 0;
@@ -44,6 +45,7 @@ public class RobotPresetCommand extends Command {
   private boolean revUp = false;
   private Timer intakeTimer = new Timer();
   private boolean intakeTimerStarted = false;
+  private boolean intaken = false;
   
 
   public RobotPresetCommand(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem shooterLimelight, LimelightSubsystem intakeLimelight, XboxController control, Joystick auxButtonBoard) {
@@ -136,6 +138,7 @@ public class RobotPresetCommand extends Command {
     
     if (!(RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP)) && !auxButtonBoard.getRawButton(11)){
       shooter.set(RobotState.getRobotConfiguration().shooterSpeed);
+      //shooter.setShooter(-1);
     }
     if (auxButtonBoard.getRawButton(9)){
       revUp = true;
@@ -148,7 +151,7 @@ public class RobotPresetCommand extends Command {
     
 
     //Set shooter angle for intake and amp, auto angle shooter for everything else
-    if (RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER)){
+    if (RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER) || (RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) && !RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER))){
       shooter.tiltToAngle(RobotState.getRobotConfiguration().shooterAngle.angle);
       
     }
@@ -164,6 +167,7 @@ public class RobotPresetCommand extends Command {
     
     //SET SHOOTER FOR REQUIRED PRESETS
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER)){
+      intaken = false;
       if (control.getRightTriggerAxis() >= 0.4) 
         shooter.setFeeder(1);
       
@@ -172,6 +176,7 @@ public class RobotPresetCommand extends Command {
       
     }
     else if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP)){
+      intaken = false;
       if (control.getRightTriggerAxis() >= 0.4) 
         shooter.setFeeder(-1);
       
@@ -192,10 +197,12 @@ public class RobotPresetCommand extends Command {
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE)){
       
         shooter.stopShooter();
+        intake.setIntake(1);
         if (!ShooterSubsystem.getNoteDetected()){
-          intake.setIntake(0.9);
-          shooter.setFeeder(0.8);
+          shooter.setFeeder(0.9);
+          
           intakeTimerStarted = false;
+          
         } 
         else {
           //Run feeder wheels back for a set time after beam is broken
@@ -204,31 +211,37 @@ public class RobotPresetCommand extends Command {
             intakeTimer.reset();
             intakeTimer.start();
           }
-          if (intakeTimer.get() <= 0.1){
+          if (intakeTimer.get() <= 0.13){
             shooter.setFeeder(-0.3);
           }
           else{
             shooter.setFeeder(0);
           }
+          
+          intaken = true;
+          //shooter.setFeeder(-0.1);
+          
+          
           intake.setIntake(0);
           
           intake.set(IntakePosition.RETRACTED);
           control.setRumble(RumbleType.kBothRumble, 0.5);
         }
 
-        double limelightTurnPower = MathR.limit(LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, intakeLimelight.x), -0.20, 0.20) * -1;
+        double limelightTurnPower = MathR.limit(INTAKE_LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, intakeLimelight.x), -0.20, 0.20) * -1;
 
         if (Math.abs(MathR.getDistanceToAngle(0, intakeLimelight.x)) <= 2){
           limelightTurnPower = 0;
         }
         if (intakeLimelight.isDetection && intakeLimelight.confidence() >= 0.2 && IntakeSubsystem.getPitch() <= 10){
-          System.out.println("here");
           
           drive.move(leftJoystick, limelightTurnPower);
         }
         else{
           drive.move(leftJoystick, turnPower * maxSpeed);
         }
+        
+        
         
       
       
@@ -248,12 +261,13 @@ public class RobotPresetCommand extends Command {
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER)){ 
       
       
+      
       //shooter.tiltToAngle(shooter.getAutoAngle(shooterLimelight.y));
       //shooter.tiltToAngle(RobotContainer.ANGLE);
 
 
       double leadAngle = Math.abs(Math.toDegrees(Math.atan2(Constants.SHOOTER_VELOCITY - DriveSubsystem.getRelativeVelocity().getY(), DriveSubsystem.getRelativeVelocity().getX() + 0.000001))) - 90;
-      double adjustedAngle = shooterLimelight.x;
+      double adjustedAngle = shooterLimelight.x + 1;
 
       if (DriveSubsystem.getRelativeVelocity().getX() > 0){
         adjustedAngle = shooterLimelight.x + leadAngle;
@@ -263,16 +277,26 @@ public class RobotPresetCommand extends Command {
       }
        
 
-      double limelightTurnPower = MathR.limit(LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, adjustedAngle), -0.15, 0.15) * -1;
+      double limelightTurnPower = MathR.limit(SHOOTER_LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, adjustedAngle), -0.15, 0.15) * -1;
       
       //System.out.println(limelightTurnPower + " " + MathR.getDistanceToAngle(0, adjustedAngle));
       
-      if (shooterLimelight.isDetection) {
+      if (shooterLimelight.isDetection && Math.abs(shooterLimelight.x) >= 2) {
         drive.move(leftJoystick, limelightTurnPower);
       }
-      else {
+      else if (shooterLimelight.isDetection && Math.abs(shooterLimelight.x) <= 2 && leftJoystick.getMagnitude() <= 0.2 && rightJoystick.getMagnitude() <= 0.2){
+        drive.setDefensiveMode(false);
+        drive.stop();
+        drive.setDefensiveMode(true);
+        
+      }
+      else{
         drive.move(leftJoystick, turnPower);
       }
+        
+      
+      
+      
       
     }
 

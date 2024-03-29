@@ -2,6 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,9 +14,11 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auto.drive.StopCommand;
+import frc.robot.commands.auto.fullAutos.CloseFourPiece;
 import frc.robot.commands.auto.fullAutos.FourPieceCommand;
 import frc.robot.commands.auto.fullAutos.FrontThreePiece;
 import frc.robot.commands.auto.fullAutos.FrontTwoPiece;
+import frc.robot.commands.auto.fullAutos.MiddleNotesCommand;
 import frc.robot.commands.auto.fullAutos.MoveCommand;
 import frc.robot.commands.auto.fullAutos.OnePieceCommand;
 import frc.robot.commands.auto.fullAutos.OnePiecePath;
@@ -44,7 +48,7 @@ public class RobotContainer {
   public final LimelightSubsystem shooterLimelight = new LimelightSubsystem("limelight-shooter");
   public final LimelightSubsystem intakeLimelight = new LimelightSubsystem("limelight");
 
-
+  
   public final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   public static boolean DEBUG = false;
@@ -59,15 +63,15 @@ public class RobotContainer {
     // Auto options
     autoChooser.setDefaultOption("NO AUTO SELECTED!", new WaitCommand(15));
     
-    /*autoChooser.addOption("1 Piece Stop", new OnePieceCommand(drive, shooter, shooterLimelight));
+    autoChooser.addOption("1 Piece Stop", new OnePieceCommand(drive, shooter, shooterLimelight));
     autoChooser.addOption("1 Piece Move", new OnePiecePath(drive, shooter, shooterLimelight));
     autoChooser.addOption("2 Piece", new FrontTwoPiece(drive, shooter, intake, shooterLimelight));
-    autoChooser.addOption("3 Piece", new FrontThreePiece(drive, shooter, intake, shooterLimelight));
-    autoChooser.addOption("3 Piece Optimized", new OptimizedThreePiece(drive, shooter, intake, shooterLimelight));
     autoChooser.addOption("4 Piece", new FourPieceCommand(drive, shooter, intake, shooterLimelight, intakeLimelight));
     autoChooser.addOption("Side 2 Piece", new SideTwoPiece(drive, shooter, intake, shooterLimelight));
     autoChooser.addOption("Move", new MoveCommand(drive, intakeLimelight, intake));
-    */
+    autoChooser.addOption("Close 4 Piece", new CloseFourPiece(drive, shooter, intake, shooterLimelight, intakeLimelight));
+    autoChooser.addOption("Middle Notes", new MiddleNotesCommand(drive, shooter, intake, shooterLimelight, intakeLimelight));
+    
     
     SmartDashboard.putData(autoChooser);
   }
@@ -76,7 +80,7 @@ public class RobotContainer {
   public void autonomousInit() {
     CommandScheduler.getInstance().cancelAll();
     drive.setDefaultCommand(new StopCommand(drive));
-    shooter.setDefaultCommand(new RunCommand(()-> shooter.setShooter(0.0), shooter));
+    shooter.setDefaultCommand(new RunCommand(()-> shooter.setManual(0.0), shooter));
     intake.setDefaultCommand(new RunCommand(()-> intake.set(0.0), intake));
   }
 

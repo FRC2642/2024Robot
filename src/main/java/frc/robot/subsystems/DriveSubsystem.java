@@ -67,7 +67,6 @@ public class DriveSubsystem extends SubsystemBase {
 
       // position tracking
       var inc = module.getPositionIncrement();
-      inc = VectorR.fromCartesian(inc.getX(), inc.getY());
       inc.mult(1d / 4d);
       inc.rotate(-getYawDegrees());
       displacement.add(inc);
@@ -79,6 +78,8 @@ public class DriveSubsystem extends SubsystemBase {
       velocity.add(velocityMeasured);
     }
     acceleration.update();
+    
+    System.out.println("field: "+getRelativeFieldPosition());
     
     
   }
