@@ -33,7 +33,8 @@ public class ShooterSubsystem extends SubsystemBase{
 
   private static DutyCycleEncoder tiltEncoder = new DutyCycleEncoder(Constants.SHOOTER_ENCODER_DIGITAL_PORT_A);
 
-  private static DigitalInput beamBreak = new DigitalInput(Constants.BEAM_BREAK_CHANNEL);
+  private static DigitalInput farBeamBreak = new DigitalInput(Constants.FAR_BEAM_BREAK_CHANNEL);
+  private static DigitalInput closeBeamBreak = new DigitalInput(Constants.CLOSE_BEAM_BREAK_CHANNEL);
 
   private VelocityVoltage velocity = new VelocityVoltage(0).withUpdateFreqHz(0.0);
 
@@ -99,7 +100,10 @@ public class ShooterSubsystem extends SubsystemBase{
   }
 
   public static boolean getNoteDetected(){
-    return !beamBreak.get();
+    return !farBeamBreak.get();
+  }
+  public static boolean getCloseNoteDetected(){
+    return !closeBeamBreak.get();
   }
 
   public boolean atSetSpeed(){
@@ -161,7 +165,11 @@ public class ShooterSubsystem extends SubsystemBase{
 
 
   public double getAutoAngle(double ty){
-    return 0.00792889 * Math.pow(ty, 3) - 0.142877 * Math.pow(ty, 2) - 3.38697 * ty + 281.44;//0.00434251 * Math.pow(ty, 3) - 0.0437146 * Math.pow(ty, 2) - 3.81343 * ty + 278.643;
+    return -0.00000714563 * Math.pow(ty, 5) + 0.000248267 * Math.pow(ty, 4) + 0.00716947 * Math.pow(ty, 3) - 0.184703 * Math.pow(ty, 2) - 3.07547 * ty + 281.267;//0.00792889 * Math.pow(ty, 3) - 0.142877 * Math.pow(ty, 2) - 3.38697 * ty + 281.44;
+  }
+
+  public double getAutoOffset(double ty){
+    return -0.00336373 * Math.pow(ty, 2) - 0.212577 * ty + 5.31239;
   }
 
   public void setSpeedLimit(double max) {

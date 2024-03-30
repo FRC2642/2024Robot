@@ -36,7 +36,7 @@ public class RobotPresetCommand extends Command {
   private final VectorR rightJoystick = new VectorR();
   final double TURN_KP = 0.017;
   final double LOCK_TURN_KP = 0.1;
-  final double SHOOTER_LIMELIGHT_TURN_KP = 0.01;//0.0088;
+  final double SHOOTER_LIMELIGHT_TURN_KP = 0.006;//0.0088;
   final double INTAKE_LIMELIGHT_TURN_KP = 0.018;//0.0088;
   private double maxSpeed = 0.25;
   private boolean isLocked = false;
@@ -45,7 +45,6 @@ public class RobotPresetCommand extends Command {
   private boolean revUp = false;
   private Timer intakeTimer = new Timer();
   private boolean intakeTimerStarted = false;
-  private boolean intaken = false;
   
 
   public RobotPresetCommand(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem shooterLimelight, LimelightSubsystem intakeLimelight, XboxController control, Joystick auxButtonBoard) {
@@ -70,6 +69,7 @@ public class RobotPresetCommand extends Command {
 
   @Override
   public void execute() {
+    drive.setDefensiveMode(false);
     control.setRumble(RumbleType.kBothRumble, 0);
     
     ///////////////////////////DRIVE///////////////////////////////
@@ -167,7 +167,6 @@ public class RobotPresetCommand extends Command {
     
     //SET SHOOTER FOR REQUIRED PRESETS
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_ACROSS)){
-      intaken = false;
       if (control.getRightTriggerAxis() >= 0.4) 
         shooter.setFeeder(1);
       
@@ -176,7 +175,6 @@ public class RobotPresetCommand extends Command {
       
     }
     else if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP)){
-      intaken = false;
       if (control.getRightTriggerAxis() >= 0.4) 
         shooter.setFeeder(-1);
       
@@ -198,37 +196,21 @@ public class RobotPresetCommand extends Command {
       
         shooter.stopShooter();
         intake.setIntake(1);
-        if (!ShooterSubsystem.getNoteDetected()){
+        if (!(ShooterSubsystem.getNoteDetected() || ShooterSubsystem.getCloseNoteDetected())){
           shooter.setFeeder(0.9);
-          
           intakeTimerStarted = false;
-          
         } 
-        else {
-          //Run feeder wheels back for a set time after beam is broken
-          if (!intakeTimerStarted){
-            intakeTimerStarted = true;
-            intakeTimer.reset();
-            intakeTimer.start();
-          }
-          if (intakeTimer.get() <= 0.13){
-            shooter.setFeeder(-0.3);
-          }
-          else{
-            shooter.setFeeder(0);
-          }
-          
-          intaken = true;
-          //shooter.setFeeder(-0.1);
-          
-          
-          intake.setIntake(0);
-          
+        else if (ShooterSubsystem.getCloseNoteDetected() && !ShooterSubsystem.getNoteDetected()){
+          shooter.setFeeder(0.2);
+        }
+        else if (ShooterSubsystem.getNoteDetected()){
           intake.set(IntakePosition.RETRACTED);
           control.setRumble(RumbleType.kBothRumble, 1);
+          shooter.setFeeder(0);
         }
+        
 
-        double limelightTurnPower = MathR.limit(INTAKE_LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, intakeLimelight.x), -0.20, 0.20) * -1;
+        double limelightTurnPower = MathR.limit(INTAKE_LIMELIGHT_TURN_KP * intakeLimelight.x, -0.20, 0.20) * -1;
 
         if (Math.abs(MathR.getDistanceToAngle(0, intakeLimelight.x)) <= 2){
           limelightTurnPower = 0;
@@ -267,28 +249,34 @@ public class RobotPresetCommand extends Command {
 
 
       double leadAngle = Math.abs(Math.toDegrees(Math.atan2(Constants.SHOOTER_VELOCITY - DriveSubsystem.getRelativeVelocity().getY(), DriveSubsystem.getRelativeVelocity().getX() + 0.000001))) - 90;
-      double adjustedAngle = shooterLimelight.x - 3;
+      double deltaAngle =  -shooter.getAutoOffset(shooterLimelight.y) + shooterLimelight.x;
 
-      if (DriveSubsystem.getRelativeVelocity().getX() > 0){
+      /*if (DriveSubsystem.getRelativeVelocity().getX() > 0){
         adjustedAngle = shooterLimelight.x + leadAngle;
       }
       else if (DriveSubsystem.getRelativeVelocity().getX() < 0){
         adjustedAngle = shooterLimelight.x - leadAngle;
-      }
+      }*/
        
 
-      double limelightTurnPower = MathR.limit(SHOOTER_LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, adjustedAngle), -0.15, 0.15) * -1;
+      double limelightTurnPower = MathR.limit(SHOOTER_LIMELIGHT_TURN_KP * deltaAngle, -0.15, 0.15) * -1.5;
       
       //System.out.println(limelightTurnPower + " " + MathR.getDistanceToAngle(0, adjustedAngle));
       
-      if (shooterLimelight.isDetection && Math.abs(shooterLimelight.x) >= 2) {
+      System.out.println(shooter.getAutoOffset(shooterLimelight.y));
+      System.out.println("delta: "+deltaAngle);
+      System.out.println("turn power: "+limelightTurnPower);
+      
+      if (Math.abs(limelightTurnPower) <= 0.02){
+        limelightTurnPower = 0;
+      }
+      
+      
+      if (shooterLimelight.isDetection && !(deltaAngle >= -0.5 && deltaAngle <= 0.5)) {
         drive.move(leftJoystick, limelightTurnPower);
       }
-      else if (shooterLimelight.isDetection && Math.abs(shooterLimelight.x) <= 2 && leftJoystick.getMagnitude() <= 0.2 && rightJoystick.getMagnitude() <= 0.2){
-        drive.setDefensiveMode(false);
+      else if (shooterLimelight.isDetection && (deltaAngle >= -0.5 && deltaAngle <= 0.5) && leftJoystick.getMagnitude() <= 0.2 && rightJoystick.getMagnitude() <= 0.2){
         drive.stop();
-        drive.setDefensiveMode(true);
-        
       }
       else{
         drive.move(leftJoystick, turnPower);

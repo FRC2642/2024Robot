@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.swerve.SwerveModule;
 import frc.robot.subsystems.swerve.SwerveModules;
+import frc.robot.subsystems.swerve.SwerveModules.ModuleLocation;
 import frc.robot.utils.TimedVectorDerivative;
 import frc.robot.utils.VectorR;
 
