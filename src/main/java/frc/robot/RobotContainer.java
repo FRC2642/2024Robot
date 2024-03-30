@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auto.drive.StopCommand;
 import frc.robot.commands.auto.fullAutos.CloseFourPiece;
+import frc.robot.commands.auto.fullAutos.DisruptorAuto;
 import frc.robot.commands.auto.fullAutos.FourPieceCommand;
 import frc.robot.commands.auto.fullAutos.FrontThreePiece;
 import frc.robot.commands.auto.fullAutos.FrontTwoPiece;
@@ -65,21 +66,18 @@ public class RobotContainer {
     
     autoChooser.addOption("1 Piece Stop", new OnePieceCommand(drive, shooter, shooterLimelight));
     autoChooser.addOption("1 Piece Move", new OnePiecePath(drive, shooter, shooterLimelight));
-    autoChooser.addOption("2 Piece", new FrontTwoPiece(drive, shooter, intake, shooterLimelight));
-    autoChooser.addOption("4 Piece", new FourPieceCommand(drive, shooter, intake, shooterLimelight, intakeLimelight));
-    autoChooser.addOption("Side 2 Piece", new SideTwoPiece(drive, shooter, intake, shooterLimelight));
-    autoChooser.addOption("Move", new MoveCommand(drive, intakeLimelight, intake));
     autoChooser.addOption("Close 4 Piece", new CloseFourPiece(drive, shooter, intake, shooterLimelight, intakeLimelight));
     autoChooser.addOption("Middle Notes", new MiddleNotesCommand(drive, shooter, intake, shooterLimelight, intakeLimelight));
+    autoChooser.addOption("Disruptor", new DisruptorAuto(drive, shooter, intake, shooterLimelight, intakeLimelight));
     
-    
+
     SmartDashboard.putData(autoChooser);
   }
   
 
   public void autonomousInit() {
     CommandScheduler.getInstance().cancelAll();
-    drive.setDefaultCommand(new StopCommand(drive));
+    drive.setDefaultCommand(new RunCommand(()->drive.stop(), drive));
     shooter.setDefaultCommand(new RunCommand(()-> shooter.setManual(0.0), shooter));
     intake.setDefaultCommand(new RunCommand(()-> intake.set(0.0), intake));
   }

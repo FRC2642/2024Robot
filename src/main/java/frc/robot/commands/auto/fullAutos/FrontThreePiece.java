@@ -59,7 +59,7 @@ public class FrontThreePiece extends SequentialCommandGroup {
 
         //2ND NOTE
         new FollowPathCommand(drive, getNote, true, 0.25).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
         ).withTimeout(3),
 
         
@@ -91,7 +91,7 @@ public class FrontThreePiece extends SequentialCommandGroup {
         }, shooter),
 
         new FollowPathCommand(drive, getNote2, false, 0.25).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
         ).withTimeout(3),
 
         new InstantCommand(()->{

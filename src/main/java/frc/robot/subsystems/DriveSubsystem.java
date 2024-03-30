@@ -79,8 +79,6 @@ public class DriveSubsystem extends SubsystemBase {
     }
     acceleration.update();
     
-    System.out.println("field: "+getRelativeFieldPosition());
-    
     
   }
   

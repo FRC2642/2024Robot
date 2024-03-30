@@ -55,7 +55,7 @@ public class FrontTwoPiece extends SequentialCommandGroup {
 
       
       new FollowPathCommand(drive, getNote, true, 0.25).alongWith(
-        new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
+        new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
       ).withTimeout(3),
 
       

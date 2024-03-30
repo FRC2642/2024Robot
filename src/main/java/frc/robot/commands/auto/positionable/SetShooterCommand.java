@@ -15,12 +15,10 @@ public class SetShooterCommand extends Command {
 
   private final ShooterSubsystem shooter;
   private final Supplier<ShooterSubsystem.ShooterAngle> angle;
-  private final Supplier<ShooterSubsystem.ShooterSpeed> speed;
   
-  public SetShooterCommand(ShooterSubsystem shooter, Supplier<ShooterSubsystem.ShooterAngle> angle, Supplier<ShooterSubsystem.ShooterSpeed> speed) {
+  public SetShooterCommand(ShooterSubsystem shooter, Supplier<ShooterSubsystem.ShooterAngle> angle) {
     this.shooter = shooter;
     this.angle = angle;
-    this.speed = speed;
     addRequirements(shooter);
   }
   @Override
@@ -34,13 +32,16 @@ public class SetShooterCommand extends Command {
   @Override
   public void execute() {
     shooter.tiltToAngle(angle.get().angle);
-    shooter.set(speed.get());
+    
   }
 
   @Override
   public boolean isFinished() {
     //System.out.println("angle: "+angle.get().angle + " pitch: "+shooter.getPitch());
     
+    if (shooter.getPitch() >= angle.get().angle - 3 && shooter.getPitch() <= angle.get().angle + 3){
+      shooter.setManual(0);
+    }
     
     return shooter.getPitch() >= angle.get().angle - 3 && shooter.getPitch() <= angle.get().angle + 3;
   }

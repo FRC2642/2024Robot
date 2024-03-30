@@ -58,7 +58,7 @@ public class OptimizedThreePiece extends SequentialCommandGroup {
 
         //2ND NOTE
         new FollowPathCommand(drive, getNoteShootNote, false, 0.25).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
         ).withTimeout(3),
 
         
@@ -90,7 +90,7 @@ public class OptimizedThreePiece extends SequentialCommandGroup {
         }, shooter),
 
         new FollowPathCommand(drive, getNote, false, 0.25).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
         ).withTimeout(3),
 
         new InstantCommand(()->{

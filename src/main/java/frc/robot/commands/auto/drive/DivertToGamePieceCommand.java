@@ -54,7 +54,7 @@ public class DivertToGamePieceCommand extends FollowPathCommand {
   @Override
   public void execute() {
     
-    if (visionTimer.get() > timeAfterStartToDivert && limelight.isDetection && limelight.confidence() > 0.1){
+    if (visionTimer.get() > timeAfterStartToDivert && limelight.isDetection && limelight.confidence() > 0.1 && limelight.a >= 0.1){
       drive.move(VectorR.fromPolar(visionSpeed, -DriveSubsystem.getYawDegrees() - limelight.x), MathR.limit(LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, limelight.x), -0.07, 0.7) * -1);
     }
     else if (super.isFinished()){

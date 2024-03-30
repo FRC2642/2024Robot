@@ -69,8 +69,10 @@ public class MiddleNotesCommand extends SequentialCommandGroup {
 
       
       //Get 2nd note
-      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote2, true, 0.25, 0.2, 5, true).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
+      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote2, true, 0, 0.3, 1.8, true).alongWith(
+        new WaitCommand(2).andThen(
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
+        )
       ),
       
       new FollowPathCommand(drive, shootNote2, false, 0.5).alongWith(new SetIntakeCommand(intake, ()->IntakePosition.RETRACTED)),
@@ -86,8 +88,10 @@ public class MiddleNotesCommand extends SequentialCommandGroup {
       }, shooter),
 
       //Get 3rd note
-      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote3, false, 0.25, 3, 9, true).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
+      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote3, false, 0.25, 3, 2, true).alongWith(
+        new WaitCommand(3).andThen(
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
+        )
       ),
 
       new FollowPathCommand(drive, shootNote3, false, 0.5).alongWith(new SetIntakeCommand(intake, ()->IntakePosition.RETRACTED)),

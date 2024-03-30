@@ -88,7 +88,7 @@ public class FourPieceCommand extends SequentialCommandGroup {
         }, shooter),
 
         new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, get3rdNote, false, 0.25, 0.2, 1.4, true).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
         ).withTimeout(3),
 
         new InstantCommand(()->{
@@ -118,7 +118,7 @@ public class FourPieceCommand extends SequentialCommandGroup {
 
         //4TH NOTE
         new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, get4thNote, false, 0.25, 0.2, 3, true).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
         ).withTimeout(5),
 
         

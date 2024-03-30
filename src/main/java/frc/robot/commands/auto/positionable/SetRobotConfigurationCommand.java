@@ -16,7 +16,7 @@ public class SetRobotConfigurationCommand extends ParallelCommandGroup {
     configuration = config;
    
     addCommands(
-      new SetShooterCommand(shooter, () -> configuration.shooterAngle, ()->configuration.shooterSpeed),
+      new SetShooterCommand(shooter, () -> configuration.shooterAngle),
       new SetIntakeCommand(intake, () -> configuration.intakePos)
     );
     

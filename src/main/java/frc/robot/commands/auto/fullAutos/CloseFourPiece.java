@@ -63,10 +63,21 @@ public class CloseFourPiece extends SequentialCommandGroup {
 
       //Get 2nd note
       new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, note2, true, 0.25, 0.2, 0.8, true).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
       ).withTimeout(3),
 
-      new FollowPathCommand(drive, shootNote2, false, 0.25),
+      new FollowPathCommand(drive, shootNote2, false, 0.25).alongWith(
+        new InstantCommand(()->{
+          intake.setIntake(0);
+          shooter.setFeeder(-0.2);
+        }, intake, shooter).andThen(
+          new WaitCommand(0.1).andThen(
+            new InstantCommand(()->{
+              shooter.setFeeder(0);
+            }, shooter)
+          )
+        )
+      ),
 
       //Shoot 2nd note
       new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
@@ -79,9 +90,20 @@ public class CloseFourPiece extends SequentialCommandGroup {
       }, shooter),
 
       //Get 3rd note
-      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, note3, false, 0.25, 0.2, 1, true).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
+      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, note3, false, 0.25, 0.2, 0.6, true).alongWith(
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
       ).withTimeout(3),
+
+      new InstantCommand(()->{
+        intake.setIntake(0);
+        shooter.setFeeder(-0.2);
+        drive.move(new VectorR(), 0);
+      }, intake, shooter, drive),
+
+      new WaitCommand(0.1),
+      new InstantCommand(()->{
+        shooter.setFeeder(0);
+      }, shooter),
 
       //Shoot 3rd note
       new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
@@ -95,10 +117,21 @@ public class CloseFourPiece extends SequentialCommandGroup {
 
       //Get 4th note
       new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, note4, false, 0.25, 0.2, 1, true).alongWith(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter)
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
       ).withTimeout(3),
 
-      new FollowPathCommand(drive, shootNote4, false, 0.25).alongWith(new SetIntakeCommand(intake, ()->IntakePosition.RETRACTED)),
+      new FollowPathCommand(drive, shootNote4, false, 0.25).alongWith(
+        new SetIntakeCommand(intake, ()->IntakePosition.RETRACTED),
+        new InstantCommand(()->{
+          shooter.setFeeder(-0.2);
+        }, shooter).andThen(
+          new WaitCommand(0.1).andThen(
+            new InstantCommand(()->{
+              shooter.setFeeder(0);
+            }, shooter)
+          )
+        )
+      ),
 
       //Shoot 4th note
       new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),

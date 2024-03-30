@@ -37,7 +37,7 @@ public class RobotPresetCommand extends Command {
   final double TURN_KP = 0.017;
   final double LOCK_TURN_KP = 0.1;
   final double SHOOTER_LIMELIGHT_TURN_KP = 0.01;//0.0088;
-  final double INTAKE_LIMELIGHT_TURN_KP = 0.02;//0.0088;
+  final double INTAKE_LIMELIGHT_TURN_KP = 0.018;//0.0088;
   private double maxSpeed = 0.25;
   private boolean isLocked = false;
   private double lockedHeading = 0;
@@ -151,7 +151,7 @@ public class RobotPresetCommand extends Command {
     
 
     //Set shooter angle for intake and amp, auto angle shooter for everything else
-    if (RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER) || (RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) && !RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER))){
+    if (RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_ACROSS) || (RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) && !RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER))){
       shooter.tiltToAngle(RobotState.getRobotConfiguration().shooterAngle.angle);
       
     }
@@ -166,7 +166,7 @@ public class RobotPresetCommand extends Command {
     }
     
     //SET SHOOTER FOR REQUIRED PRESETS
-    if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER)){
+    if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_ACROSS)){
       intaken = false;
       if (control.getRightTriggerAxis() >= 0.4) 
         shooter.setFeeder(1);
@@ -225,7 +225,7 @@ public class RobotPresetCommand extends Command {
           intake.setIntake(0);
           
           intake.set(IntakePosition.RETRACTED);
-          control.setRumble(RumbleType.kBothRumble, 0.5);
+          control.setRumble(RumbleType.kBothRumble, 1);
         }
 
         double limelightTurnPower = MathR.limit(INTAKE_LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, intakeLimelight.x), -0.20, 0.20) * -1;
@@ -267,7 +267,7 @@ public class RobotPresetCommand extends Command {
 
 
       double leadAngle = Math.abs(Math.toDegrees(Math.atan2(Constants.SHOOTER_VELOCITY - DriveSubsystem.getRelativeVelocity().getY(), DriveSubsystem.getRelativeVelocity().getX() + 0.000001))) - 90;
-      double adjustedAngle = shooterLimelight.x + 1;
+      double adjustedAngle = shooterLimelight.x - 3;
 
       if (DriveSubsystem.getRelativeVelocity().getX() > 0){
         adjustedAngle = shooterLimelight.x + leadAngle;

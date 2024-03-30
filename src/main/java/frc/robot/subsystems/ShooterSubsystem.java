@@ -182,9 +182,10 @@ public class ShooterSubsystem extends SubsystemBase{
   }
 
   public enum ShooterAngle {
-    TRAVEL(323),
+    TRAVEL(322),
     AMP(52),
     TOP(55),
+    SHOOT_ACROSS(270),
     NONE(-1);
 
     public final double angle;

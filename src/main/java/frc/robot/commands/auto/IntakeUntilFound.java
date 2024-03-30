@@ -22,10 +22,12 @@ public class IntakeUntilFound extends Command {
   Supplier<ShooterSubsystem.ShooterAngle> angle;
   boolean revShooter;
   LimelightSubsystem shooterLimelight;
-  public IntakeUntilFound(Supplier<IntakeSubsystem.IntakePosition> position, IntakeSubsystem intake, ShooterSubsystem shooter) {
+  boolean runShooter;
+  public IntakeUntilFound(Supplier<IntakeSubsystem.IntakePosition> position, IntakeSubsystem intake, ShooterSubsystem shooter, boolean runShooter) {
     this.intake = intake;
     this.shooter = shooter;
-    this.position = position;                                                                                                                                             
+    this.position = position;       
+    this.runShooter = runShooter;                                                                                                                                      
     addRequirements(intake, shooter);
   }
 
@@ -41,8 +43,11 @@ public class IntakeUntilFound extends Command {
     intake.set(position.get());
     shooter.tiltToAngle(ShooterAngle.TRAVEL.angle);
     
-    intake.setIntake(0.7);
-    shooter.stopShooter();
+    intake.setIntake(1);
+    if (!runShooter){
+      shooter.stopShooter();
+    }
+    
     shooter.setFeeder(0.6);
     
   }
