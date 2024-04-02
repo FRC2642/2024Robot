@@ -31,8 +31,6 @@ public class MiddleNotesCommand extends SequentialCommandGroup {
   
   public MiddleNotesCommand(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem shooterLimelight, LimelightSubsystem intakeLimelight) {
     PiratePath path = new PiratePath("MiddleNotePath", false);
-    System.out.println("start" +path.getFirst().position);
-    
     var paths = path.getSubPaths();
     var getNote2 = paths.get(0);
     var shootNote2 = paths.get(1);
@@ -41,8 +39,6 @@ public class MiddleNotesCommand extends SequentialCommandGroup {
     
     addCommands(
       new InstantCommand(() -> {
-        System.out.println("before: "+path.getFirst().position);
-        
         drive.setDefensiveMode(true);
         shooter.setSpeedLimit(0.9);
         intake.setSpeedLimit(0.5);

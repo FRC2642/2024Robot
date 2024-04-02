@@ -6,8 +6,10 @@ package frc.robot.commands.auto;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.RobotState.RobotConfiguration;
@@ -47,8 +49,14 @@ public class IntakeUntilFound extends Command {
     if (!runShooter){
       shooter.stopShooter();
     }
-    
-    shooter.setFeeder(0.6);
+  
+    if (!(ShooterSubsystem.getNoteDetected() || ShooterSubsystem.getCloseNoteDetected())){
+      shooter.setFeeder(0.9);
+    } 
+    else if (ShooterSubsystem.getCloseNoteDetected() && !ShooterSubsystem.getNoteDetected()){
+      shooter.setFeeder(0.2);
+    }
+        
     
   }
 

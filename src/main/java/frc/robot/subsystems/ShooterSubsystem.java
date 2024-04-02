@@ -24,6 +24,9 @@ public class ShooterSubsystem extends SubsystemBase{
   private PIDController tiltPID = new PIDController(0.03, 0, 0);
   private PIDController shooterPID1 = new PIDController(0.3, 0, 0);
   private PIDController shooterPID2 = new PIDController(0.2, 0, 0);
+
+  PIDController motorPID1 = new PIDController(0.01, 0, 0);
+  PIDController motorPID2 = new PIDController(0.01, 0, 0);
   
   private static TalonFX shooterMotor1 = new TalonFX(Constants.SHOOTER_SPINNER_ID_1);
   private static TalonFX shooterMotor2 = new TalonFX(Constants.SHOOTER_SPINNER_ID_2);
@@ -91,6 +94,14 @@ public class ShooterSubsystem extends SubsystemBase{
     }*/
   }
 
+  public void setSpeed(double rpm){
+    
+    shooterMotor1.set(MathR.limit(motorPID1.calculate(shooterMotor1.getVelocity().getValueAsDouble(), rpm), 0, 0.5));
+    shooterMotor2.set(MathR.limit(-motorPID2.calculate(-shooterMotor2.getVelocity().getValueAsDouble(), -rpm), 0, 0.5));
+
+
+  }
+
   public double getPitch(){
     return 180 + MathR.getDistanceToAngle(180, tiltEncoder.getAbsolutePosition() * 360 + Constants.SHOOTER_TILT_ENCODER_OFFSET);
   }
@@ -111,17 +122,17 @@ public class ShooterSubsystem extends SubsystemBase{
   }
 
   public boolean atPitch(double pitch){
-    return getPitch() >= pitch - 2 && getPitch() <= pitch + 2;
+    return getPitch() >= pitch - 1.5 && getPitch() <= pitch + 1.5;
   }
 
   public void tiltToAngle(double degrees){
-    double power = MathR.limit(tiltPID.calculate(getPitch(), degrees), -tiltSpeedLimit, tiltSpeedLimit);
+    double power = -MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), degrees, 350), 0), -tiltSpeedLimit, tiltSpeedLimit);
     
     if (Math.abs(power) <= 0.05){
       power = 0;
     }
 
-    if (getPitch() <= 30 || getPitch() >= 355){
+    if (getPitch() <= 30 || getPitch() >= 340){
       power = 0;
     }
     shooterTiltMotor1.set(power);
@@ -180,6 +191,7 @@ public class ShooterSubsystem extends SubsystemBase{
   public enum ShooterSpeed {
     TRAVEL(0),
     TRAP(-50),
+    IDLE(-30),
     SPEAKER(-82);
 
 
@@ -204,6 +216,7 @@ public class ShooterSubsystem extends SubsystemBase{
 
   @Override
   public void periodic() {
+    System.out.println(getPitch());
     
     // System.out.println(getPitch());
     // System.out.println(shooterMotor2.getVelocity());

@@ -21,6 +21,7 @@ import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
 import frc.robot.utils.MathR;
 import frc.robot.utils.VectorR;
 import frc.robot.subsystems.RobotState.RobotConfiguration;
+import frc.robot.subsystems.ShooterSubsystem.ShooterSpeed;
 
 public class RobotPresetCommand extends Command {
   /** Creates a new RobotPresetCommand. */
@@ -36,7 +37,7 @@ public class RobotPresetCommand extends Command {
   private final VectorR rightJoystick = new VectorR();
   final double TURN_KP = 0.017;
   final double LOCK_TURN_KP = 0.1;
-  final double SHOOTER_LIMELIGHT_TURN_KP = 0.006;//0.0088;
+  final double SHOOTER_LIMELIGHT_TURN_KP = 0.008;//0.0088;
   final double INTAKE_LIMELIGHT_TURN_KP = 0.018;//0.0088;
   private double maxSpeed = 0.25;
   private boolean isLocked = false;
@@ -138,7 +139,7 @@ public class RobotPresetCommand extends Command {
     
     if (!(RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP)) && !auxButtonBoard.getRawButton(11)){
       shooter.set(RobotState.getRobotConfiguration().shooterSpeed);
-      //shooter.setShooter(-1);
+      
     }
     if (auxButtonBoard.getRawButton(9)){
       revUp = true;
@@ -183,6 +184,7 @@ public class RobotPresetCommand extends Command {
     }
     else{
       if (!revUp){
+        
         shooter.setShooter(0);
       }
       
@@ -259,7 +261,7 @@ public class RobotPresetCommand extends Command {
       }*/
        
 
-      double limelightTurnPower = MathR.limit(SHOOTER_LIMELIGHT_TURN_KP * deltaAngle, -0.15, 0.15) * -1.5;
+      double limelightTurnPower = MathR.limit(SHOOTER_LIMELIGHT_TURN_KP * deltaAngle, -0.12, 0.12) * -1.8;
       
       //System.out.println(limelightTurnPower + " " + MathR.getDistanceToAngle(0, adjustedAngle));
       
@@ -300,7 +302,7 @@ public class RobotPresetCommand extends Command {
         shooter.setManual(0);
       }
     }
-    
+
   }
 
   // Returns true when the command should end.

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auto.drive.StopCommand;
 import frc.robot.commands.auto.fullAutos.CloseFourPiece;
 import frc.robot.commands.auto.fullAutos.DisruptorAuto;
+import frc.robot.commands.auto.fullAutos.FivePiece;
 import frc.robot.commands.auto.fullAutos.FourPieceCommand;
 import frc.robot.commands.auto.fullAutos.FrontThreePiece;
 import frc.robot.commands.auto.fullAutos.FrontTwoPiece;
@@ -67,6 +68,7 @@ public class RobotContainer {
     autoChooser.addOption("1 Piece Stop", new OnePieceCommand(drive, shooter, shooterLimelight));
     autoChooser.addOption("1 Piece Move", new OnePiecePath(drive, shooter, shooterLimelight));
     autoChooser.addOption("Close 4 Piece", new CloseFourPiece(drive, shooter, intake, shooterLimelight, intakeLimelight));
+    autoChooser.addOption("5 Piece", new FivePiece(drive, shooter, intake, shooterLimelight, intakeLimelight));
     autoChooser.addOption("Middle Notes", new MiddleNotesCommand(drive, shooter, intake, shooterLimelight, intakeLimelight));
     autoChooser.addOption("Disruptor", new DisruptorAuto(drive, shooter, intake, shooterLimelight, intakeLimelight));
     
