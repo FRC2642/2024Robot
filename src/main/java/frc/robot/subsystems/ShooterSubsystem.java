@@ -21,7 +21,7 @@ import frc.robot.utils.MathR;
 
 public class ShooterSubsystem extends SubsystemBase{
 
-  private PIDController tiltPID = new PIDController(0.03, 0, 0);
+  private PIDController tiltPID = new PIDController(0.025, 0, 0);
   private PIDController shooterPID1 = new PIDController(0.3, 0, 0);
   private PIDController shooterPID2 = new PIDController(0.2, 0, 0);
 
@@ -122,11 +122,25 @@ public class ShooterSubsystem extends SubsystemBase{
   }
 
   public boolean atPitch(double pitch){
-    return getPitch() >= pitch - 1.5 && getPitch() <= pitch + 1.5;
+    return getPitch() >= pitch - 1 && getPitch() <= pitch + 1;
   }
 
   public void tiltToAngle(double degrees){
     double power = -MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), degrees, 350), 0), -tiltSpeedLimit, tiltSpeedLimit);
+    
+    if (Math.abs(power) <= 0.02){
+      power = 0;
+    }
+
+    if (getPitch() <= 30 || getPitch() >= 340){
+      power = 0;
+    }
+    shooterTiltMotor1.set(power);
+    shooterTiltMotor2.set(-power);
+  }
+
+  public void tiltToAngleAMP(double degrees){
+    double power = MathR.limit(tiltPID.calculate(getPitch(), degrees), -tiltSpeedLimit, tiltSpeedLimit);
     
     if (Math.abs(power) <= 0.05){
       power = 0;
@@ -202,7 +216,7 @@ public class ShooterSubsystem extends SubsystemBase{
   }
 
   public enum ShooterAngle {
-    TRAVEL(322),
+    TRAVEL(320),
     AMP(52),
     TOP(55),
     SHOOT_ACROSS(270),
@@ -216,11 +230,9 @@ public class ShooterSubsystem extends SubsystemBase{
 
   @Override
   public void periodic() {
-    System.out.println(getPitch());
     
-    // System.out.println(getPitch());
+    //System.out.println(getPitch());
     // System.out.println(shooterMotor2.getVelocity());
-    // System.out.println(getPitch());
     
     
     //System.out.println(getNoteDetected());

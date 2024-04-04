@@ -151,8 +151,10 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     //System.out.println(displacement);
+    modules.debugSmartDashboard();  
     
-    modules.debugSmartDashboard();    
+    //System.out.println(getRelativeFieldPosition());
+    
 
     SmartDashboard.putNumber("gyro", getYawDegrees());
 

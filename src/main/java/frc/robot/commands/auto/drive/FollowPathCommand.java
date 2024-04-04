@@ -16,8 +16,8 @@ import frc.robot.path.*;
 
 public class FollowPathCommand extends Command {
 
-  public static final double HEADING_KP = 0.0015;//0.00027925;
-  public static final double MOVEMENT_KP = 0.07;
+  public static final double HEADING_KP = 0.0013;//0.00027925;
+  public static final double MOVEMENT_KP = 0.065;
   public static final double BASE_PRECISION = 0.05;
   public static final double TIME_TO_CORRECT_FROM_START = 1.5;
 

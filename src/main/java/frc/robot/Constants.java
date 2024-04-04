@@ -11,7 +11,7 @@ import frc.robot.subsystems.swerve.SwerveModules.ModuleLocation;
 public final class Constants {
 
     // Ratios
-    public static final double FEET_PER_DISPLACEMENT = 0.15462531;
+    public static final double FEET_PER_DISPLACEMENT = 0.17458101;
     public static final double MODULE_ANGLE_KP = -0.00524;
     public static final double FOOT_PER_METER = 3.28084;
 
@@ -20,10 +20,10 @@ public final class Constants {
     public static final int AUX_BUTTON_BOARD_PORT = 1;
 
     // Swerve
-    public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(1, 2, 11, 315 - 5 - 180/*137.2*/, 1, -1, ModuleLocation.FRONT_RIGHT);
-    public static final SwerveModuleInfo FRONT_LEFT = new SwerveModuleInfo(3, 4, 12, 35.5 - 10 - 180/*233.9*/, 1, 1, ModuleLocation.FRONT_LEFT);
-    public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(5, 6, 13, 316.76 - 10 - 180/*136.1*/, -1, -1, ModuleLocation.BACK_RIGHT);
-    public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(7, 8, 14, 245 - 10 - 180/*53.36*/, -1, 1, ModuleLocation.BACK_LEFT);
+    public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(1, 2, 11, 135.7/*137.2*/, 1, -1, ModuleLocation.FRONT_RIGHT);
+    public static final SwerveModuleInfo FRONT_LEFT = new SwerveModuleInfo(3, 4, 12, 212.95/*233.9*/, 1, 1, ModuleLocation.FRONT_LEFT);
+    public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(5, 6, 13, 130.7/*136.1*/, -1, -1, ModuleLocation.BACK_RIGHT);
+    public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(7, 8, 14, 65.9 - 2/*53.36*/, -1, 1, ModuleLocation.BACK_LEFT);
 
     // Shooter
     public static final int SHOOTER_SPINNER_ID_1 = 21;
@@ -50,7 +50,7 @@ public final class Constants {
     public static final double SHOOTER_SET_RPM = 510;
     public static final double SHOOTER_TILT_ENCODER_MAX_VALUE = 1;
     public static final double SHOOTER_TILT_ENCODER_MIN_VALUE = 0;
-    public static final double SHOOTER_TILT_ENCODER_OFFSET = -314;
+    public static final double SHOOTER_TILT_ENCODER_OFFSET = -365.5;
     //public static final double SHOOTER_STANDARD_HEIGHT = 0.458333;
     
     public static final double INTAKE_TILT_ENCODER_MAX_VALUE = 1;

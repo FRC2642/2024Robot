@@ -37,7 +37,7 @@ public class RobotPresetCommand extends Command {
   private final VectorR rightJoystick = new VectorR();
   final double TURN_KP = 0.017;
   final double LOCK_TURN_KP = 0.1;
-  final double SHOOTER_LIMELIGHT_TURN_KP = 0.008;//0.0088;
+  final double SHOOTER_LIMELIGHT_TURN_KP = 0.007;//0.0088;
   final double INTAKE_LIMELIGHT_TURN_KP = 0.018;//0.0088;
   private double maxSpeed = 0.25;
   private boolean isLocked = false;
@@ -153,7 +153,7 @@ public class RobotPresetCommand extends Command {
 
     //Set shooter angle for intake and amp, auto angle shooter for everything else
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_ACROSS) || (RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) && !RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER))){
-      shooter.tiltToAngle(RobotState.getRobotConfiguration().shooterAngle.angle);
+      shooter.tiltToAngleAMP(RobotState.getRobotConfiguration().shooterAngle.angle);
       
     }
     else if (shooterLimelight.isDetection){
@@ -261,7 +261,7 @@ public class RobotPresetCommand extends Command {
       }*/
        
 
-      double limelightTurnPower = MathR.limit(SHOOTER_LIMELIGHT_TURN_KP * deltaAngle, -0.12, 0.12) * -1.8;
+      double limelightTurnPower = MathR.limit(SHOOTER_LIMELIGHT_TURN_KP * deltaAngle, -0.11, 0.11) * -1.8;
       
       //System.out.println(limelightTurnPower + " " + MathR.getDistanceToAngle(0, adjustedAngle));
       
