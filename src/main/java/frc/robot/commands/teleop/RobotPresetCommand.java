@@ -39,6 +39,7 @@ public class RobotPresetCommand extends Command {
   final double LOCK_TURN_KP = 0.1;
   final double SHOOTER_LIMELIGHT_TURN_KP = 0.007;//0.0088;
   final double INTAKE_LIMELIGHT_TURN_KP = 0.018;//0.0088;
+  final double GYRO_TURN_KP = 0.005555;
   private double maxSpeed = 0.25;
   private boolean isLocked = false;
   private double lockedHeading = 0;
@@ -137,9 +138,16 @@ public class RobotPresetCommand extends Command {
     intake.set(RobotState.getRobotConfiguration().intakePos);
     
     
-    if (!(RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP)) && !auxButtonBoard.getRawButton(11)){
+    if (!(RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAP)) && !auxButtonBoard.getRawButton(11)){
       shooter.set(RobotState.getRobotConfiguration().shooterSpeed);
-      
+    }
+
+    if (RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAP)){
+      shooter.setTrapSpeed(10);
+      shooter.setJet();
+    }
+    else{
+      shooter.stopJet();
     }
     if (auxButtonBoard.getRawButton(9)){
       revUp = true;
@@ -152,12 +160,12 @@ public class RobotPresetCommand extends Command {
     
 
     //Set shooter angle for intake and amp, auto angle shooter for everything else
-    if (RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_ACROSS) || (RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) && !RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER))){
+    if (RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_ACROSS) || RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAP) || (RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) && !RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER))){
       shooter.tiltToAngleAMP(RobotState.getRobotConfiguration().shooterAngle.angle);
       
     }
     else if (shooterLimelight.isDetection){
-      shooter.tiltToAngle(shooter.getAutoAngle(shooterLimelight.y));
+      shooter.tiltToAngle(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
     }
     else if (RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER)){
       shooter.tiltToAngle(RobotState.getRobotConfiguration().shooterAngle.angle);
@@ -167,7 +175,7 @@ public class RobotPresetCommand extends Command {
     }
     
     //SET SHOOTER FOR REQUIRED PRESETS
-    if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_ACROSS)){
+    if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_ACROSS) || RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAP)){
       if (control.getRightTriggerAxis() >= 0.4) 
         shooter.setFeeder(1);
       
@@ -243,9 +251,6 @@ public class RobotPresetCommand extends Command {
 
     //SPEAKER PRESET
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER)){ 
-      
-      
-      
       //shooter.tiltToAngle(shooter.getAutoAngle(shooterLimelight.y));
       //shooter.tiltToAngle(RobotContainer.ANGLE);
 
@@ -282,25 +287,7 @@ public class RobotPresetCommand extends Command {
       }
       else{
         drive.move(leftJoystick, turnPower);
-      }
-        
-      
-      
-      
-      
-    }
-
-    //CLIMB PRESET
-    if (RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.CLIMB)){
-      if (control.getPOV() == 90){
-      shooter.setManual(0.8);
-      }
-      else if (control.getPOV() == 270){
-        shooter.setManual(-0.8);
-      }
-      else{
-        shooter.setManual(0);
-      }
+      }  
     }
 
   }
@@ -320,6 +307,10 @@ public class RobotPresetCommand extends Command {
     if (control.getAButton()){
       shooter.setFeeder(0.4);
     }
+    if (auxButtonBoard.getRawButton(7)){
+      shooter.setJet();
+    }
+    
     
     
     return false;

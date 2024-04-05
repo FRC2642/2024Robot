@@ -74,7 +74,7 @@ public class FourPieceCommand extends SequentialCommandGroup {
         //2ND NOTE
         new LimelightPathCommand(drive, getNoteShootNote, false, 0.25, shooterLimelight).deadlineWith(
           new RunCommand(()->{
-            shooter.tiltToAngle(shooter.getAutoAngle(-12));
+            shooter.tiltToAngle(shooter.getAutoAngle(-12, 1));
           })
         ),
 

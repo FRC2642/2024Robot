@@ -27,7 +27,7 @@ public class AutoAngleShooterCommand extends Command {
   @Override
   public void execute() {
     //System.out.println("tilting");
-    shooter.tiltToAngle(shooter.getAutoAngle(shooterLimelight.y));
+    shooter.tiltToAngle(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
   }
 
   // Called once the command ends or is interrupted.
@@ -37,10 +37,10 @@ public class AutoAngleShooterCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println(shooter.getAutoAngle(shooterLimelight.y) + " "+shooter.getPitch());
-    System.out.println(shooter.atPitch(shooter.getAutoAngle(shooterLimelight.y)));
+    System.out.println(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a) + " "+shooter.getPitch());
+    System.out.println(shooter.atPitch(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a)));
     
     
-    return shooter.atPitch(shooter.getAutoAngle(shooterLimelight.y));
+    return shooter.atPitch(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
   }
 }

@@ -38,10 +38,9 @@ public class RobotState {
         SHOOT_OVER(IntakePosition.RETRACTED, ShooterSpeed.SPEAKER, ShooterAngle.TOP),
         SHOOT_ACROSS(IntakePosition.RETRACTED, ShooterSpeed.SPEAKER, ShooterAngle.SHOOT_ACROSS),
         SHOOT_AMP(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.AMP),
-        SHOOT_TRAP(IntakePosition.RETRACTED, ShooterSpeed.TRAP, ShooterAngle.NONE),
         INTAKE(IntakePosition.EXTENDED, ShooterSpeed.TRAVEL, ShooterAngle.TRAVEL),
         TRAVEL(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.TRAVEL),
-        CLIMB(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.NONE);
+        TRAP(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.TRAP);
         
         public final ShooterSpeed shooterSpeed;
         public final ShooterAngle shooterAngle;

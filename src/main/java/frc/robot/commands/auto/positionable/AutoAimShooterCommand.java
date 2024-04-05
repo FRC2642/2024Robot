@@ -40,7 +40,7 @@ public class AutoAimShooterCommand extends Command {
   @Override
   public void execute() {
     if (shooterLimelight.isDetection){
-      shooter.tiltToAngle(shooter.getAutoAngle(shooterLimelight.y));
+      shooter.tiltToAngle(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
     }
     else{
       shooter.setManual(0);
@@ -57,12 +57,12 @@ public class AutoAimShooterCommand extends Command {
   
     boolean robotReady = Math.abs(turnPower) <= 0.05;
     //boolean shooterRevReady = (ShooterSubsystem.getMotorVelocity() <= -70) && (ShooterSubsystem.getMotorVelocity() >= -94);
-    boolean shooterAngleReady = shooter.atPitch(shooter.getAutoAngle(shooterLimelight.y));
+    boolean shooterAngleReady = shooter.atPitch(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
     System.out.println("robot: " + robotReady);
     //System.out.println("shooter: "+shooterAngleReady);
     //System.out.println("shooter rev: "+shooterRevReady);
     
-    System.out.println(shooter.getPitch() + " "+shooter.getAutoAngle(shooterLimelight.y));
+    System.out.println(shooter.getPitch() + " "+shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
     
     
     
