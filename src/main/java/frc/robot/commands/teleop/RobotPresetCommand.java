@@ -35,12 +35,11 @@ public class RobotPresetCommand extends Command {
 
   final VectorR leftJoystick = new VectorR();
   private final VectorR rightJoystick = new VectorR();
-  final double TURN_KP = 0.017;
+  final double TURN_KP = 0.015;//0.017;
   final double LOCK_TURN_KP = 0.1;
   final double SHOOTER_LIMELIGHT_TURN_KP = 0.007;//0.0088;
   final double INTAKE_LIMELIGHT_TURN_KP = 0.018;//0.0088;
-  final double GYRO_TURN_KP = 0.005555;
-  private double maxSpeed = 0.25;
+  private double maxSpeed = 0.35;
   private boolean isLocked = false;
   private double lockedHeading = 0;
   private boolean stopped = false;
@@ -75,7 +74,7 @@ public class RobotPresetCommand extends Command {
     control.setRumble(RumbleType.kBothRumble, 0);
     
     ///////////////////////////DRIVE///////////////////////////////
-    maxSpeed = MathR.lerp(0.25, 1.0, 0.0, 1.0, control.getLeftTriggerAxis());
+    maxSpeed = MathR.lerp(0.35, 1.0, 0.0, 1.0, control.getLeftTriggerAxis());
     leftJoystick.setFromCartesian(control.getLeftX(), -control.getLeftY());
     leftJoystick.rotate(-90);
     rightJoystick.setFromCartesian(control.getRightX(), -control.getRightY());
@@ -138,7 +137,7 @@ public class RobotPresetCommand extends Command {
     intake.set(RobotState.getRobotConfiguration().intakePos);
     
     
-    if (!(RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAP)) && !auxButtonBoard.getRawButton(11)){
+    if (!(RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_ACROSS)) && !auxButtonBoard.getRawButton(11)){
       shooter.set(RobotState.getRobotConfiguration().shooterSpeed);
     }
 
@@ -148,6 +147,9 @@ public class RobotPresetCommand extends Command {
     }
     else{
       shooter.stopJet();
+    }
+    if (RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_ACROSS)){
+      shooter.setPassSpeed();
     }
     if (auxButtonBoard.getRawButton(9)){
       revUp = true;
@@ -286,8 +288,8 @@ public class RobotPresetCommand extends Command {
         drive.stop();
       }
       else{
-        drive.move(leftJoystick, turnPower);
-      }  
+        drive.move(leftJoystick, turnPower * maxSpeed);
+      }
     }
 
   }

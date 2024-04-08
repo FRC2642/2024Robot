@@ -61,9 +61,9 @@ public class FivePiece extends SequentialCommandGroup {
       }, shooter),
 
       //Get 2nd note
-      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, note2, true, 0.25, 0.2, 0.8, true).alongWith(
+      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, note2, true, 0.25, 0.2, 0.75, true).alongWith(
           new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, true)
-      ).withTimeout(2),
+      ).withTimeout(2.5),
 
       new FollowPathCommand(drive, shootNote2, false, 0.25).withTimeout(0.9),
 
@@ -79,10 +79,10 @@ public class FivePiece extends SequentialCommandGroup {
       //Get 3rd note
       new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, note3, false, 0.25, 0.35, 0.2, true).alongWith(
           new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, true)
-      ).withTimeout(3),
+      ).withTimeout(1.8),
 
       //Shoot 3rd note
-      new WaitCommand(0.3),
+      new WaitCommand(0.4),
       new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight).withTimeout(0.5),
       new InstantCommand(()->shooter.setFeeder(1), shooter),
       new WaitCommand(0.05), //DO NOT REMOVE
@@ -91,14 +91,14 @@ public class FivePiece extends SequentialCommandGroup {
       }, shooter),
 
       //Get 4th note
-      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, note4, false, 0.25, 0.35, 1, true).alongWith(
+      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, note4, false, 0.25, 0.35, 1.2, true).alongWith(
           new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, true)
       ).withTimeout(3),
 
       new FollowPathCommand(drive, shootNote4, false, 0.25).withTimeout(0.8),
       
       //Shoot 4th note
-      new WaitCommand(0.3),
+      new WaitCommand(0.4),
       new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
       new InstantCommand(()->shooter.setFeeder(1), shooter),
       new WaitCommand(0.05), //DO NOT REMOVE
@@ -116,6 +116,7 @@ public class FivePiece extends SequentialCommandGroup {
       new FollowPathCommand(drive, shootNote5, false, 0.25).withTimeout(1.3)/*.alongWith(new SetIntakeCommand(intake, ()->IntakePosition.RETRACTED))*/,
 
       //Shoot 5th note
+      new WaitCommand(0.1),
       new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
       new InstantCommand(()->shooter.setFeeder(1), shooter),
       new WaitCommand(0.2),

@@ -22,7 +22,7 @@ public class OnePieceCommand extends SequentialCommandGroup {
     
     addCommands(
       new InstantCommand(() -> {
-        shooter.setSpeedLimit(0.5);
+        shooter.setSpeedLimit(0.9);
       }, shooter),
 
         new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
@@ -35,6 +35,7 @@ public class OnePieceCommand extends SequentialCommandGroup {
         new WaitCommand(0.3),
 
         new InstantCommand(()->{
+          shooter.setShooter(0);
           shooter.setFeeder(0);
         }, shooter)
     );

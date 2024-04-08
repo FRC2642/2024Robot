@@ -55,11 +55,13 @@ public class RobotContainer {
 
   public static boolean DEBUG = false;
   public static double ANGLE = 0;
+  public static double OFFSET = 0;
 
 
   public RobotContainer() {
     SmartDashboard.putNumber("DEBUG MODE", 0);
     SmartDashboard.putNumber("ANGLE", 0);
+    SmartDashboard.putNumber("OFFSET", 0);
     
     
     // Auto options
@@ -92,16 +94,25 @@ public class RobotContainer {
       CommandScheduler.getInstance().schedule(new RobotPresetCommand(drive, shooter, intake, shooterLimelight, intakeLimelight, mainControl, auxButtonBoard));
   
 
-      //Reset Gyro D-Pad
+      //Reset Gyro and Displacement D-Pad
       new POVButton(mainControl, 0).onTrue(new ResetGyroCommand(0).andThen(new ResetDisplacementCommand(new VectorR())));
-      
-      new JoystickButton(mainControl, 7).onTrue(new InstantCommand(()->{
+      //Adjust shooter angle up
+      new POVButton(mainControl, 90).onTrue(new InstantCommand(()->OFFSET+=1));
+      //Adjust shooter angle down
+      new POVButton(mainControl, 90).onTrue(new InstantCommand(()->OFFSET-=1));
+
+      //Data button
+      /*new JoystickButton(mainControl, 7).onTrue(new InstantCommand(()->{
         ShooterSubsystem.dataArray.add(new Double[]{ANGLE, shooterLimelight.a});
         for (int i = 0; i < ShooterSubsystem.dataArray.size(); i++){
           System.out.println(ShooterSubsystem.dataArray.get(i)[0] + ","+ShooterSubsystem.dataArray.get(i)[1]);          
         }
         System.out.println("");
-      }));
+      }));*/
+
+
+
+
 
     } 
     

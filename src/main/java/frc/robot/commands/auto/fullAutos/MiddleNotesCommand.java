@@ -13,12 +13,14 @@ import frc.robot.commands.auto.drive.FollowPathCommand;
 import frc.robot.commands.auto.positionable.AutoAimShooterCommand;
 import frc.robot.commands.auto.positionable.AutoAngleShooterCommand;
 import frc.robot.commands.auto.positionable.SetIntakeCommand;
+import frc.robot.commands.auto.positionable.SetShooterCommand;
 import frc.robot.path.PiratePath;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.LimelightSubsystem.DetectionType;
+import frc.robot.subsystems.ShooterSubsystem.ShooterAngle;
 import frc.robot.subsystems.ShooterSubsystem.ShooterSpeed;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utils.VectorR;
@@ -53,7 +55,7 @@ public class MiddleNotesCommand extends SequentialCommandGroup {
       
     
       //Shoot 1st note
-      new AutoAngleShooterCommand(shooter, shooterLimelight),
+      new SetShooterCommand(shooter, ()->ShooterAngle.SUBWOOFER),
       new InstantCommand(()->shooter.setManual(0), shooter),
       new WaitCommand(0.3),
       new InstantCommand(()->shooter.setFeeder(1), shooter),

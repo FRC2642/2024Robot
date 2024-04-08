@@ -15,6 +15,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterSpeed;
+import frc.robot.utils.VectorR;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -31,16 +32,17 @@ public class OnePiecePath extends SequentialCommandGroup {
     addCommands(
       new InstantCommand(() -> {
         drive.setDefensiveMode(true);
-      }, drive),
-      
-      
+        shooter.setSpeedLimit(0.9);
+        drive.move(new VectorR(), 0);
+        shooter.setShooter(-1);
+      }, drive, shooter),
 
         new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
       
-        new WaitCommand(2),
+        new WaitCommand(0.5),
         new InstantCommand(()->{
           shooter.setFeeder(1);
-        }),
+        }, shooter),
 
         new WaitCommand(0.3),
 
@@ -49,7 +51,9 @@ public class OnePiecePath extends SequentialCommandGroup {
           shooter.setFeeder(0);
         }, shooter),
 
-        new FollowPathCommand(drive, move, true, 0),
+        new WaitCommand(11),
+
+        new FollowPathCommand(drive, move, true, 0.5),
         new StopCommand(drive)
         
     );

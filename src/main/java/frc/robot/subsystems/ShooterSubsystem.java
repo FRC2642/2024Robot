@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.utils.MathR;
 
 public class ShooterSubsystem extends SubsystemBase{
@@ -103,8 +104,13 @@ public class ShooterSubsystem extends SubsystemBase{
   }
 
   public void setTrapSpeed(double rpm){
-    shooterMotor1.setControl(new DutyCycleOut(0.35, true, false, false, false));
-    shooterMotor2.setControl(new DutyCycleOut(-0.35, true, false, false, false));
+    shooterMotor1.setControl(new DutyCycleOut(0.39, true, false, false, false));
+    shooterMotor2.setControl(new DutyCycleOut(-0.39, true, false, false, false));
+  }
+
+  public void setPassSpeed(){
+    shooterMotor1.setControl(new DutyCycleOut(0.60, true, false, false, false));
+    shooterMotor2.setControl(new DutyCycleOut(-0.60, true, false, false, false));
   }
 
   public void setSpeed(double rpm){
@@ -192,15 +198,15 @@ public class ShooterSubsystem extends SubsystemBase{
 
   public void stopShooter(){
     double currentRPM1 = shooterMotor1.getVelocity().getValueAsDouble();
-    double speed1 = -currentRPM1 * 0.0001;
+    double speed1 = -currentRPM1 * 0.003;
 
     double currentRPM2 = shooterMotor2.getVelocity().getValueAsDouble();
-    double speed2 = -currentRPM2 * 0.0001;
+    double speed2 = -currentRPM2 * 0.003;
     
-    if (Math.abs(speed1) <= 0.3){
+    if (Math.abs(speed1) <= 0.4){
       speed1 = 0;
     }
-    if (Math.abs(speed2) <= 0.3){
+    if (Math.abs(speed2) <= 0.4){
       speed2 = 0;
     }
     
@@ -210,11 +216,11 @@ public class ShooterSubsystem extends SubsystemBase{
 
 
   public double getAutoAngle(double ty, double ta){
-    if (ta <= 0.11){
-      return -0.00000714563 * Math.pow(ty, 5) + 0.000248267 * Math.pow(ty, 4) + 0.00716947 * Math.pow(ty, 3) - 0.184703 * Math.pow(ty, 2) - 3.07547 * ty + 281.267 + 4;
+    if (ta <= 0.5){
+      return -0.00000714563 * Math.pow(ty, 5) + 0.000248267 * Math.pow(ty, 4) + 0.00716947 * Math.pow(ty, 3) - 0.184703 * Math.pow(ty, 2) - 3.07547 * ty + 281.267 - RobotContainer.OFFSET;
     }
     else{
-      return -0.00000714563 * Math.pow(ty, 5) + 0.000248267 * Math.pow(ty, 4) + 0.00716947 * Math.pow(ty, 3) - 0.184703 * Math.pow(ty, 2) - 3.07547 * ty + 281.267;
+      return -0.00000714563 * Math.pow(ty, 5) + 0.000248267 * Math.pow(ty, 4) + 0.00716947 * Math.pow(ty, 3) - 0.184703 * Math.pow(ty, 2) - 3.07547 * ty + 281.267 - RobotContainer.OFFSET;
     }
     //Old formula
     //0.00792889 * Math.pow(ty, 3) - 0.142877 * Math.pow(ty, 2) - 3.38697 * ty + 281.44;
@@ -222,7 +228,7 @@ public class ShooterSubsystem extends SubsystemBase{
   }
 
   public double getAutoOffset(double ty){
-    return -0.00336373 * Math.pow(ty, 2) - 0.212577 * ty + 5.31239;
+    return -0.00336373 * Math.pow(ty, 2) - 0.212577 * ty + 5.31239 - 2;
   }
 
   public void setSpeedLimit(double max) {
@@ -246,8 +252,9 @@ public class ShooterSubsystem extends SubsystemBase{
     TRAVEL(320),
     AMP(52),
     TOP(55),
-    TRAP(118/*205*/),
-    SHOOT_ACROSS(270),
+    TRAP(116/*205*/),
+    SHOOT_ACROSS(250),
+    SUBWOOFER(235),
     NONE(-1);
 
     public final double angle;
@@ -260,10 +267,7 @@ public class ShooterSubsystem extends SubsystemBase{
   public void periodic() {
     
     //System.out.println(getPitch());
-    // System.out.println(shooterMotor2.getVelocity());
     
-    
-    //System.out.println(getNoteDetected());
     
   }
 }
