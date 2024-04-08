@@ -4,14 +4,12 @@
 
 package frc.robot.subsystems.swerve;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
-import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix6.controls.ControlRequest;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
-import com.revrobotics.RelativeEncoder;
-
 import frc.robot.Constants;
 import frc.robot.utils.MathR;
 import frc.robot.utils.VectorR;
@@ -30,47 +28,30 @@ public class SwerveModule {
   // HARDWARE
   public final TalonFX angleMotor;
   private final TalonFX driveMotor;
-  public final CANcoder orientationEncoder;
+  public final CANCoder orientationEncoder;
 
   // INFORMATION
   public final SwerveModuleInfo info;
   private final double defensiveAngleDeg;
   private double wheelOrientation = 0.0;
-
-
-  //Oh jesus, this is gonna be a long one.
+  
 
   public SwerveModule(SwerveModuleInfo info) {
     this.info = info;
     this.angleMotor = new TalonFX(info.TURN_ID);
     this.driveMotor = new TalonFX(info.DRIVE_ID);
-    this.orientationEncoder = new CANcoder(info.ENCODER_ID);
+    this.orientationEncoder = new CANCoder(info.ENCODER_ID);
     this.defensiveAngleDeg = VectorR.fromCartesian(info.X, info.Y).getAngle();
-    
     orientationEncoder.setPosition(0);
-    
-    MagnetSensorConfigs config = new MagnetSensorConfigs();
-  // sets the units of the CANCoder to radians, with ANGULAR velocity being radians per second
-  
-    config = config.withAbsoluteSensorRange(AbsoluteSensorRangeValue.Signed_PlusMinusHalf);
-  
-  
-    orientationEncoder.getConfigurator().apply(config);
-    //driveMotor.setSelectedSensorPosition(0);
   }
 
-  //RESET METHODS
-  public void resetDriveEncoder() { //Useless, TODO delete
-    //driveMotor.getPosition
-  }
 
   // MODULE WHEEL MEASUREMENTS
   public double getWheelSpeed() {
-    return driveMotor.getVelocity().getValue() * Constants.FEET_PER_DISPLACEMENT * (100d/1d);
+    return driveMotor.getVelocity().getValue() * Constants.FEET_PER_DISPLACEMENT; /* * (100d/1d);*/
   }
 
-  private double getWheelPosition() { //Gets the number of rotations of the wheel and it's current angle
-    
+  private double getWheelPosition() {
     return driveMotor.getPosition().getValue() * Constants.FEET_PER_DISPLACEMENT;
   }
 
@@ -80,15 +61,11 @@ public class SwerveModule {
    * Does that make sense to you?
    */
   public double getWheelOrientationDegrees() {
-    return wheelOrientation - info.ABS_ENCODER_VALUE_WHEN_STRAIGHT;
+    return wheelOrientation- info.ABS_ENCODER_VALUE_WHEN_STRAIGHT;
   }
 
   public VectorR getVelocity() { //Get how fast the wheel's going (?)
     return VectorR.fromPolar(getWheelSpeed(), getWheelOrientationDegrees());
-  }
-
-  public double getWheelPower(){ 
-    return driveMotor.get();
   }
 
   private double lastWheelPosition = 0;
@@ -131,22 +108,22 @@ public class SwerveModule {
    * speed 0 min - 1 max, turns module drive wheel
    * angle radians follows coordinate plane standards, sets module wheel to angle
    */
-  public void update(double speed, double angleDegrees) { //Get the current status of the wheel, and then change it however might be nessecary
-    
-    
-    wheelOrientation = ((orientationEncoder.getAbsolutePosition().getValueAsDouble() + 0.5)/1.49975585938) * 360; 
+  public void update(double speed, double angleDegrees) {
+    wheelOrientation = orientationEncoder.getAbsolutePosition();
     desired.setFromPolar(speed, angleDegrees);
 
     if (Math.abs(MathR.getDistanceToAngle(getWheelOrientationDegrees(), desiredAngle())) > 90d)
       reverse();
-
-    double speed_power = MathR.limit(desiredSpeed(), -1, 1);
+    
+    double speed_power = MathR.limit(desiredSpeed(), -1.0, 1.0);
     double angle_power = MathR
         .limit(Constants.MODULE_ANGLE_KP * MathR.getDistanceToAngle(getWheelOrientationDegrees(), desiredAngle()), -1, 1);
-   
   
-    driveMotor.set(speed_power); 
-    angleMotor.set(angle_power);
+    
+    driveMotor.setControl(new DutyCycleOut(speed_power, true, false, false, false));
+    angleMotor.setControl(new DutyCycleOut(angle_power, true, false, false, false));
+    //driveMotor.set(speed_power); 
+    //angleMotor.set(angle_power);
 
     updateIncrementMeasurement();
   }

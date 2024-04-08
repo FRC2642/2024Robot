@@ -18,7 +18,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
   public enum DetectionType {
     NOTE(0),
-    FIDUCIAL(1),
+    FIDUCIAL(0),
     NONE(-1);
 
     public final int pipeline;
@@ -84,7 +84,7 @@ public class LimelightSubsystem extends SubsystemBase {
     jitterDetectorY.reset();
   }
 
-  private boolean isInitialized() {
+  public boolean isInitialized() {
     return limelightTable != null;
   }
 
@@ -151,18 +151,21 @@ public class LimelightSubsystem extends SubsystemBase {
 
     }
 
+    
     return DetectionError.SUCCESS;
   }
 
   private DetectionError updateBotposeMeasurements() {
+    
     NetworkTableEntry botpose = limelightTable.getEntry("botpose");
+    
     if (botpose == null)
       return DetectionError.NO_BOTPOSE;
     double[] transform = botpose.getDoubleArray(new double[6]);
 
-    botposeX = transform[0] * Constants.FOOT_PER_METER + 27.0416; 
-    botposeY = transform[1] * Constants.FOOT_PER_METER + 13.2916;
-    botposeZ = transform[2] * Constants.FOOT_PER_METER + 0.0;
+    botposeX = transform[0] * Constants.FOOT_PER_METER;// + 27.0416;
+    botposeY = transform[1] * Constants.FOOT_PER_METER;// + 13.2916;
+    botposeZ = transform[2] * Constants.FOOT_PER_METER;// + 0.0;
     botposeXRot = transform[3];
     botposeYRot = transform[4];
     botposeZRot = transform[5];
@@ -184,6 +187,7 @@ public class LimelightSubsystem extends SubsystemBase {
   public void periodic() {
     if (isInitialized()) {
       detectionError = update();
+      
     } else {
       initialize();
       System.out.println("LIMELIGHT---------Initializing: [" + limelightTable + "] ----------- Error: " + detectionError.toString());

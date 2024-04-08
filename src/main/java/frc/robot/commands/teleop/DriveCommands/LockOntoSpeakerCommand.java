@@ -14,14 +14,13 @@ import frc.robot.utils.MathR;
 import frc.robot.utils.VectorR;
 
 public class LockOntoSpeakerCommand extends TurnTowardsGamePieceCommand {
-  /** Creates a new LockOntoSpeakerCommand. */
   final double TURN_KP = 0.017;
 
   private ShooterSubsystem shooter;
   public LockOntoSpeakerCommand(DriveSubsystem drive, ShooterSubsystem shooter, LimelightSubsystem limelight, DetectionType type, XboxController control) {
     super(drive, limelight, type, control);
-
-
+    this.shooter = shooter;
+    addRequirements(shooter, limelight);
   }
 
   @Override
@@ -29,27 +28,27 @@ public class LockOntoSpeakerCommand extends TurnTowardsGamePieceCommand {
 
   @Override
   public void execute() {
-    double yaw = DriveSubsystem.getYawDegrees();
-
     leftJoystick.setFromCartesian(control.getLeftX(), -control.getLeftY());
-    leftJoystick.rotate(-90);
+      leftJoystick.rotate(-90);
     
-    limelight.setDetectionType(type);
+      limelight.setDetectionType(type);
 
-    leftJoystick.mult(MathR.lerp(0.25, 1.2, 0.0, 1.0, control.getRightTriggerAxis()));
+      leftJoystick.mult(MathR.lerp(0.25, 1.2, 0.0, 1.0, control.getLeftTriggerAxis()));
 
-    VectorR direction = DriveSubsystem.getRelativeVelocity();
-    direction.div(DriveSubsystem.getRelativeVelocity().getMagnitude());
-    
-    double angleToFace = limelight.x + 90 - Math.toDegrees(Math.atan2(Constants.SHOOTER_VELOCITY, DriveSubsystem.getRelativeVelocity().getX() + 0.0001));
-    
-    
-    //System.out.println(90 - Math.toDegrees(Math.atan2(Constants.SHOOTER_VELOCITY, DriveSubsystem.getRelativeVelocity().getX() + 0.0001)));
-    
-    double turnPower = MathR.limit(TURN_KP * MathR.getDistanceToAngle(0, angleToFace), -0.25, 0.25) * -1;
-    
-    if (limelight.isDetection && limelight.confidence() > 0.2) drive.move(leftJoystick, turnPower);
-    else if (leftJoystick.getMagnitude() > 0.1) drive.move(leftJoystick, 0.0);
+      double distanceToSpeaker = Math.sqrt(Math.pow(4.5416 - limelight.botposeX, 2) + Math.pow(limelight.botposeY, 2));
+      double angleToSpeaker = Math.toDegrees(Math.atan2(Constants.SPEAKER_TARGET_HEIGHT, distanceToSpeaker));
+
+      shooter.tiltToAngle(angleToSpeaker);
+
+      VectorR direction = DriveSubsystem.getRelativeVelocity();
+      direction.div(DriveSubsystem.getRelativeVelocity().getMagnitude());
+      
+      double angleToFace = limelight.x + 90 - Math.toDegrees(Math.atan2(Constants.SHOOTER_VELOCITY - DriveSubsystem.getRelativeVelocity().getY(), DriveSubsystem.getRelativeVelocity().getX() + 0.0001));
+
+      double turnPower = MathR.limit(TURN_KP * MathR.getDistanceToAngle(0, angleToFace), -0.25, 0.25) * -1;
+      
+      if (limelight.isDetection && limelight.confidence() > 0.2) drive.move(leftJoystick, turnPower);
+      else if (leftJoystick.getMagnitude() > 0.1) drive.move(leftJoystick, 0.0);
   }
 
   @Override

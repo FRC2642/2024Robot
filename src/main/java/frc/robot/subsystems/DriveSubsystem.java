@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.swerve.SwerveModule;
 import frc.robot.subsystems.swerve.SwerveModules;
+import frc.robot.subsystems.swerve.SwerveModules.ModuleLocation;
 import frc.robot.utils.TimedVectorDerivative;
 import frc.robot.utils.VectorR;
 
@@ -24,7 +25,6 @@ public class DriveSubsystem extends SubsystemBase {
   private static VectorR displacement;
   private static VectorR velocity;
   private static TimedVectorDerivative acceleration;
-  private static TimedVectorDerivative jerk;
 
   // OTHER
   private boolean defensiveMode = true;
@@ -36,14 +36,11 @@ public class DriveSubsystem extends SubsystemBase {
         new SwerveModule(Constants.BACK_RIGHT), new SwerveModule(Constants.BACK_LEFT));
 
     gyro = new AHRS();
-    gyro.reset();
-    gyro.resetDisplacement();
 
     increment = new VectorR();
     displacement = new VectorR();
     velocity = new VectorR();
     acceleration = new TimedVectorDerivative(velocity);
-    jerk = new TimedVectorDerivative(acceleration);
   }
 
   /*
@@ -60,7 +57,7 @@ public class DriveSubsystem extends SubsystemBase {
     increment.setFromCartesian(0, 0);
     
     VectorR directionalPull = directionalSpeed.clone();
-    directionalPull.rotate(-getYawDegrees());
+    directionalPull.rotate(getYawDegrees());
 
     for (SwerveModule module : modules) {
 
@@ -71,19 +68,19 @@ public class DriveSubsystem extends SubsystemBase {
 
       // position tracking
       var inc = module.getPositionIncrement();
-      
       inc.mult(1d / 4d);
-      inc.rotate(getYawDegrees());
+      inc.rotate(-getYawDegrees());
       displacement.add(inc);
       increment.add(inc);
 
       var velocityMeasured = module.getVelocity();
       velocityMeasured.mult(1d / 4d);
-      velocityMeasured.rotate(getYawDegrees());
+      velocityMeasured.rotate(-getYawDegrees());
       velocity.add(velocityMeasured);
     }
     acceleration.update();
-    jerk.update();
+    
+    
   }
   
   public void stop() {
@@ -96,17 +93,16 @@ public class DriveSubsystem extends SubsystemBase {
 
     velocity.setFromCartesian(0, 0);
     acceleration.update();
-    jerk.update();
   }
 
-  /*
-   * public void debugWheelDirections(double angle) {
-   * modules.frontRight.update(0.25, angle);
-   * modules.frontLeft.update(0.25, angle);
-   * modules.backRight.update(0.25, angle);
-   * modules.backLeft.update(0.25, angle);
-   * }
-   */
+  
+    public void debugWheelDirections(double angle) {
+      modules.frontRight.update(0.1, angle);
+      modules.frontLeft.update(0.1, angle);
+      modules.backRight.update(0.1, angle);
+      modules.backLeft.update(0.1, angle);
+    }
+  
 
   public void setDefensiveMode(boolean activated) {
     defensiveMode = activated;
@@ -138,60 +134,31 @@ public class DriveSubsystem extends SubsystemBase {
     return acceleration.clone();
   }
 
-  public static VectorR getRelativeJerk() {
-    return jerk.clone();
-  }
 
   /*
    * positive (+) = left turn CCW
    * negative (-) = right turn CW
    */
   public static double getYawDegrees() {
-    return -1 * gyro.getYaw() + yawOffsetDegrees;
-  }
-
-  // + LEFT
-  public static double getRollDegrees() {
-    return gyro.getRoll();
-  }
-
-  public static double getPitchDegrees() {
-    return gyro.getPitch();
+    return gyro.getYaw() + yawOffsetDegrees;
   }
 
   public static void resetGyro(double yawDegrees) {
     gyro.reset();
     yawOffsetDegrees = yawDegrees;
   }
-  
-  public void resetDriveEncoders() {
-    for (var mod : modules)
-      mod.resetDriveEncoder();
-  }
 
   @Override
   public void periodic() {
-    modules.debugSmartDashboard();
+    //System.out.println(displacement);
+    modules.debugSmartDashboard();  
+    
+    //System.out.println(getRelativeFieldPosition());
+    
 
-    SmartDashboard.putNumber("pitch:", getPitchDegrees());
-    SmartDashboard.putNumber("roll:", getRollDegrees());
     SmartDashboard.putNumber("gyro", getYawDegrees());
-   // modules.debugSmartDashboard();
 
-
-     SmartDashboard.putNumber("x field", displacement.getX());
-     SmartDashboard.putNumber("y field", displacement.getY());
-
-    // SmartDashboard.putNumber("distance [ft]",
-    // getRelativeFieldPosition().getMagnitude());
-    // SmartDashboard.putNumber("speed [ft/sec]",
-    // getRelativeVelocity().getMagnitude());
-    // SmartDashboard.putNumber("angle [degrees]",
-    // Math.toDegrees(getRelativeFieldPosition().getAngle()));
-    // SmartDashboard.putNumber("speed [ft/s]",
-    // getRelativeVelocity().getMagnitude());
-    // SmartDashboard.putNumber("accell [ft/s^2]",
-    // getRelativeAccelleration().getMagnitude());
-    // SmartDashboard.putNumber("jerk [ft/s^3]", getRelativeJerk().getMagnitude());
+    SmartDashboard.putNumber("x field", displacement.getX());
+    SmartDashboard.putNumber("y field", displacement.getY());
   }
 }

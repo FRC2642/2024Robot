@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 
 /** Makes it easier to access swerve modules */
 public class SwerveModules implements Iterable<SwerveModule> {

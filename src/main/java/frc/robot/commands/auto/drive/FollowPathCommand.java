@@ -5,7 +5,6 @@
 package frc.robot.commands.auto.drive;
 
 import java.util.Iterator;
-import java.util.Optional;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -17,21 +16,21 @@ import frc.robot.path.*;
 
 public class FollowPathCommand extends Command {
 
-  public static final double HEADING_KP = 0.00027925;
-  public static final double MOVEMENT_KP = .016;
+  public static final double HEADING_KP = 0.0013;//0.00027925;
+  public static final double MOVEMENT_KP = 0.065;
   public static final double BASE_PRECISION = 0.05;
   public static final double TIME_TO_CORRECT_FROM_START = 1.5;
 
   public double lookAheadTime = BASE_PRECISION;
   public final Double startingLookAheadTime;
 
-  private final DriveSubsystem drive;
-  private final Timer timer = new Timer();
+  protected final DriveSubsystem drive;
+  protected final Timer timer = new Timer();
   private final PiratePath notAdjustedPath;
 
-  private Iterator<PiratePoint> iterator = null;
-  private PiratePath path;
-  private double currentTime;
+  protected Iterator<PiratePoint> iterator = null;
+  protected PiratePath path;
+  public double currentTime;
   private final boolean recenterDisplacementToFirstPoint;
 
   public FollowPathCommand(DriveSubsystem drive, PiratePath path, boolean recenterDisplacementToFirstPoint, double additionalLookaheadTime) {
@@ -47,10 +46,8 @@ public class FollowPathCommand extends Command {
 
   @Override
   public void initialize() {
-     if (notAdjustedPath.allianceDependent && DriverStation.getAlliance().get() == Alliance.Blue){
-
-      setPath(notAdjustedPath.getBlueAlliance());
-    
+     if (notAdjustedPath.allianceDependent && DriverStation.getAlliance().get() == Alliance.Red){
+      setPath(notAdjustedPath.getRedAlliance());
      }
      else{
       setPath(notAdjustedPath);
@@ -73,8 +70,9 @@ public class FollowPathCommand extends Command {
     nextPoint = null;
     if (recenterDisplacementToFirstPoint) {
       DriveSubsystem.resetDisplacement(path.getFirst().position);
-      DriveSubsystem.resetGyro(path.getFirst().holonomicRotation);
+      DriveSubsystem.resetGyro(-path.getFirst().holonomicRotation);
     }
+    
     return true;
   }
 
@@ -94,6 +92,7 @@ public class FollowPathCommand extends Command {
       drive.stop();
       return;
     }
+    
 
     if (startingLookAheadTime == null) lookAheadTime = BASE_PRECISION;
     else {
@@ -112,9 +111,10 @@ public class FollowPathCommand extends Command {
     var velocity = nextPoint.position.clone();
     velocity.sub(DriveSubsystem.getRelativeFieldPosition());
     velocity.mult(MOVEMENT_KP / delta_t);
+    
 
-    double turn = MathR.getDistanceToAngle(DriveSubsystem.getYawDegrees(), nextPoint.holonomicRotation) / delta_t;
-
+    double turn = MathR.getDistanceToAngle(-DriveSubsystem.getYawDegrees(), nextPoint.holonomicRotation) / delta_t;
+    
     drive.move(velocity, turn * HEADING_KP);
   }
 

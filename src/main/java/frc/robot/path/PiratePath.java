@@ -8,7 +8,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeSet;
-import java.util.function.BiConsumer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -89,12 +88,11 @@ public class PiratePath extends TreeSet<PiratePoint> {
                     JsonNode pose = point.get("pose"); //Get pose and translation, which are two branches containing the rest of the stuff in the while loop below
                     JsonNode translation = pose.get("translation");
 
-                    t = point.get("time").asDouble(); //Gets time in seconds
-                    x = (Constants.FIELD_X) - (translation.get("x").asDouble() * Constants.FOOT_PER_METER); //Gets absolute x position in feet. X is the width axis of the feild.
-                    y = (Constants.FIELD_Y) - (translation.get("y").asDouble() * Constants.FOOT_PER_METER); //Gets absolute y position in feet. Y is the length axis of the feild, from red to blue
-                    //Do not ask me where the origin is, I do not know.
-                    r = point.get("holonomicRotation").asDouble() + 180; //Gets absolute rotation 
-                    stop = point.get("velocity").asDouble() == 0.0 && !first; //This gets if the point is a stop point, which is a special thing you can do in PathPlanner
+                    t = point.get("time").asDouble();
+                    x = /*(Constants.FIELD_X) -*/ (translation.get("x").asDouble() * Constants.FOOT_PER_METER);
+                    y = /*(Constants.FIELD_Y) -*/ (translation.get("y").asDouble() * Constants.FOOT_PER_METER);
+                    r = point.get("holonomicRotation").asDouble();
+                    stop = point.get("velocity").asDouble() == 0.0 && !first;
                 }
 
                 PiratePoint pt = new PiratePoint(x, y, r, t, stop); //Creates a point from the above information; see PiratePoint for specifics
@@ -107,20 +105,19 @@ public class PiratePath extends TreeSet<PiratePoint> {
         return null; //Otherwise, we don't had back an error code.
     }
 
-    public PiratePath getBlueAlliance() { //Since the red and blue alliances in a competition are inverted versions of each other on the Y axis, we need to make all of the Y values inverted.
-
-        PiratePath bluePath = new PiratePath(true);
-        bluePath.name = "BLUE " + this.name;
+    public PiratePath getRedAlliance() {
+        PiratePath redPath = new PiratePath(true);
+        redPath.name = "RED " + this.name;
 
         for (var pt : this) { //TODO figure out how this works
             double Y = pt.position.getY();
             var newPt = pt.clone();
-            newPt.position.setY(Constants.FIELD_Y - Y);
+            newPt.position.setY(Math.abs(Constants.FIELD_Y - Y));
             newPt.holonomicRotation = -newPt.holonomicRotation;
-            bluePath.add(newPt);
-        } 
+            redPath.add(newPt);
+        }
 
-        return bluePath;
+        return redPath;
     }
 
     public ArrayList<PiratePath> getSubPaths() { //I have no idea why there are two getSubPaths functions; probably for different arg lengths. I didn't make this okay?
