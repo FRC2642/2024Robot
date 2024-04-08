@@ -6,10 +6,12 @@ package frc.robot.commands.auto.positionable;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.ShooterSpeed;
 import frc.robot.utils.MathR;
 import frc.robot.utils.VectorR;
 
@@ -23,6 +25,8 @@ public class AutoAimShooterCommand extends Command {
   
   final double LIMELIGHT_TURN_KP = 0.009;
   double turnPower;
+
+  private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0.8, 0.00105, 0);
   
   public AutoAimShooterCommand(DriveSubsystem drive, ShooterSubsystem shooter, Supplier<ShooterSubsystem.ShooterSpeed> speed, LimelightSubsystem shooterLimelight) {
     this.shooter = shooter;
@@ -46,7 +50,8 @@ public class AutoAimShooterCommand extends Command {
       shooter.setManual(0);
     }
     
-    shooter.set(speed.get());
+    //shooter.set(speed.get());
+    shooter.runVelocity(ShooterSpeed.SPEAKER.rpm, ShooterSpeed.SPEAKER.rpm, ff.calculate(ShooterSpeed.SPEAKER.rpm), ff.calculate(ShooterSpeed.SPEAKER.rpm));
     turnPower = MathR.limit(LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, shooterLimelight.x - 4), -0.19, 0.19) * -1;
     drive.move(new VectorR(), turnPower);
   }

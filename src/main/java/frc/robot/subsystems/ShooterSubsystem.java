@@ -6,20 +6,19 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.AbsoluteEncoder;
-
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.AnalogOutput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PWM;
-import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
-import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -56,13 +55,46 @@ public class ShooterSubsystem extends SubsystemBase{
 
   public static ArrayList<Double[]> dataArray = new ArrayList<Double[]>();
 
-  public ShooterSubsystem() {
-    tiltPID.setTolerance(TILT_TOLERANCE);
-    shooterPID1.setTolerance(SHOOTER_TOLERANCE);
-    shooterPID2.setTolerance(SHOOTER_TOLERANCE);
+  private final Slot0Configs controllerConfig = new Slot0Configs();
+  private final VoltageOut voltageControl = new VoltageOut(0).withUpdateFreqHz(0.0);
+  private final VelocityVoltage velocityControl = new VelocityVoltage(0).withUpdateFreqHz(0.0);
+  private final NeutralOut neutralControl = new NeutralOut().withUpdateFreqHz(0.0);
 
+  public ShooterSubsystem() {
+    //Set shooter tilt tolerance
+    tiltPID.setTolerance(TILT_TOLERANCE);
+    // shooterPID1.setTolerance(SHOOTER_TOLERANCE);
+    // shooterPID2.setTolerance(SHOOTER_TOLERANCE);
+
+    //Create config and limit the current supply
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    config.CurrentLimits.SupplyCurrentLimit = 60.0;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
+    //Set pid and feedforward configs
+    controllerConfig.kP = 0.25;
+    controllerConfig.kI = 0;
+    controllerConfig.kD = 0.012;
+    controllerConfig.kS = 0.8;
+    controllerConfig.kV = 0.00105;
+    controllerConfig.kA = 0;
+
+    //Apply configs
+    shooterMotor1.getConfigurator().apply(config, 1.0);
+    shooterMotor2.getConfigurator().apply(config, 1.0);
+    shooterMotor1.getConfigurator().apply(controllerConfig, 1.0);
+    shooterMotor2.getConfigurator().apply(controllerConfig, 1.0);
   }
 
+  //Run shooter wheels
+  public void runVelocity(double leftRpm, double rightRpm, double leftFeedforward, double rightFeedforward) {
+    shooterMotor1.setControl(velocityControl.withVelocity(leftRpm / 60.0).withFeedForward(leftFeedforward));
+    shooterMotor2.setControl(velocityControl.withVelocity(rightRpm / 60.0).withFeedForward(rightFeedforward));
+  }
+
+  /*
   public void set(ShooterSpeed speedPreset) {
 
     //double motorPower1 = -MathR.limit(shooterPID1.calculate(shooterMotor1.getVelocity().getValueAsDouble()), -1, 1);
@@ -80,9 +112,11 @@ public class ShooterSubsystem extends SubsystemBase{
     if (shooterPID2.atSetpoint()){
       motorPower2 = 0;
     }
+    VelocityDutyCycle motor1Velocity = new VelocityDutyCycle(20);
+    VelocityDutyCycle motor2Velocity = new VelocityDutyCycle(10);
 
-    shooterMotor1.setControl(new DutyCycleOut(motorPower1, true, false, false, false));
-    shooterMotor2.setControl(new DutyCycleOut(-motorPower2, true, false, false, false));
+    shooterMotor1.setControl(motor1Velocity.withEnableFOC(true));
+    shooterMotor2.setControl(motor2Velocity.withEnableFOC(true));
 
     /*if (!shooterPID1.atSetpoint()){
       
@@ -100,50 +134,29 @@ public class ShooterSubsystem extends SubsystemBase{
     }
     else{
       shooterMotor2.set(0);
-    }*/
-  }
+    }
+  }*/
 
-  public void setTrapSpeed(double rpm){
-    shooterMotor1.setControl(new DutyCycleOut(0.39, true, false, false, false));
-    shooterMotor2.setControl(new DutyCycleOut(-0.39, true, false, false, false));
-  }
-
-  public void setPassSpeed(){
-    shooterMotor1.setControl(new DutyCycleOut(0.60, true, false, false, false));
-    shooterMotor2.setControl(new DutyCycleOut(-0.60, true, false, false, false));
-  }
-
-  public void setSpeed(double rpm){
-    
-    shooterMotor1.set(MathR.limit(motorPID1.calculate(shooterMotor1.getVelocity().getValueAsDouble(), rpm), 0, 0.5));
-    shooterMotor2.set(MathR.limit(-motorPID2.calculate(-shooterMotor2.getVelocity().getValueAsDouble(), -rpm), 0, 0.5));
-
-
-  }
-
+  //Get shooter pitch angle
   public double getPitch(){
     return 180 + MathR.getDistanceToAngle(180, tiltEncoder.getAbsolutePosition() * 360 + Constants.SHOOTER_TILT_ENCODER_OFFSET);
   }
 
-  public static double getMotorVelocity(){
-    return shooterMotor2.getVelocity().getValueAsDouble();
-  }
-
+  //Get status of the exit beam break
   public static boolean getNoteDetected(){
     return !farBeamBreak.get();
   }
+  //Get status of the enter beam break
   public static boolean getCloseNoteDetected(){
     return !closeBeamBreak.get();
   }
 
-  public boolean atSetSpeed(){
-    return MathR.range(shooterMotor1.getVelocity().getValue(), RobotState.getRobotConfiguration().shooterSpeed.rpm, 10) && MathR.range(shooterMotor2.getVelocity().getValue(), RobotState.getRobotConfiguration().shooterSpeed.rpm, 10);
-  }
-
+  //Check if the shooter is at a certain pitch within a tolerance
   public boolean atPitch(double pitch){
     return getPitch() >= pitch - 1 && getPitch() <= pitch + 1;
   }
 
+  //Tilt the shooter to a certain angle while avoiding going back into the intake
   public void tiltToAngle(double degrees){
     double power = -MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), degrees, 350), 0), -tiltSpeedLimit, tiltSpeedLimit);
     
@@ -154,10 +167,14 @@ public class ShooterSubsystem extends SubsystemBase{
     if ((getPitch() <= 30  && power < 0) || (getPitch() >= 340 && power > 0)){
       power = 0;
     }
-    shooterTiltMotor1.set(power);
-    shooterTiltMotor2.set(-power);
+
+    shooterMotor1.setControl(new DutyCycleOut(power, true, false, false, false));
+    shooterMotor2.setControl(new DutyCycleOut(power, true, false, false, false));
+    // shooterTiltMotor1.set(power);
+    // shooterTiltMotor2.set(-power);
   }
 
+  //Tilt the shooter to a certain angle
   public void tiltToAngleAMP(double degrees){
     double power = MathR.limit(tiltPID.calculate(getPitch(), degrees), -tiltSpeedLimit, tiltSpeedLimit);
     
@@ -172,22 +189,28 @@ public class ShooterSubsystem extends SubsystemBase{
     shooterTiltMotor2.set(-power);
   }
 
+  //Run the motors
   public void setManual(double speed) {
     shooterTiltMotor1.set(-speed);
     shooterTiltMotor2.set(speed * 0.9);
   }
 
+  //Activate the jet
   public void setJet(){
     jet.setSpeed(1);
   }
+  //Stop the jet
   public void stopJet(){
     jet.setSpeed(0);
   }
 
+  //Set the feeder wheels
   public void setFeeder(double speed){
-    feederMotor.set(speed);
+    feederMotor.setControl(new DutyCycleOut(speed, true, false, false, false));
+    //feederMotor.set(speed);
   }
 
+  //Set the shooter to a certain soeed
   public void setShooter(double speed){
     //NEGATIVE = OUT
     //POSITIVE = IN
@@ -195,7 +218,7 @@ public class ShooterSubsystem extends SubsystemBase{
     shooterMotor2.set(speed);
 
   }
-
+  //Use a proportion to stop the shooter immediately
   public void stopShooter(){
     double currentRPM1 = shooterMotor1.getVelocity().getValueAsDouble();
     double speed1 = -currentRPM1 * 0.003;
@@ -214,7 +237,7 @@ public class ShooterSubsystem extends SubsystemBase{
     shooterMotor2.set(speed2);
   }
 
-
+  //Find the angle that the shooter needs to be angled to the speaker based on limelight data
   public double getAutoAngle(double ty, double ta){
     if (ta <= 0.5){
       return -0.00000714563 * Math.pow(ty, 5) + 0.000248267 * Math.pow(ty, 4) + 0.00716947 * Math.pow(ty, 3) - 0.184703 * Math.pow(ty, 2) - 3.07547 * ty + 281.267 - RobotContainer.OFFSET;
@@ -227,19 +250,26 @@ public class ShooterSubsystem extends SubsystemBase{
     
   }
 
+  //Find the angle that the robot needs to turn to be angled to the april tag based on limelight data
   public double getAutoOffset(double ty){
     return -0.00336373 * Math.pow(ty, 2) - 0.212577 * ty + 5.31239 - 2;
   }
 
+  //Set shooter tilt speed limits
   public void setSpeedLimit(double max) {
     tiltSpeedLimit = max;
   }
   
-
+  //Shooter speed names
   public enum ShooterSpeed {
-    TRAVEL(0),
+    /*TRAVEL(0),
     IDLE(-30),
-    SPEAKER(-82);
+    SPEAKER(-82);*/
+
+    TRAVEL(0),
+    PASS(1000),
+    TRAP(1500),
+    SPEAKER(2000);
 
 
     public final double rpm;
@@ -248,12 +278,13 @@ public class ShooterSubsystem extends SubsystemBase{
     }
   }
 
+  //Shooter angle names
   public enum ShooterAngle {
     TRAVEL(320),
     AMP(52),
     TOP(55),
     TRAP(116/*205*/),
-    SHOOT_ACROSS(250),
+    PASS(250),
     SUBWOOFER(235),
     NONE(-1);
 
@@ -267,7 +298,5 @@ public class ShooterSubsystem extends SubsystemBase{
   public void periodic() {
     
     //System.out.println(getPitch());
-    
-    
   }
 }
