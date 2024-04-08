@@ -2,6 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -9,12 +11,16 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.commands.auto.fullAutos.FrontTwoPiece;
+import frc.robot.commands.auto.drive.StopCommand;
+import frc.robot.commands.auto.fullAutos.CloseFourPiece;
+import frc.robot.commands.auto.fullAutos.DisruptorAuto;
+import frc.robot.commands.auto.fullAutos.FivePiece;
+import frc.robot.commands.auto.fullAutos.MiddleNotesCommand;
 import frc.robot.commands.auto.fullAutos.MoveCommand;
+import frc.robot.commands.auto.fullAutos.OnePieceCommand;
 import frc.robot.commands.auto.fullAutos.OnePiecePath;
-import frc.robot.commands.auto.fullAutos.OnePieceTest;
-import frc.robot.commands.teleop.ManualElevatorCommand;
 import frc.robot.commands.teleop.ManualIntakeCommand;
 import frc.robot.commands.teleop.ManualShooterCommand;
 import frc.robot.commands.teleop.PresetSelectorCommand;
@@ -23,7 +29,6 @@ import frc.robot.commands.teleop.DriveCommands.JoystickOrientedDriveCommand;
 import frc.robot.commands.teleop.resetters.ResetDisplacementCommand;
 import frc.robot.commands.teleop.resetters.ResetGyroCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -37,43 +42,43 @@ public class RobotContainer {
   public final DriveSubsystem drive = new DriveSubsystem();
   public final ShooterSubsystem shooter = new ShooterSubsystem();
   public final IntakeSubsystem intake = new IntakeSubsystem();
-  public final ElevatorSubsystem elevator = new ElevatorSubsystem();
   public final LimelightSubsystem shooterLimelight = new LimelightSubsystem("limelight-shooter");
-  //public final LimelightSubsystem intakeLimelight = new LimelightSubsystem("limelight-intake");
+  public final LimelightSubsystem intakeLimelight = new LimelightSubsystem("limelight");
 
-
+  
   public final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   public static boolean DEBUG = false;
+  public static double ANGLE = 0;
+  public static double OFFSET = 0;
 
 
   public RobotContainer() {
     SmartDashboard.putNumber("DEBUG MODE", 0);
-
-    // Default commands
-
+    SmartDashboard.putNumber("ANGLE", 0);
+    SmartDashboard.putNumber("OFFSET", 0);
+    
+    
     // Auto options
     autoChooser.setDefaultOption("NO AUTO SELECTED!", new WaitCommand(15));
     
-    autoChooser.addOption("1 Piece", new OnePieceTest(drive, shooter, intake));
-    autoChooser.addOption("2 Piece", new FrontTwoPiece(drive, shooter, intake, elevator));
-    autoChooser.addOption("PATH 1 piece", new OnePiecePath(drive, shooter, intake));
-    autoChooser.addOption("Move", new MoveCommand(drive));
-    //autoChooser.addOption("6.5 Pc HP Side", new HPSixAndHalf(drive, shooter, intake, intakeLimelight, elevator));
-    //autoChooser.addOption("5 Pc HP Side", new HPFive(drive, shooter, intake, intakeLimelight, elevator));
-    //autoChooser.addOption("5 Pc Amp Side", new AmpFive(drive, shooter, intake, intakeLimelight, elevator));
-    //autoChooser.addOption("Charged Amp and 2 Pc Amp Side", new ChargeAmpN2Pc(drive, shooter, intake, intakeLimelight, elevator));
+    autoChooser.addOption("1 Piece Stop", new OnePieceCommand(drive, shooter, shooterLimelight));
+    autoChooser.addOption("1 Piece Move", new OnePiecePath(drive, shooter, shooterLimelight));
+    autoChooser.addOption("Close 4 Piece", new CloseFourPiece(drive, shooter, intake, shooterLimelight, intakeLimelight));
+    autoChooser.addOption("5 Piece", new FivePiece(drive, shooter, intake, shooterLimelight, intakeLimelight));
+    autoChooser.addOption("Middle Notes", new MiddleNotesCommand(drive, shooter, intake, shooterLimelight, intakeLimelight));
+    autoChooser.addOption("Disruptor", new DisruptorAuto(drive, shooter, intake, shooterLimelight, intakeLimelight));
     
+
     SmartDashboard.putData(autoChooser);
   }
+  
 
   public void autonomousInit() {
-    drive.setDefaultCommand(new InstantCommand(() -> {
-      drive.stop();
-    }, drive));
-    shooter.setDefaultCommand(new InstantCommand(()-> shooter.set(0.0), shooter));
-    elevator.setDefaultCommand(new InstantCommand(()-> elevator.set(0.0), elevator));
-    intake.setDefaultCommand(new InstantCommand(()-> intake.set(0.0), intake));
+    CommandScheduler.getInstance().cancelAll();
+    drive.setDefaultCommand(new RunCommand(()->drive.stop(), drive));
+    shooter.setDefaultCommand(new RunCommand(()-> shooter.setManual(0.0), shooter));
+    intake.setDefaultCommand(new RunCommand(()-> intake.set(0.0), intake));
   }
 
   public void teleopInit() {
@@ -81,28 +86,45 @@ public class RobotContainer {
     
     if (!DEBUG) {
       CommandScheduler.getInstance().schedule(new PresetSelectorCommand(mainControl, auxButtonBoard));
-      CommandScheduler.getInstance().schedule(new RobotPresetCommand(drive, shooter, elevator, intake, shooterLimelight, mainControl, auxButtonBoard));
+      CommandScheduler.getInstance().schedule(new RobotPresetCommand(drive, shooter, intake, shooterLimelight, intakeLimelight, mainControl, auxButtonBoard));
   
 
-      //Reset Gyro D-Pad
+      //Reset Gyro and Displacement D-Pad
       new POVButton(mainControl, 0).onTrue(new ResetGyroCommand(0).andThen(new ResetDisplacementCommand(new VectorR())));
-      //Reset elevator 
-      new POVButton(mainControl, 180).onTrue(new InstantCommand(()->{
-        ElevatorSubsystem.resetEncoder();
-      }));
-      /*//Interrupt
-      new POVButton(mainControl, 270).onTrue(new InstantCommand(()->{
-        System.out.println("interrupt");
-      }, shooter, intake));*/
+      //Adjust shooter angle up
+      new POVButton(mainControl, 90).onTrue(new InstantCommand(()->OFFSET+=1));
+      //Adjust shooter angle down
+      new POVButton(mainControl, 90).onTrue(new InstantCommand(()->OFFSET-=1));
+
+      //Data button
+      /*new JoystickButton(mainControl, 7).onTrue(new InstantCommand(()->{
+        ShooterSubsystem.dataArray.add(new Double[]{ANGLE, shooterLimelight.a});
+        for (int i = 0; i < ShooterSubsystem.dataArray.size(); i++){
+          System.out.println(ShooterSubsystem.dataArray.get(i)[0] + ","+ShooterSubsystem.dataArray.get(i)[1]);          
+        }
+        System.out.println("");
+      }));*/
+
+
+
+
 
     } 
     
     //DEBUG MODE
     else {
       drive.setDefaultCommand(new JoystickOrientedDriveCommand(drive, mainControl));
-      elevator.setDefaultCommand(new ManualElevatorCommand(elevator, mainControl));
       intake.setDefaultCommand(new ManualIntakeCommand(intake, mainControl));
       shooter.setDefaultCommand(new ManualShooterCommand(shooter, mainControl));     
+      
+      new JoystickButton(mainControl, 7).onTrue(new InstantCommand(()->{
+        ShooterSubsystem.dataArray.add(new Double[]{ANGLE, shooterLimelight.a});
+        for (int i = 0; i < ShooterSubsystem.dataArray.size(); i++){
+          System.out.println(ShooterSubsystem.dataArray.get(i)[0] + ","+ShooterSubsystem.dataArray.get(i)[1]);          
+        }
+        System.out.println("");
+      }));
+
     }
   }
 

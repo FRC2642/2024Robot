@@ -4,16 +4,17 @@
 
 package frc.robot.commands.auto.fullAutos;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.auto.drive.DriveDistanceCommand;
-import frc.robot.commands.auto.drive.StopCommand;
+import frc.robot.commands.auto.drive.DivertToGamePieceCommand;
+import frc.robot.commands.auto.drive.FollowPathCommand;
+import frc.robot.commands.auto.positionable.SetIntakeCommand;
+import frc.robot.commands.teleop.ManualIntakeCommand;
 import frc.robot.path.PiratePath;
-import frc.robot.path.PiratePoint;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.utils.Easings.Functions;
-import frc.robot.utils.VectorR;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
+import frc.robot.subsystems.LimelightSubsystem.DetectionType;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -21,16 +22,14 @@ import frc.robot.utils.VectorR;
 public class MoveCommand extends SequentialCommandGroup {
   /** Creates a new MoveCommadn. */
   
-  public MoveCommand(DriveSubsystem drive) {
-    PiratePath path = new PiratePath(false);
-    path.add(new PiratePoint(0, 0, 298.74, 0, false));
-    path.add(new PiratePoint(2, 0, 298.74, 4, true));
-    path.fillWithSubPointsEasing(0.05, Functions.easeOutExpo);
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
+  public MoveCommand(DriveSubsystem drive, LimelightSubsystem intakeLimelight, IntakeSubsystem intake) {
+    PiratePath path = new PiratePath("MovePath", false);
+    var paths = path.getSubPaths();
+    var move = paths.get(0);
     addCommands(
-      new DriveDistanceCommand(drive, VectorR.fromPolar(0.2, 0), 5),
-      new StopCommand(drive)
+      new SetIntakeCommand(intake, ()->IntakePosition.EXTENDED),
+      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, move, true, 0.25, 0.1, 0.1, true)
+      
     );
   }
 }

@@ -6,11 +6,14 @@ package frc.robot.commands.auto;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
+import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.RobotState.RobotConfiguration;
+import frc.robot.subsystems.ShooterSubsystem.ShooterAngle;
 
 public class IntakeUntilFound extends Command {
   /** Creates a new IntakeUntilFound. */
@@ -18,10 +21,15 @@ public class IntakeUntilFound extends Command {
   ShooterSubsystem shooter;
   RobotConfiguration configuration;
   Supplier<IntakeSubsystem.IntakePosition> position;
-  public IntakeUntilFound(Supplier<IntakeSubsystem.IntakePosition> position, IntakeSubsystem intake, ShooterSubsystem shooter) {
+  Supplier<ShooterSubsystem.ShooterAngle> angle;
+  boolean revShooter;
+  LimelightSubsystem shooterLimelight;
+  boolean runShooter;
+  public IntakeUntilFound(Supplier<IntakeSubsystem.IntakePosition> position, IntakeSubsystem intake, ShooterSubsystem shooter, boolean runShooter) {
     this.intake = intake;
     this.shooter = shooter;
-    this.position = position;                                                                                                                                                                         
+    this.position = position;       
+    this.runShooter = runShooter;                                                                                                                                      
     addRequirements(intake, shooter);
   }
 
@@ -35,8 +43,21 @@ public class IntakeUntilFound extends Command {
   @Override
   public void execute() {
     intake.set(position.get());
-    intake.setIntake(0.9);
-    shooter.setFeeder(1);
+    shooter.tiltToAngle(ShooterAngle.TRAVEL.angle);
+    
+    intake.setIntake(1);
+    if (!runShooter){
+      shooter.stopShooter();
+    }
+  
+    if (!(ShooterSubsystem.getNoteDetected() || ShooterSubsystem.getCloseNoteDetected())){
+      shooter.setFeeder(0.9);
+    } 
+    else if (ShooterSubsystem.getCloseNoteDetected() && !ShooterSubsystem.getNoteDetected()){
+      shooter.setFeeder(0.2);
+    }
+        
+    
   }
 
   // Called once the command ends or is interrupted.
@@ -46,6 +67,10 @@ public class IntakeUntilFound extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shooter.getNoteDetected();
+    if (ShooterSubsystem.getNoteDetected()){
+      shooter.setFeeder(0);
+      intake.setIntake(0);
+    }
+    return ShooterSubsystem.getNoteDetected();
   }
 }

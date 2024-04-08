@@ -7,8 +7,11 @@ package frc.robot.commands.teleop;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.RobotState;
+import frc.robot.subsystems.ShooterSubsystem;
 
 public class PresetSelectorCommand extends Command {
   private final Joystick auxButtonBoard;
@@ -25,14 +28,20 @@ public class PresetSelectorCommand extends Command {
 
   @Override
   public void execute() {
-    /*if (auxButtonBoard.getRawButtonPressed(11)){
+    if (auxButtonBoard.getRawButtonPressed(11)){
       RobotState.setChosenConfiguration(RobotState.RobotConfiguration.SHOOT_SPEAKER);
     }
-    else*/ if (auxButtonBoard.getRawButtonPressed(12)){
+    else if (auxButtonBoard.getRawButtonPressed(12)){
       RobotState.setChosenConfiguration(RobotState.RobotConfiguration.SHOOT_AMP);
     }
+    else if (auxButtonBoard.getRawButtonPressed(8)){
+      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.SHOOT_OVER);
+    }
     else if (auxButtonBoard.getRawButtonPressed(10)){
-      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.SHOOT_TRAP);
+      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.PASS);
+    }
+    else if (auxButtonBoard.getRawButtonPressed(7)){
+      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.TRAP);
     }
     else if (mainControl.getLeftBumper()){
       RobotState.setRobotState(RobotState.RobotConfiguration.INTAKE);
@@ -40,16 +49,6 @@ public class PresetSelectorCommand extends Command {
     else if (mainControl.getRightBumper()){
       RobotState.setRobotState(RobotState.getChosenRobotConfiguration());
     }
-    else if (auxButtonBoard.getRawButtonPressed(9)){
-      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.SUBWOOFER);
-    }
-    else if (auxButtonBoard.getRawButtonPressed(8)){
-      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.POST);
-    }
-    else if (auxButtonBoard.getRawButtonPressed(7)){
-      RobotState.setChosenConfiguration(RobotState.RobotConfiguration.FAR_POST);
-    }
-    
     else{
       RobotState.setRobotState(RobotState.RobotConfiguration.TRAVEL);
     }

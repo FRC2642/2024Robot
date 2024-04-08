@@ -4,10 +4,8 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.subsystems.ElevatorSubsystem.ElevatorPosition;
 import frc.robot.subsystems.IntakeSubsystem.IntakePosition;
 import frc.robot.subsystems.ShooterSubsystem.ShooterAngle;
-import frc.robot.subsystems.ShooterSubsystem.ShooterPosition;
 import frc.robot.subsystems.ShooterSubsystem.ShooterSpeed;
 
 /** Add your docs here. */
@@ -31,35 +29,24 @@ public class RobotState {
         return chosenConfiguration;
     }
 
-    public static ShooterSpeed getShooterSpeed(){
-        return chosenConfiguration.shooterSpeed;
-    }
-
     public enum RobotConfiguration {
-        SHOOT_SPEAKER(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.MANUAL, ShooterSpeed.SPEAKER, ShooterAngle.NONE),
-        SHOOT_AMP(ElevatorPosition.TRAVEL, IntakePosition.AMP, ShooterPosition.TRAVEL, ShooterSpeed.TRAVEL, ShooterAngle.NONE),
-        SHOOT_TRAP(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.TRAP, ShooterSpeed.TRAP, ShooterAngle.NONE),
-        INTAKE(ElevatorPosition.TRAVEL, IntakePosition.EXTENDED, ShooterPosition.TRAVEL, ShooterSpeed.TRAVEL, ShooterAngle.NONE),
-        TRAVEL(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.TRAVEL, ShooterSpeed.TRAVEL, ShooterAngle.NONE),
-        SUBWOOFER(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.MANUAL, ShooterSpeed.SPEAKER, ShooterAngle.SUBWOOFER),
-        POST(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.MANUAL, ShooterSpeed.SPEAKER, ShooterAngle.POST),
-        FAR_POST(ElevatorPosition.TRAVEL, IntakePosition.RETRACTED, ShooterPosition.MANUAL, ShooterSpeed.SPEAKER, ShooterAngle.FAR_POST);
-
+        SHOOT_SPEAKER(IntakePosition.RETRACTED, ShooterSpeed.SPEAKER, ShooterAngle.NONE),
+        SHOOT_OVER(IntakePosition.RETRACTED, ShooterSpeed.SPEAKER, ShooterAngle.TOP),
+        PASS(IntakePosition.RETRACTED, ShooterSpeed.SPEAKER, ShooterAngle.PASS),
+        SHOOT_AMP(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.AMP),
+        INTAKE(IntakePosition.EXTENDED, ShooterSpeed.TRAVEL, ShooterAngle.TRAVEL),
+        TRAVEL(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.TRAVEL),
+        TRAP(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.TRAP);
+        
         public final ShooterSpeed shooterSpeed;
         public final ShooterAngle shooterAngle;
-        public final ShooterPosition shooterPos;
-        public final ElevatorPosition elevatorPos;
         public final IntakePosition intakePos;
         
         private RobotConfiguration( 
-        ElevatorPosition elevatorPos,
         IntakePosition intakePos,
-        ShooterPosition shooterPos,
         ShooterSpeed shooterSpeed,
         ShooterAngle shooterAngle) {
         this.shooterSpeed = shooterSpeed;
-        this.shooterPos = shooterPos;
-        this.elevatorPos = elevatorPos;
         this.intakePos = intakePos;
         this.shooterAngle = shooterAngle;
         }

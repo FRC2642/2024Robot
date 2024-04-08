@@ -37,6 +37,7 @@ public class SetIntakeCommand extends Command {
 
   @Override
   public boolean isFinished() {
+    //System.out.println("intake: "+intake.atSetPosition());
     
     return intake.atSetPosition();  
   }

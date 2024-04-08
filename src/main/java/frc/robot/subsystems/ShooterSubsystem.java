@@ -4,171 +4,273 @@
 
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkAbsoluteEncoder;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.SparkAbsoluteEncoder.Type;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.utils.IPositionable;
+import frc.robot.RobotContainer;
 import frc.robot.utils.MathR;
 
-public class ShooterSubsystem extends SubsystemBase implements IPositionable<ShooterSubsystem.ShooterPosition>{
+public class ShooterSubsystem extends SubsystemBase{
 
-  private PIDController tiltPID = new PIDController(0.018, 0, 0);
-  private PIDController shooterPID = new PIDController(0.2, 0, 0);
+  private PIDController tiltPID = new PIDController(0.025, 0, 0);
+  private PIDController shooterPID1 = new PIDController(0.3, 0, 0);
+  private PIDController shooterPID2 = new PIDController(0.2, 0, 0);
+
+  PIDController motorPID1 = new PIDController(0.01, 0, 0);
+  PIDController motorPID2 = new PIDController(0.01, 0, 0);
   
-  private TalonFX shooterMotor = new TalonFX(Constants.SHOOTER_SPINNER_ID);
-  private CANSparkMax shooterTiltMotor = new CANSparkMax(Constants.SHOOTER_PIVOT_ID, MotorType.kBrushless);
-  private CANSparkMax feederMotor = new CANSparkMax(Constants.FEEDER_WHEELS_ID, MotorType.kBrushless);
+  private static TalonFX shooterMotor1 = new TalonFX(Constants.SHOOTER_SPINNER_ID_1);
+  private static TalonFX shooterMotor2 = new TalonFX(Constants.SHOOTER_SPINNER_ID_2);
+  private TalonFX shooterTiltMotor1 = new TalonFX(Constants.SHOOTER_PIVOT_ID_1);
+  private TalonFX shooterTiltMotor2 = new TalonFX(Constants.SHOOTER_PIVOT_ID_2);
+  private TalonFX feederMotor = new TalonFX(Constants.FEEDER_WHEELS_ID);
 
-  private static SparkAbsoluteEncoder tiltEncoder;
+  private static DutyCycleEncoder tiltEncoder = new DutyCycleEncoder(Constants.SHOOTER_ENCODER_DIGITAL_PORT_A);
 
-  private DigitalInput beamBreak = new DigitalInput(Constants.BEAM_BREAK_CHANNEL);
+  private static DigitalInput farBeamBreak = new DigitalInput(Constants.FAR_BEAM_BREAK_CHANNEL);
+  private static DigitalInput closeBeamBreak = new DigitalInput(Constants.CLOSE_BEAM_BREAK_CHANNEL);
 
-  private ShooterPosition currentSetPosition = ShooterPosition.TRAVEL;
-  private ShooterSpeed currentSetSpeedPosition = ShooterSpeed.TRAVEL;
-  private double speedLimit = 0.2;
+  private static PWM jet = new PWM(0);
+  private VelocityVoltage velocity = new VelocityVoltage(0).withUpdateFreqHz(0.0);
 
-  public static final double MAX_DEGREES = 70;
-  public static final double MIN_DEGREES = -35;
-  private final int TILT_TOLERANCE = 4;
-  
+  public static final double TILT_TOLERANCE = 0.5;
+  public static final int STOP_TOLERANCE = 20;
+  public static final int SHOOTER_TOLERANCE = 2;
+
+  public static double tiltSpeedLimit = 0.2;
+
+  public static ArrayList<Double[]> dataArray = new ArrayList<Double[]>();
+
+  private final Slot0Configs controllerConfig = new Slot0Configs();
+  private final VoltageOut voltageControl = new VoltageOut(0).withUpdateFreqHz(0.0);
+  private final VelocityVoltage velocityControl = new VelocityVoltage(0).withUpdateFreqHz(0.0);
+  private final NeutralOut neutralControl = new NeutralOut().withUpdateFreqHz(0.0);
+
   public ShooterSubsystem() {
-    tiltEncoder = shooterTiltMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
+    //Set shooter tilt tolerance
     tiltPID.setTolerance(TILT_TOLERANCE);
+    // shooterPID1.setTolerance(SHOOTER_TOLERANCE);
+    // shooterPID2.setTolerance(SHOOTER_TOLERANCE);
+
+    //Create config and limit the current supply
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    config.CurrentLimits.SupplyCurrentLimit = 60.0;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
+    //Set pid and feedforward configs
+    controllerConfig.kP = 0.25;
+    controllerConfig.kI = 0;
+    controllerConfig.kD = 0.012;
+    controllerConfig.kS = 0.8;
+    controllerConfig.kV = 0.00105;
+    controllerConfig.kA = 0;
+
+    //Apply configs
+    shooterMotor1.getConfigurator().apply(config, 1.0);
+    shooterMotor2.getConfigurator().apply(config, 1.0);
+    shooterMotor1.getConfigurator().apply(controllerConfig, 1.0);
+    shooterMotor2.getConfigurator().apply(controllerConfig, 1.0);
   }
 
-  public double getPitch(){
-    return MathR.getDistanceToAngle(0, tiltEncoder.getPosition() / (Constants.SHOOTER_TILT_ENCODER_MAX_VALUE - Constants.SHOOTER_TILT_ENCODER_MIN_VALUE) * 360 + Constants.SHOOTER_TILT_ENCODER_OFFSET, 180);
+  //Run shooter wheels
+  public void runVelocity(double leftRpm, double rightRpm, double leftFeedforward, double rightFeedforward) {
+    shooterMotor1.setControl(velocityControl.withVelocity(leftRpm / 60.0).withFeedForward(leftFeedforward));
+    shooterMotor2.setControl(velocityControl.withVelocity(rightRpm / 60.0).withFeedForward(rightFeedforward));
   }
 
-  public boolean getNoteDetected(){
-    return !beamBreak.get();
-  }
-
-  public void tiltToAngle(double degrees){
-    shooterTiltMotor.set(MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), degrees), 0), -0.2, 0.2));
-  }
-
-  public void set(double speed) {
-    currentSetPosition = ShooterPosition.MANUAL;
-
-    if (ElevatorSubsystem.getPercentElevated() <= 0.4 && speed >= 0 && getPitch() <= 18){
-      speed = 0;
-    }
-
-    shooterTiltMotor.set(speed);
-    /*shooterTiltMotor.set(
-        MathR.limitWhenReached(speed, -speedLimit, speedLimit, getPitch() <= MIN_DEGREES,
-            getPitch() >= MAX_DEGREES));*/
-  }
-
-  public void set(ShooterPosition pos) {
-    tiltPID.setSetpoint(0);
-    double speed = MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), pos.angle)), -speedLimit, speedLimit);
-    
-    /*if (speed < 0 && pos.angle < 0 && ElevatorSubsystem.getPercentElevated() <= 0.2){
-      speed = 0;
-    }*/
-
-    //System.out.println(speed);
-    
-    if (speed > 0 && getPitch() >= MAX_DEGREES){
-      speed = 0;
-    }
-    else if (speed < 0 && getPitch() <= MIN_DEGREES){
-      speed = 0;
-    }
-    
-    if (!atSetPosition())
-      set(speed);
-    else
-      set(0.0);
-
-    currentSetPosition = pos;
-  }
-
+  /*
   public void set(ShooterSpeed speedPreset) {
+
+    //double motorPower1 = -MathR.limit(shooterPID1.calculate(shooterMotor1.getVelocity().getValueAsDouble()), -1, 1);
     
-    double motorPower = MathR.limit(tiltPID.calculate(shooterMotor.getVelocity().getValueAsDouble(), speedPreset.rpm), -1, 1);
+
+    double motorPower1 = (70 - shooterMotor1.getVelocity().getValueAsDouble()) * 0.03;
+    double motorPower2 = MathR.limit(shooterPID2.calculate(shooterMotor2.getVelocity().getValueAsDouble(), 82), -1, 1);
+    
+    System.out.println(shooterMotor1.getVelocity().getValueAsDouble());
     
     
-    if (!atSetPosition())
-      shooterMotor.set(motorPower);
-    else
-      shooterMotor.set(0);
-
-    currentSetSpeedPosition = speedPreset;
-  }
-
-  public void setManual(double speed) {
-    shooterTiltMotor.set(-speed);
-  }
-
-  public void setFeeder(double speed){
-    feederMotor.set(speed);
-  }
-
-  public void setShooter(double speed){
-    shooterMotor.set(-speed);
-  }
-
-  public void setShooterRPM(){
-    double currentRPM = shooterMotor.getVelocity().getValueAsDouble();
-    setShooter(shooterPID.calculate(currentRPM, Constants.SHOOTER_SET_RPM));
-  }
-
-
-  @Override
-  public boolean atSetPosition() {
-    return tiltPID.atSetpoint();
-  }
-
-  @Override
-  public ShooterPosition getSetPosition() {
-    return currentSetPosition;
-  }
-
-  @Override
-  public void setSpeedLimit(double max) {
-    speedLimit = max;
-  }
-
-  @Override
-  public double getSpeedLimit() {
-    return speedLimit;
-  }
-
-  public void setRampRate(double rampRate) {
-    shooterTiltMotor.setOpenLoopRampRate(rampRate);
-  }
-
-  public double getRampRate() {
-    return shooterTiltMotor.getOpenLoopRampRate();
-  }
-
-  public enum ShooterPosition {
-    TRAVEL(19),
-    AMP(-20),
-    TRAP(51),
-    MANUAL(-1);
-
-    public final double angle;
-    private ShooterPosition(double angle) {
-      this.angle = angle;
+    if (Math.abs(shooterMotor1.getVelocity().getValueAsDouble() - 70) <= 3){
+      motorPower1 = 0;
     }
+    if (shooterPID2.atSetpoint()){
+      motorPower2 = 0;
+    }
+    VelocityDutyCycle motor1Velocity = new VelocityDutyCycle(20);
+    VelocityDutyCycle motor2Velocity = new VelocityDutyCycle(10);
+
+    shooterMotor1.setControl(motor1Velocity.withEnableFOC(true));
+    shooterMotor2.setControl(motor2Velocity.withEnableFOC(true));
+
+    /*if (!shooterPID1.atSetpoint()){
+      
+      
+      //shooterMotor1.setControl(velocity.withVelocity(100).withEnableFOC(true));
+      //shooterMotor2.setControl(velocity.withVelocity(100).withEnableFOC(true));
+      //shooterMotor1.set(motorPower1 * 0.75);
+      //shooterMotor2.set(motorPower2);
+    }
+    else{
+      shooterMotor1.set(0);
+    }
+    if (!shooterPID2.atSetpoint()){
+      
+    }
+    else{
+      shooterMotor2.set(0);
+    }
+  }*/
+
+  //Get shooter pitch angle
+  public double getPitch(){
+    return 180 + MathR.getDistanceToAngle(180, tiltEncoder.getAbsolutePosition() * 360 + Constants.SHOOTER_TILT_ENCODER_OFFSET);
   }
 
+  //Get status of the exit beam break
+  public static boolean getNoteDetected(){
+    return !farBeamBreak.get();
+  }
+  //Get status of the enter beam break
+  public static boolean getCloseNoteDetected(){
+    return !closeBeamBreak.get();
+  }
+
+  //Check if the shooter is at a certain pitch within a tolerance
+  public boolean atPitch(double pitch){
+    return getPitch() >= pitch - 1 && getPitch() <= pitch + 1;
+  }
+
+  //Tilt the shooter to a certain angle while avoiding going back into the intake
+  public void tiltToAngle(double degrees){
+    double power = -MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), degrees, 350), 0), -tiltSpeedLimit, tiltSpeedLimit);
+    
+    if (Math.abs(power) <= 0.02){
+      power = 0;
+    }
+
+    if ((getPitch() <= 30  && power < 0) || (getPitch() >= 340 && power > 0)){
+      power = 0;
+    }
+
+    shooterMotor1.setControl(new DutyCycleOut(power, true, false, false, false));
+    shooterMotor2.setControl(new DutyCycleOut(power, true, false, false, false));
+    // shooterTiltMotor1.set(power);
+    // shooterTiltMotor2.set(-power);
+  }
+
+  //Tilt the shooter to a certain angle
+  public void tiltToAngleAMP(double degrees){
+    double power = MathR.limit(tiltPID.calculate(getPitch(), degrees), -tiltSpeedLimit, tiltSpeedLimit);
+    
+    if (Math.abs(power) <= 0.05){
+      power = 0;
+    }
+
+    if (getPitch() <= 30 || getPitch() >= 340){
+      power = 0;
+    }
+    shooterTiltMotor1.set(power);
+    shooterTiltMotor2.set(-power);
+  }
+
+  //Run the motors
+  public void setManual(double speed) {
+    shooterTiltMotor1.set(-speed);
+    shooterTiltMotor2.set(speed * 0.9);
+  }
+
+  //Activate the jet
+  public void setJet(){
+    jet.setSpeed(1);
+  }
+  //Stop the jet
+  public void stopJet(){
+    jet.setSpeed(0);
+  }
+
+  //Set the feeder wheels
+  public void setFeeder(double speed){
+    feederMotor.setControl(new DutyCycleOut(speed, true, false, false, false));
+    //feederMotor.set(speed);
+  }
+
+  //Set the shooter to a certain soeed
+  public void setShooter(double speed){
+    //NEGATIVE = OUT
+    //POSITIVE = IN
+    shooterMotor1.set(-speed * 0.75);
+    shooterMotor2.set(speed);
+
+  }
+  //Use a proportion to stop the shooter immediately
+  public void stopShooter(){
+    double currentRPM1 = shooterMotor1.getVelocity().getValueAsDouble();
+    double speed1 = -currentRPM1 * 0.003;
+
+    double currentRPM2 = shooterMotor2.getVelocity().getValueAsDouble();
+    double speed2 = -currentRPM2 * 0.003;
+    
+    if (Math.abs(speed1) <= 0.4){
+      speed1 = 0;
+    }
+    if (Math.abs(speed2) <= 0.4){
+      speed2 = 0;
+    }
+    
+    shooterMotor1.set(speed1);
+    shooterMotor2.set(speed2);
+  }
+
+  //Find the angle that the shooter needs to be angled to the speaker based on limelight data
+  public double getAutoAngle(double ty, double ta){
+    if (ta <= 0.5){
+      return -0.00000714563 * Math.pow(ty, 5) + 0.000248267 * Math.pow(ty, 4) + 0.00716947 * Math.pow(ty, 3) - 0.184703 * Math.pow(ty, 2) - 3.07547 * ty + 281.267 - RobotContainer.OFFSET;
+    }
+    else{
+      return -0.00000714563 * Math.pow(ty, 5) + 0.000248267 * Math.pow(ty, 4) + 0.00716947 * Math.pow(ty, 3) - 0.184703 * Math.pow(ty, 2) - 3.07547 * ty + 281.267 - RobotContainer.OFFSET;
+    }
+    //Old formula
+    //0.00792889 * Math.pow(ty, 3) - 0.142877 * Math.pow(ty, 2) - 3.38697 * ty + 281.44;
+    
+  }
+
+  //Find the angle that the robot needs to turn to be angled to the april tag based on limelight data
+  public double getAutoOffset(double ty){
+    return -0.00336373 * Math.pow(ty, 2) - 0.212577 * ty + 5.31239 - 2;
+  }
+
+  //Set shooter tilt speed limits
+  public void setSpeedLimit(double max) {
+    tiltSpeedLimit = max;
+  }
+  
+  //Shooter speed names
   public enum ShooterSpeed {
+    /*TRAVEL(0),
+    IDLE(-30),
+    SPEAKER(-82);*/
+
     TRAVEL(0),
-    AMP(-80),
-    TRAP(-90),
-    SPEAKER(-140);
+    PASS(1000),
+    TRAP(1500),
+    SPEAKER(2000);
+
 
     public final double rpm;
     private ShooterSpeed(double rpm) {
@@ -176,11 +278,14 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
     }
   }
 
+  //Shooter angle names
   public enum ShooterAngle {
-    SUBWOOFER(50),
-    SUBWOOFER_AUTO(46),
-    POST(49),//POST(30),
-    FAR_POST(51),//FAR_POST(24),
+    TRAVEL(320),
+    AMP(52),
+    TOP(55),
+    TRAP(116/*205*/),
+    PASS(250),
+    SUBWOOFER(235),
     NONE(-1);
 
     public final double angle;
@@ -190,5 +295,8 @@ public class ShooterSubsystem extends SubsystemBase implements IPositionable<Sho
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    
+    //System.out.println(getPitch());
+  }
 }

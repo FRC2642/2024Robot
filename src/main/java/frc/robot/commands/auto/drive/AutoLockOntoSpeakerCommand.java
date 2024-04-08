@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.path.PiratePath;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utils.MathR;
@@ -25,21 +24,19 @@ public class AutoLockOntoSpeakerCommand extends FollowPathCommand {
   LimelightSubsystem limelight;
   LimelightSubsystem.DetectionType object;
   PiratePath path;
-  ElevatorSubsystem elevator;
   ShooterSubsystem shooter;
 
   /** Creates a new AutoLockOntoSpeakerCommand. */
-  public AutoLockOntoSpeakerCommand(DriveSubsystem drive, LimelightSubsystem limelight, ElevatorSubsystem elevator, ShooterSubsystem shooter, LimelightSubsystem.DetectionType object, PiratePath path, boolean recenterDisplacementToFirstPoint, double additionalLookaheadTime) {
+  public AutoLockOntoSpeakerCommand(DriveSubsystem drive, LimelightSubsystem limelight, ShooterSubsystem shooter, LimelightSubsystem.DetectionType object, PiratePath path, boolean recenterDisplacementToFirstPoint, double additionalLookaheadTime) {
     super(drive, path, recenterDisplacementToFirstPoint, additionalLookaheadTime);
     this.limelight = limelight;
     this.object = object;
-    this.elevator = elevator;
     this.shooter = shooter;
 
     if (additionalLookaheadTime != 0.0) startingLookAheadTime = BASE_PRECISION + additionalLookaheadTime;
     else startingLookAheadTime = null;
 
-    addRequirements(limelight, elevator, shooter);
+    addRequirements(limelight, shooter);
   }
 
   
@@ -75,7 +72,7 @@ public class AutoLockOntoSpeakerCommand extends FollowPathCommand {
       limelight.setDetectionType(object);
 
       double distanceToSpeaker = Math.sqrt(Math.pow(4.5416 - limelight.botposeX, 2) + Math.pow(limelight.botposeY, 2));
-      double angleToSpeaker = Math.toDegrees(Math.atan2(Constants.SPEAKER_TARGET_HEIGHT - elevator.getHeight(), distanceToSpeaker));
+      double angleToSpeaker = Math.toDegrees(Math.atan2(Constants.SPEAKER_TARGET_HEIGHT, distanceToSpeaker));
 
       shooter.tiltToAngle(angleToSpeaker);
 

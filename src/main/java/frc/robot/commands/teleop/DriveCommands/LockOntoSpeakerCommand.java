@@ -7,7 +7,6 @@ package frc.robot.commands.teleop.DriveCommands;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.LimelightSubsystem.DetectionType;
@@ -18,12 +17,10 @@ public class LockOntoSpeakerCommand extends TurnTowardsGamePieceCommand {
   final double TURN_KP = 0.017;
 
   private ShooterSubsystem shooter;
-  private ElevatorSubsystem elevator;
-  public LockOntoSpeakerCommand(DriveSubsystem drive, ShooterSubsystem shooter, ElevatorSubsystem elevator, LimelightSubsystem limelight, DetectionType type, XboxController control) {
+  public LockOntoSpeakerCommand(DriveSubsystem drive, ShooterSubsystem shooter, LimelightSubsystem limelight, DetectionType type, XboxController control) {
     super(drive, limelight, type, control);
     this.shooter = shooter;
-    this.elevator = elevator;
-    addRequirements(shooter, elevator, limelight);
+    addRequirements(shooter, limelight);
   }
 
   @Override
@@ -39,7 +36,7 @@ public class LockOntoSpeakerCommand extends TurnTowardsGamePieceCommand {
       leftJoystick.mult(MathR.lerp(0.25, 1.2, 0.0, 1.0, control.getLeftTriggerAxis()));
 
       double distanceToSpeaker = Math.sqrt(Math.pow(4.5416 - limelight.botposeX, 2) + Math.pow(limelight.botposeY, 2));
-      double angleToSpeaker = Math.toDegrees(Math.atan2(Constants.SPEAKER_TARGET_HEIGHT - elevator.getHeight(), distanceToSpeaker));
+      double angleToSpeaker = Math.toDegrees(Math.atan2(Constants.SPEAKER_TARGET_HEIGHT, distanceToSpeaker));
 
       shooter.tiltToAngle(angleToSpeaker);
 

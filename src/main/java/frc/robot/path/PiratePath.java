@@ -88,9 +88,9 @@ public class PiratePath extends TreeSet<PiratePoint> {
                     JsonNode translation = pose.get("translation");
 
                     t = point.get("time").asDouble();
-                    x = (Constants.FIELD_X) - (translation.get("x").asDouble() * Constants.FOOT_PER_METER);
-                    y = (Constants.FIELD_Y) - (translation.get("y").asDouble() * Constants.FOOT_PER_METER);
-                    r = point.get("holonomicRotation").asDouble() + 180;
+                    x = /*(Constants.FIELD_X) -*/ (translation.get("x").asDouble() * Constants.FOOT_PER_METER);
+                    y = /*(Constants.FIELD_Y) -*/ (translation.get("y").asDouble() * Constants.FOOT_PER_METER);
+                    r = point.get("holonomicRotation").asDouble();
                     stop = point.get("velocity").asDouble() == 0.0 && !first;
                 }
 
@@ -105,7 +105,6 @@ public class PiratePath extends TreeSet<PiratePoint> {
     }
 
     public PiratePath getRedAlliance() {
-
         PiratePath redPath = new PiratePath(true);
         redPath.name = "RED " + this.name;
 
