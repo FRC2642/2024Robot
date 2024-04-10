@@ -71,8 +71,12 @@ public class MiddleNotesCommand extends SequentialCommandGroup {
         new WaitCommand(2).andThen(
           new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
         )
-      ),
-      
+      ).withTimeout(2),
+
+      //If We did Not Pick Up Note, Uses Other Path
+      new MiddleNotesMissed1Command(drive, shooter, intake, shooterLimelight, intakeLimelight).onlyIf(()->!ShooterSubsystem.getNoteDetected()),
+
+      //Keeps Current Path If Note IS Not Missing
       new FollowPathCommand(drive, shootNote2, false, 0.5).alongWith(new SetIntakeCommand(intake, ()->IntakePosition.RETRACTED)),
 
       //Shoot 2nd note
