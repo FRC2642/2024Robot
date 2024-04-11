@@ -75,6 +75,9 @@ public class DivertToGamePieceCommand extends FollowPathCommand {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (limelight.confidence() <= 0.1 || (limelight.confidence() > 0.1 && limelight.a <= 0.01)){
+      return true;
+    }
     if (endWhenIntaken){
       return ShooterSubsystem.getNoteDetected();
     }
