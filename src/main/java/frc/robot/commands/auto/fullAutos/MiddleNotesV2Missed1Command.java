@@ -49,9 +49,12 @@ public class MiddleNotesV2Missed1Command extends SequentialCommandGroup {
         
       }, drive, intake, shooter),
 
-      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote2, true, 0, 0.3, 0.2, true).alongWith(
-        new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
-      ),
+      //Get 2nd note
+      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote2, true, 0, 0.3, 1.8, true).alongWith(
+        new WaitCommand(2).andThen(
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
+        )
+      ).withTimeout(2),
 
       new FollowPathCommand(drive, shootNote2, false, 0).alongWith(
         new SetIntakeCommand(intake, ()->IntakePosition.RETRACTED)

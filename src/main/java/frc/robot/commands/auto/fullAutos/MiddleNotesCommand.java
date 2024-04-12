@@ -94,7 +94,7 @@ public class MiddleNotesCommand extends SequentialCommandGroup {
         new WaitCommand(3).andThen(
           new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
         )
-      ),
+      ).withTimeout(2),
 
       new FollowPathCommand(drive, shootNote3, false, 0.5).alongWith(new SetIntakeCommand(intake, ()->IntakePosition.RETRACTED)),
 

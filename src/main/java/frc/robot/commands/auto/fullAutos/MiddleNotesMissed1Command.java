@@ -48,14 +48,18 @@ public class MiddleNotesMissed1Command extends SequentialCommandGroup {
         
       }, drive, intake, shooter),
 
-      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote2, true, 0, 0.3, 0.2, true).alongWith(
-        new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
-      ),
+      //Get 2nd note
+      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote2, true, 0, 0.3, 1.8, true).alongWith(
+        new WaitCommand(2).andThen(
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
+        )
+      ).withTimeout(2),
 
       new FollowPathCommand(drive, shootNote2, false, 0).alongWith(
         new SetIntakeCommand(intake, ()->IntakePosition.RETRACTED)
       ),
 
+      //Shoot 2nd Note
       new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
       new WaitCommand(0.5),
       new InstantCommand(()->shooter.setFeeder(1), shooter),
@@ -65,14 +69,18 @@ public class MiddleNotesMissed1Command extends SequentialCommandGroup {
         shooter.setFeeder(0);
       }, shooter),
 
-      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote3, true, 0, 0.3, 0.2, true).alongWith(
-        new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
-      ),
+      //Get 3rd note
+      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote3, false, 0.25, 3, 2, true).alongWith(
+        new WaitCommand(3).andThen(
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
+        )
+      ).withTimeout(2),
 
       new FollowPathCommand(drive, shootNote3, false, 0).alongWith(
         new SetIntakeCommand(intake, ()->IntakePosition.RETRACTED)
       ),
 
+      //Shoot 3rd Note
       new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
       new WaitCommand(0.5),
       new InstantCommand(()->shooter.setFeeder(1), shooter),
