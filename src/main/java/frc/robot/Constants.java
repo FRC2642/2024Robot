@@ -48,10 +48,9 @@ public final class Constants {
 
     // Various Stats
     public static final double SHOOTER_VELOCITY = 7; //NOTE SHOOT FEET PER SECOND //CHANGE
-    public static final double SHOOTER_SET_RPM = 510;
     public static final double SHOOTER_TILT_ENCODER_MAX_VALUE = 1;
     public static final double SHOOTER_TILT_ENCODER_MIN_VALUE = 0;
-    public static final double SHOOTER_TILT_ENCODER_OFFSET = -331; //Lower number = lower shot
+    public static final double SHOOTER_TILT_ENCODER_OFFSET = -86.9; 
     //public static final double SHOOTER_STANDARD_HEIGHT = 0.458333;
     
     public static final double INTAKE_TILT_ENCODER_MAX_VALUE = 1;
