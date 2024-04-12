@@ -39,7 +39,7 @@
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": false,
+      "isStopPoint": true,
       "stopEvent": {
         "names": [],
         "executionBehavior": "parallel",
@@ -49,22 +49,22 @@
     },
     {
       "anchorPoint": {
-        "x": 2.030136546068725,
-        "y": 3.5740658158189778
+        "x": 2.40664698755293,
+        "y": 3.442978236841542
       },
       "prevControl": {
-        "x": 2.139546724104,
-        "y": 3.4403422648869753
+        "x": 2.500015888891006,
+        "y": 3.3145959975016877
       },
       "nextControl": {
-        "x": 2.139546724104,
-        "y": 3.4403422648869753
+        "x": 2.500015888891006,
+        "y": 3.3145959975016877
       },
       "holonomicAngle": -39.80557109226514,
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": false,
+      "isStopPoint": true,
       "stopEvent": {
         "names": [],
         "executionBehavior": "parallel",
@@ -78,18 +78,18 @@
         "y": 1.9693832046349478
       },
       "prevControl": {
-        "x": 4.048146496497129,
-        "y": 1.325078822871661
+        "x": 3.690469380951472,
+        "y": 1.2954935060658002
       },
       "nextControl": {
-        "x": 4.048146496497129,
-        "y": 1.325078822871661
+        "x": 3.690469380951472,
+        "y": 1.2954935060658002
       },
       "holonomicAngle": 20.376435213836302,
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": false,
+      "isStopPoint": true,
       "stopEvent": {
         "names": [],
         "executionBehavior": "parallel",
@@ -103,18 +103,18 @@
         "y": 3.257991968161517
       },
       "prevControl": {
-        "x": 4.425003776396408,
-        "y": 2.2003602471538604
+        "x": 2.7684514802379736,
+        "y": 3.1745426454945744
       },
       "nextControl": {
-        "x": 4.425003776396408,
-        "y": 2.2003602471538604
+        "x": 2.7684514802379736,
+        "y": 3.1745426454945744
       },
       "holonomicAngle": -37.476179561361256,
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": false,
+      "isStopPoint": true,
       "stopEvent": {
         "names": [],
         "executionBehavior": "parallel",
