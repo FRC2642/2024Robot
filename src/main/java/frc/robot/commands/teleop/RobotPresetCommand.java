@@ -39,7 +39,7 @@ public class RobotPresetCommand extends Command {
   final double TURN_KP = 0.015;//0.017;
   final double LOCK_TURN_KP = 0.1;
   final double SHOOTER_LIMELIGHT_TURN_KP = 0.007;//0.0088;
-  final double INTAKE_LIMELIGHT_TURN_KP = 0.018;//0.0088;
+  final double INTAKE_LIMELIGHT_TURN_KP = 0.004;//0.0088;
   private double maxSpeed = 0.35;
   private boolean isLocked = false;
   private double lockedHeading = 0;
@@ -64,7 +64,7 @@ public class RobotPresetCommand extends Command {
 
   @Override
   public void initialize() {
-    shooter.setSpeedLimit(0.9);
+    shooter.setSpeedLimit(1);
     intake.setSpeedLimit(0.6);
     shooterLimelight.setDetectionType(DetectionType.FIDUCIAL);
     intakeLimelight.setDetectionType(DetectionType.NOTE);
@@ -142,7 +142,7 @@ public class RobotPresetCommand extends Command {
     
     if (!(RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.PASS)) && !auxButtonBoard.getRawButton(11)){
       //shooter.set(RobotState.getRobotConfiguration().shooterSpeed);
-      shooter.runVelocity(ShooterSpeed.SPEAKER.rpm, ShooterSpeed.SPEAKER.rpm, ff.calculate(ShooterSpeed.SPEAKER.rpm), ff.calculate(ShooterSpeed.SPEAKER.rpm));
+      shooter.runVelocity(ShooterSpeed.SPEAKER.rpm, ShooterSpeed.SPEAKER.rpm - 500, ff.calculate(ShooterSpeed.SPEAKER.rpm), ff.calculate(ShooterSpeed.SPEAKER.rpm - 500));
     }
 
 
@@ -174,7 +174,7 @@ public class RobotPresetCommand extends Command {
 
     //Set shooter angle for intake and amp, auto angle shooter for everything else
     if (RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.PASS) || RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAP) || (RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) && !RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER))){
-      shooter.tiltToAngleAMP(RobotState.getRobotConfiguration().shooterAngle.angle);
+      shooter.tiltToAngle(RobotState.getRobotConfiguration().shooterAngle.angle);
       
     }
     else if (shooterLimelight.isDetection){
@@ -268,7 +268,7 @@ public class RobotPresetCommand extends Command {
       //shooter.tiltToAngle(RobotContainer.ANGLE);
 
 
-      double leadAngle = Math.abs(Math.toDegrees(Math.atan2(Constants.SHOOTER_VELOCITY - DriveSubsystem.getRelativeVelocity().getY(), DriveSubsystem.getRelativeVelocity().getX() + 0.000001))) - 90;
+      //double leadAngle = Math.abs(Math.toDegrees(Math.atan2(Constants.SHOOTER_VELOCITY - DriveSubsystem.getRelativeVelocity().getY(), DriveSubsystem.getRelativeVelocity().getX() + 0.000001))) - 90;
       double deltaAngle =  -shooter.getAutoOffset(shooterLimelight.y) + shooterLimelight.x;
 
       /*if (DriveSubsystem.getRelativeVelocity().getX() > 0){

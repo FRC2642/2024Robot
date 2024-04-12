@@ -26,7 +26,7 @@ import frc.robot.utils.MathR;
 
 public class ShooterSubsystem extends SubsystemBase{
 
-  private PIDController tiltPID = new PIDController(0.025, 0, 0);
+  private PIDController tiltPID = new PIDController(0.05, 0, 0);
   private PIDController shooterPID1 = new PIDController(0.3, 0, 0);
   private PIDController shooterPID2 = new PIDController(0.2, 0, 0);
 
@@ -91,7 +91,7 @@ public class ShooterSubsystem extends SubsystemBase{
   //Run shooter wheels
   public void runVelocity(double leftRpm, double rightRpm, double leftFeedforward, double rightFeedforward) {
     shooterMotor1.setControl(velocityControl.withVelocity(leftRpm / 60.0).withFeedForward(leftFeedforward));
-    shooterMotor2.setControl(velocityControl.withVelocity(rightRpm / 60.0).withFeedForward(rightFeedforward));
+    shooterMotor2.setControl(velocityControl.withVelocity(-rightRpm / 60.0).withFeedForward(rightFeedforward));
   }
 
   /*
@@ -158,39 +158,27 @@ public class ShooterSubsystem extends SubsystemBase{
 
   //Tilt the shooter to a certain angle while avoiding going back into the intake
   public void tiltToAngle(double degrees){
-    double power = -MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), degrees, 350), 0), -tiltSpeedLimit, tiltSpeedLimit);
+    double power = MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), degrees, 10), 0), -tiltSpeedLimit, tiltSpeedLimit);
     
     if (Math.abs(power) <= 0.02){
       power = 0;
     }
 
-    if ((getPitch() <= 30  && power < 0) || (getPitch() >= 340 && power > 0)){
+    if ((getPitch() <= 30  && power < 0) || (getPitch() >= 180 && power > 0)){
       power = 0;
     }
 
-    shooterMotor1.setControl(new DutyCycleOut(power, true, false, false, false));
-    shooterMotor2.setControl(new DutyCycleOut(power, true, false, false, false));
-    // shooterTiltMotor1.set(power);
-    // shooterTiltMotor2.set(-power);
-  }
 
-  //Tilt the shooter to a certain angle
-  public void tiltToAngleAMP(double degrees){
-    double power = MathR.limit(tiltPID.calculate(getPitch(), degrees), -tiltSpeedLimit, tiltSpeedLimit);
-    
-    if (Math.abs(power) <= 0.05){
-      power = 0;
-    }
-
-    if (getPitch() <= 30 || getPitch() >= 340){
-      power = 0;
-    }
-    shooterTiltMotor1.set(power);
-    shooterTiltMotor2.set(-power);
+    //shooterMotor1.setControl(new DutyCycleOut(power, true, false, false, false));
+    //shooterMotor2.setControl(new DutyCycleOut(power, true, false, false, false));
+     shooterTiltMotor1.set(power);
+     shooterTiltMotor2.set(-power);
   }
 
   //Run the motors
   public void setManual(double speed) {
+    System.out.println(speed);
+    
     shooterTiltMotor1.set(-speed);
     shooterTiltMotor2.set(speed * 0.9);
   }
@@ -269,7 +257,7 @@ public class ShooterSubsystem extends SubsystemBase{
     TRAVEL(0),
     PASS(1000),
     TRAP(1500),
-    SPEAKER(2000);
+    SPEAKER(6000);
 
 
     public final double rpm;
@@ -280,12 +268,12 @@ public class ShooterSubsystem extends SubsystemBase{
 
   //Shooter angle names
   public enum ShooterAngle {
-    TRAVEL(320),
-    AMP(52),
-    TOP(55),
-    TRAP(116/*205*/),
-    PASS(250),
-    SUBWOOFER(235),
+    TRAVEL(40),
+    AMP(176),
+    TOP(160),
+    TRAP(150/*205*/),
+    PASS(45),
+    SUBWOOFER(100),
     NONE(-1);
 
     public final double angle;
@@ -297,6 +285,6 @@ public class ShooterSubsystem extends SubsystemBase{
   @Override
   public void periodic() {
     
-    //System.out.println(getPitch());
+    System.out.println(getPitch());
   }
 }
