@@ -17,8 +17,9 @@ public class LimelightSubsystem extends SubsystemBase {
   private final String networkTableName;
 
   public enum DetectionType {
-    NOTE(0),
+    NOTE(1),
     FIDUCIAL(0),
+    FIDUCIAL_ZOOM(1),
     NONE(-1);
 
     public final int pipeline;

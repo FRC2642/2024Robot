@@ -16,7 +16,7 @@ public class IntakeSubsystem extends SubsystemBase{
 
   private final int TILT_TOLERANCE = 2;
 
-  private PIDController tiltPID = new PIDController(0.01, 0, 0);
+  private PIDController tiltPID = new PIDController(0.008, 0, 0);
 
   private TalonFX intakeSpinnerMotor = new TalonFX(Constants.INTAKE_SPINNER_ID);
   private static TalonFX intakeTiltMotor = new TalonFX(Constants.INTAKE_PIVOT_ID);

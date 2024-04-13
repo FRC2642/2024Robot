@@ -42,11 +42,12 @@ public class SixPiece extends SequentialCommandGroup {
     var paths = path.getSubPaths();
     ArrayList<Double> times = new ArrayList<>();
     times.add(1.001211621966981);
+    times.add(3.0443636599803328);
     var timePaths = path.getSubPaths(times, 0.1);
     
     var note2 = timePaths.get(0);
+    var note3 = timePaths.get(1);
     
-    var note3 = paths.get(0);
     var shootNote3 = paths.get(1);
     var note4 = paths.get(2);
     var shootNote4 = paths.get(3);
@@ -74,13 +75,15 @@ public class SixPiece extends SequentialCommandGroup {
       }, shooter),
 
       //Get & Shoot 2nd note
-      new LockOntoSpeakerAndIntakeCommand(drive, intakeLimelight, shooterLimelight, DetectionType.NOTE, note2, true, 0.25, 0.2, 0.75, false, shooter, intake),
+      new FollowPathCommand(drive, note2, false, 0.5),
+      new LockOntoSpeakerAndIntakeCommand(drive, intakeLimelight, shooterLimelight, DetectionType.NOTE, 0.25, false, shooter, intake),
+      new WaitCommand(0.2),
 
       //Get 3rd note
-      //Needs work
-      new FollowPathCommand(drive, shootNote3, false, 0.5),
+      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, note3, false, 0.25, 0.35, 0.9, true),
 
       //Shoot 3rd note
+      new FollowPathCommand(drive, shootNote3, false, 0.25),
       new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight).withTimeout(0.5),
       new InstantCommand(()->shooter.setFeeder(1), shooter),
       new WaitCommand(0.05), //DO NOT REMOVE
@@ -97,7 +100,7 @@ public class SixPiece extends SequentialCommandGroup {
       new FollowPathCommand(drive, shootNote4, false, 0.25).withTimeout(0.8),
       
       //Shoot 4th note
-      new WaitCommand(0.4),
+      new WaitCommand(0.2),
       new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
       new InstantCommand(()->shooter.setFeeder(1), shooter),
       new WaitCommand(0.05), //DO NOT REMOVE

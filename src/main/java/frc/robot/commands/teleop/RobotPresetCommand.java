@@ -140,7 +140,7 @@ public class RobotPresetCommand extends Command {
     intake.set(RobotState.getRobotConfiguration().intakePos);
     
     
-    if (!(RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.PASS)) && !auxButtonBoard.getRawButton(11)){
+    if (!(RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) || RobotState.getRobotConfiguration().equals(RobotConfiguration.CLIMB_UP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.CLIMB_DOWN) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.PASS)) && !auxButtonBoard.getRawButton(11)){
       //shooter.set(RobotState.getRobotConfiguration().shooterSpeed);
       shooter.runVelocity(ShooterSpeed.SPEAKER.rpm, ShooterSpeed.SPEAKER.rpm, ff.calculate(ShooterSpeed.SPEAKER.rpm), ff.calculate(ShooterSpeed.SPEAKER.rpm));
     }
@@ -170,15 +170,31 @@ public class RobotPresetCommand extends Command {
       revUp = false;
     }
     
-    
+
+    if (RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER)){
+      if (shooterLimelight.y <= 0){
+        shooterLimelight.setDetectionType(DetectionType.FIDUCIAL_ZOOM);
+        
+      }
+      else{
+        shooterLimelight.setDetectionType(DetectionType.FIDUCIAL);
+      }
+    }
 
     //Set shooter angle for intake and amp, auto angle shooter for everything else
-    if (RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.PASS) || RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAP) || (RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) && !RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER))){
+    if (RobotState.getRobotConfiguration().equals(RobotConfiguration.INTAKE) || RobotState.getRobotConfiguration().equals(RobotConfiguration.CLIMB_UP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.CLIMB_DOWN) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER) || RobotState.getRobotConfiguration().equals(RobotConfiguration.PASS) || RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAP) || (RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) && !RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER))){
+      if (RobotState.getRobotConfiguration().equals(RobotConfiguration.CLIMB_DOWN)){
+        shooter.setSpeedLimit(0.75);
+      }
+      else{
+        shooter.setSpeedLimit(1);
+      }
       shooter.tiltToAngle(RobotState.getRobotConfiguration().shooterAngle.angle);
       
     }
-    else if (shooterLimelight.isDetection){
-      System.out.println(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
+    else if (shooterLimelight.isDetection && RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER)){
+      //System.out.println(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
+      System.out.println(shooterLimelight.y + " " + shooter.getPitch());
       
       shooter.tiltToAngle(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
     }
@@ -304,6 +320,11 @@ public class RobotPresetCommand extends Command {
         drive.move(leftJoystick, turnPower * maxSpeed);
       }
     }
+
+    if (RobotState.getRobotConfiguration().equals(RobotConfiguration.CLIMB_UP)){
+      
+    }
+    
 
   }
 

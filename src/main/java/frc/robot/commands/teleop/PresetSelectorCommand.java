@@ -12,6 +12,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.RobotState;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.RobotState.RobotConfiguration;
 
 public class PresetSelectorCommand extends Command {
   private final Joystick auxButtonBoard;
@@ -49,7 +50,13 @@ public class PresetSelectorCommand extends Command {
     else if (mainControl.getRightBumper()){
       RobotState.setRobotState(RobotState.getChosenRobotConfiguration());
     }
-    else{
+    else if (mainControl.getRawButton(8)){
+      RobotState.setRobotState(RobotConfiguration.CLIMB_UP);
+    }
+    else if (mainControl.getRawButton(7)){
+      RobotState.setRobotState(RobotConfiguration.CLIMB_DOWN);
+    }
+    else if (!(RobotState.getRobotConfiguration().equals(RobotConfiguration.CLIMB_UP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.CLIMB_DOWN))){
       RobotState.setRobotState(RobotState.RobotConfiguration.TRAVEL);
     }
 

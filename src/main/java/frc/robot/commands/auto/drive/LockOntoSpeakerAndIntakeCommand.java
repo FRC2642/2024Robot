@@ -6,7 +6,7 @@ package frc.robot.commands.auto.drive;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.path.PiratePath;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -17,7 +17,7 @@ import frc.robot.subsystems.ShooterSubsystem.ShooterSpeed;
 import frc.robot.utils.MathR;
 import frc.robot.utils.VectorR;
 
-public class LockOntoSpeakerAndIntakeCommand extends FollowPathCommand {
+public class LockOntoSpeakerAndIntakeCommand extends Command{
   /** Creates a new DivertToGamePieceCommand. */
   DriveSubsystem drive;
   LimelightSubsystem intakeLimelight;
@@ -25,9 +25,7 @@ public class LockOntoSpeakerAndIntakeCommand extends FollowPathCommand {
   LimelightSubsystem.DetectionType object;
   ShooterSubsystem shooter;
   IntakeSubsystem intake;
-  PiratePath path;
   double visionSpeed;
-  double timeAfterStartToDivert;
   Timer visionTimer = new Timer();
   Timer intakeTimer = new Timer();
   boolean endWhenIntaken;
@@ -39,25 +37,21 @@ public class LockOntoSpeakerAndIntakeCommand extends FollowPathCommand {
   
   
 
-  public LockOntoSpeakerAndIntakeCommand(DriveSubsystem drive, LimelightSubsystem intakeLimelight, LimelightSubsystem shooterLimelight, LimelightSubsystem.DetectionType object, PiratePath path, boolean recenterDisplacementToFirstPoint, double additionalLookaheadTime, double visionSpeed, double timeAfterStartToDivert,  boolean endWhenIntaken, ShooterSubsystem shooter, IntakeSubsystem intake) {
-    super(drive, path, recenterDisplacementToFirstPoint, additionalLookaheadTime);
+  public LockOntoSpeakerAndIntakeCommand(DriveSubsystem drive, LimelightSubsystem intakeLimelight, LimelightSubsystem shooterLimelight, LimelightSubsystem.DetectionType object, double visionSpeed,  boolean endWhenIntaken, ShooterSubsystem shooter, IntakeSubsystem intake) {
     this.drive = drive;
     this.endWhenIntaken = endWhenIntaken;
     this.intakeLimelight = intakeLimelight;
     this.shooterLimelight = shooterLimelight;
     this.object = object;
-    this.path = path;
     this.visionSpeed = visionSpeed;
-    this.timeAfterStartToDivert = timeAfterStartToDivert;
     this.shooter = shooter;
     this.intake = intake;
-    addRequirements(drive);
+    addRequirements(shooter, intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    super.initialize();
     intakeLimelight.setDetectionType(object);
     visionTimer.reset();
     visionTimer.start();
@@ -73,37 +67,34 @@ public class LockOntoSpeakerAndIntakeCommand extends FollowPathCommand {
     shooter.setFeeder(1);
     shooter.runVelocity(ShooterSpeed.SPEAKER.rpm, ShooterSpeed.SPEAKER.rpm, ff.calculate(ShooterSpeed.SPEAKER.rpm), ff.calculate(ShooterSpeed.SPEAKER.rpm));
 
+    //Intake
     if (!(ShooterSubsystem.getNoteDetected() || ShooterSubsystem.getCloseNoteDetected())){
       shooter.setFeeder(0.9);
       shooter.tiltToAngle(ShooterAngle.TRAVEL.angle);
     } 
+    //Note is inside but not fully
     else if (ShooterSubsystem.getCloseNoteDetected() && !ShooterSubsystem.getNoteDetected()){
       shooter.setFeeder(0.2);
       shooter.tiltToAngle(ShooterAngle.TRAVEL.angle);
     }
+    //Note is inside, shooter moving to angle
+    else if (ShooterSubsystem.getNoteDetected() && ShooterSubsystem.getCloseNoteDetected() && !shooter.atPitch(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a))){
+      shooter.setFeeder(0);
+      shooter.tiltToAngle(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
+    }
+    //Shoot note
     else if (ShooterSubsystem.getNoteDetected() && ShooterSubsystem.getCloseNoteDetected() && shooter.atPitch(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a))){
       shooter.setFeeder(1);
       shooter.setManual(0);
       shotNote = true;
     }
-    else if (ShooterSubsystem.getNoteDetected() && ShooterSubsystem.getCloseNoteDetected() && !shooter.atPitch(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a))){
-      shooter.setFeeder(0);
-      shooter.tiltToAngle(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
-
-    }
     
-    
-    if (visionTimer.get() > timeAfterStartToDivert && intakeLimelight.isDetection && intakeLimelight.confidence() > 0.1 && intakeLimelight.a >= 0.1 && shooterLimelight.isDetection && !shotNote){
+    if (!ShooterSubsystem.getNoteDetected() && !shotNote){
       drive.move(VectorR.fromPolar(visionSpeed, -DriveSubsystem.getYawDegrees() - intakeLimelight.x), MathR.limit(LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, shooterLimelight.x - 4), -0.07, 0.7) * -1);
     }
-    else if (super.isFinished()){
-      drive.move(VectorR.fromPolar(0.20, -DriveSubsystem.getYawDegrees() - intakeLimelight.x), MathR.limit(LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, shooterLimelight.x - 4), -0.07, 0.07) * -1);
-    }
-
-    else{
-      super.execute();
-    }
-
+    
+    
+    
 
   }
 
@@ -114,7 +105,8 @@ public class LockOntoSpeakerAndIntakeCommand extends FollowPathCommand {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return super.isFinished();
+
+    return shotNote;
   }
 }
  

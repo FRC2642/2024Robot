@@ -36,7 +36,9 @@ public class RobotState {
         SHOOT_AMP(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.AMP),
         INTAKE(IntakePosition.EXTENDED, ShooterSpeed.TRAVEL, ShooterAngle.TRAVEL),
         TRAVEL(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.TRAVEL),
-        TRAP(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.TRAP);
+        TRAP(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.TRAP),
+        CLIMB_UP(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.CLIMB_UP),
+        CLIMB_DOWN(IntakePosition.RETRACTED, ShooterSpeed.TRAVEL, ShooterAngle.CLIMB_DOWN);
         
         public final ShooterSpeed shooterSpeed;
         public final ShooterAngle shooterAngle;

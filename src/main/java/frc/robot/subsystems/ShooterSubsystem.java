@@ -26,7 +26,7 @@ import frc.robot.utils.MathR;
 
 public class ShooterSubsystem extends SubsystemBase{
 
-  private PIDController tiltPID = new PIDController(0.05, 0, 0);
+  private PIDController tiltPID = new PIDController(0.055, 0, 0);
   private PIDController shooterPID1 = new PIDController(0.3, 0, 0);
   private PIDController shooterPID2 = new PIDController(0.2, 0, 0);
 
@@ -227,10 +227,10 @@ public class ShooterSubsystem extends SubsystemBase{
 
   //Find the angle that the shooter needs to be angled to the speaker based on limelight data
   public double getAutoAngle(double ty, double ta){
-    double angle = 0.0000233767 * Math.pow(ty, 5) - 0.000573563 * Math.pow(ty, 4) - 0.00128917 * Math.pow(ty, 3) + 0.0688471 * Math.pow(ty, 2) + 1.66165 * ty + 57.7143;
-    double gyroDistToZero = Math.abs(MathR.limit(MathR.getDistanceToAngle(DriveSubsystem.getYawDegrees(), 0), -10, 10)) * 0.175;
+    double angle = 0.0000178887 * Math.pow(ty, 5) - 0.000522387 * Math.pow(ty, 4) + 0.00114773 * Math.pow(ty, 3) + 0.0493169 * Math.pow(ty, 2) + 1.55427 * ty + 57.8461;
+    double gyroDistToZero = Math.abs(MathR.limit(MathR.getDistanceToAngle(DriveSubsystem.getYawDegrees(), 0), -10, 10)) * 0.165;
 
-    return angle - gyroDistToZero;
+    return angle - gyroDistToZero + RobotContainer.OFFSET;
 
     /*if (ta <= 0.5){
       return -0.00000714563 * Math.pow(ty, 5) + 0.000248267 * Math.pow(ty, 4) + 0.00716947 * Math.pow(ty, 3) - 0.184703 * Math.pow(ty, 2) - 3.07547 * ty + 281.267 - RobotContainer.OFFSET;
@@ -239,7 +239,7 @@ public class ShooterSubsystem extends SubsystemBase{
       return -0.00000714563 * Math.pow(ty, 5) + 0.000248267 * Math.pow(ty, 4) + 0.00716947 * Math.pow(ty, 3) - 0.184703 * Math.pow(ty, 2) - 3.07547 * ty + 281.267 - RobotContainer.OFFSET;
     }*/
     //Old formula
-    //0.00792889 * Math.pow(ty, 3) - 0.142877 * Math.pow(ty, 2) - 3.38697 * ty + 281.44;
+    //0.00000276475 * Math.pow(ty, 5) - 0.0000942192 * Math.pow(ty, 4) - 0.0000239911 * Math.pow(ty, 3) + 0.0202433 * Math.pow(ty, 2) + 1.59285 * ty + 58.4301;
     
   }
 
@@ -279,6 +279,8 @@ public class ShooterSubsystem extends SubsystemBase{
     TRAP(150/*205*/),
     PASS(45),
     SUBWOOFER(100),
+    CLIMB_UP(190),
+    CLIMB_DOWN(85),
     NONE(-1);
 
     public final double angle;
