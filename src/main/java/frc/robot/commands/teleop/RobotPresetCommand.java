@@ -142,7 +142,7 @@ public class RobotPresetCommand extends Command {
     
     if (!(RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAVEL) || RobotState.getRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.TRAP) || RobotState.getRobotConfiguration().equals(RobotConfiguration.PASS)) && !auxButtonBoard.getRawButton(11)){
       //shooter.set(RobotState.getRobotConfiguration().shooterSpeed);
-      shooter.runVelocity(ShooterSpeed.SPEAKER.rpm, ShooterSpeed.SPEAKER.rpm - 500, ff.calculate(ShooterSpeed.SPEAKER.rpm), ff.calculate(ShooterSpeed.SPEAKER.rpm - 500));
+      shooter.runVelocity(ShooterSpeed.SPEAKER.rpm, ShooterSpeed.SPEAKER.rpm, ff.calculate(ShooterSpeed.SPEAKER.rpm), ff.calculate(ShooterSpeed.SPEAKER.rpm));
     }
 
 
@@ -178,6 +178,8 @@ public class RobotPresetCommand extends Command {
       
     }
     else if (shooterLimelight.isDetection){
+      System.out.println(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
+      
       shooter.tiltToAngle(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
     }
     else if (RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_AMP) || RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_OVER)){
@@ -269,7 +271,7 @@ public class RobotPresetCommand extends Command {
 
 
       //double leadAngle = Math.abs(Math.toDegrees(Math.atan2(Constants.SHOOTER_VELOCITY - DriveSubsystem.getRelativeVelocity().getY(), DriveSubsystem.getRelativeVelocity().getX() + 0.000001))) - 90;
-      double deltaAngle =  -shooter.getAutoOffset(shooterLimelight.y) + shooterLimelight.x;
+      double deltaAngle =  /*-shooter.getAutoOffset(shooterLimelight.y) +*/ shooterLimelight.x;
 
       /*if (DriveSubsystem.getRelativeVelocity().getX() > 0){
         adjustedAngle = shooterLimelight.x + leadAngle;
@@ -279,14 +281,14 @@ public class RobotPresetCommand extends Command {
       }*/
        
 
-      double limelightTurnPower = MathR.limit(SHOOTER_LIMELIGHT_TURN_KP * deltaAngle, -0.11, 0.11) * -1.8;
+      double limelightTurnPower = MathR.limit(SHOOTER_LIMELIGHT_TURN_KP * deltaAngle, -0.11, 0.11) * -2;
       
       //System.out.println(limelightTurnPower + " " + MathR.getDistanceToAngle(0, adjustedAngle));
       
-      System.out.println(shooter.getAutoOffset(shooterLimelight.y));
+      /*System.out.println(shooter.getAutoOffset(shooterLimelight.y));
       System.out.println("delta: "+deltaAngle);
       System.out.println("turn power: "+limelightTurnPower);
-      
+      */
       if (Math.abs(limelightTurnPower) <= 0.02){
         limelightTurnPower = 0;
       }

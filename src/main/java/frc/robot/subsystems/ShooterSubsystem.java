@@ -47,7 +47,7 @@ public class ShooterSubsystem extends SubsystemBase{
   private static PWM jet = new PWM(0);
   private VelocityVoltage velocity = new VelocityVoltage(0).withUpdateFreqHz(0.0);
 
-  public static final double TILT_TOLERANCE = 0.5;
+  public static final double TILT_TOLERANCE = 0.15;
   public static final int STOP_TOLERANCE = 20;
   public static final int SHOOTER_TOLERANCE = 2;
 
@@ -160,11 +160,11 @@ public class ShooterSubsystem extends SubsystemBase{
   public void tiltToAngle(double degrees){
     double power = MathR.limit(tiltPID.calculate(MathR.getDistanceToAngle(getPitch(), degrees, 10), 0), -tiltSpeedLimit, tiltSpeedLimit);
     
-    if (Math.abs(power) <= 0.02){
+    if (Math.abs(power) <= 0.01){
       power = 0;
     }
 
-    if ((getPitch() <= 30  && power < 0) || (getPitch() >= 180 && power > 0)){
+    if ((getPitch() <= 30  && power < 0) || (getPitch() >= 200 && power > 0)){
       power = 0;
     }
 
@@ -227,12 +227,17 @@ public class ShooterSubsystem extends SubsystemBase{
 
   //Find the angle that the shooter needs to be angled to the speaker based on limelight data
   public double getAutoAngle(double ty, double ta){
-    if (ta <= 0.5){
+    double angle = 0.0000233767 * Math.pow(ty, 5) - 0.000573563 * Math.pow(ty, 4) - 0.00128917 * Math.pow(ty, 3) + 0.0688471 * Math.pow(ty, 2) + 1.66165 * ty + 57.7143;
+    double gyroDistToZero = Math.abs(MathR.limit(MathR.getDistanceToAngle(DriveSubsystem.getYawDegrees(), 0), -10, 10)) * 0.175;
+
+    return angle - gyroDistToZero;
+
+    /*if (ta <= 0.5){
       return -0.00000714563 * Math.pow(ty, 5) + 0.000248267 * Math.pow(ty, 4) + 0.00716947 * Math.pow(ty, 3) - 0.184703 * Math.pow(ty, 2) - 3.07547 * ty + 281.267 - RobotContainer.OFFSET;
     }
     else{
       return -0.00000714563 * Math.pow(ty, 5) + 0.000248267 * Math.pow(ty, 4) + 0.00716947 * Math.pow(ty, 3) - 0.184703 * Math.pow(ty, 2) - 3.07547 * ty + 281.267 - RobotContainer.OFFSET;
-    }
+    }*/
     //Old formula
     //0.00792889 * Math.pow(ty, 3) - 0.142877 * Math.pow(ty, 2) - 3.38697 * ty + 281.44;
     
@@ -240,7 +245,7 @@ public class ShooterSubsystem extends SubsystemBase{
 
   //Find the angle that the robot needs to turn to be angled to the april tag based on limelight data
   public double getAutoOffset(double ty){
-    return -0.00336373 * Math.pow(ty, 2) - 0.212577 * ty + 5.31239 - 2;
+    return -0.00336373 * Math.pow(ty, 2) - 0.212577 * ty + 5.31239 - 7;
   }
 
   //Set shooter tilt speed limits
@@ -270,7 +275,7 @@ public class ShooterSubsystem extends SubsystemBase{
   public enum ShooterAngle {
     TRAVEL(40),
     AMP(176),
-    TOP(160),
+    TOP(180),
     TRAP(150/*205*/),
     PASS(45),
     SUBWOOFER(100),
@@ -285,6 +290,6 @@ public class ShooterSubsystem extends SubsystemBase{
   @Override
   public void periodic() {
     
-    System.out.println(getPitch());
+    //System.out.println(getPitch());
   }
 }
