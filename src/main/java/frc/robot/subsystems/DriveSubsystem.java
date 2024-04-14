@@ -154,6 +154,8 @@ public class DriveSubsystem extends SubsystemBase {
     modules.debugSmartDashboard();  
     
     //System.out.println(getRelativeFieldPosition());
+    System.out.println(gyro.getVelocityX() + " "+ gyro.getWorldLinearAccelX());
+    //System.out.println(modules.get(ModuleLocation.FRONT_LEFT).getWheelOrientationDegrees());
     
 
     SmartDashboard.putNumber("gyro", getYawDegrees());

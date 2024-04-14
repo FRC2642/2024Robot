@@ -24,7 +24,7 @@ public class DivertToGamePieceCommand extends FollowPathCommand {
   Timer intakeTimer = new Timer();
   boolean endWhenIntaken;
   
-  final double LIMELIGHT_TURN_KP = 0.007;
+  final double LIMELIGHT_TURN_KP = 0.005;
   
 
   public DivertToGamePieceCommand(DriveSubsystem drive, LimelightSubsystem limelight, LimelightSubsystem.DetectionType object, PiratePath path, boolean recenterDisplacementToFirstPoint, double additionalLookaheadTime, double visionSpeed, double timeAfterStartToDivert,  boolean endWhenIntaken) {

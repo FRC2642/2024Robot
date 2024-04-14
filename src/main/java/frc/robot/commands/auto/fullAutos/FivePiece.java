@@ -44,15 +44,16 @@ public class FivePiece extends SequentialCommandGroup {
     addCommands(
       new InstantCommand(() -> {
         drive.setDefensiveMode(true);
-        shooter.setSpeedLimit(0.9);
+        shooter.setSpeedLimit(1);
         intake.setSpeedLimit(0.65);
         drive.move(new VectorR(), 0);
         shooter.setShooter(-1);
+        shooterLimelight.setDetectionType(DetectionType.FIDUCIAL);
       }, drive, intake, shooter),
 
     
       //Shoot 1st note
-      new AutoAngleShooterCommand(shooter, shooterLimelight).withTimeout(0.8),
+      new AutoAngleShooterCommand(shooter, shooterLimelight).withTimeout(1),
       new InstantCommand(()->shooter.setManual(0), shooter),
       new InstantCommand(()->shooter.setFeeder(1), shooter),
       new WaitCommand(0.05), //DO NOT REMOVE

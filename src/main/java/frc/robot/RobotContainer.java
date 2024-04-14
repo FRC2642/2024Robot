@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auto.drive.StopCommand;
+import frc.robot.commands.auto.fullAutos.AmpSideThreePiece;
 import frc.robot.commands.auto.fullAutos.CloseFourPiece;
 import frc.robot.commands.auto.fullAutos.DisruptorAuto;
 import frc.robot.commands.auto.fullAutos.FivePiece;
@@ -46,7 +47,7 @@ public class RobotContainer {
   public final ShooterSubsystem shooter = new ShooterSubsystem();
   public final IntakeSubsystem intake = new IntakeSubsystem();
   public final LimelightSubsystem shooterLimelight = new LimelightSubsystem("limelight-shooter");
-  public final LimelightSubsystem intakeLimelight = new LimelightSubsystem("limelight");
+  public final LimelightSubsystem intakeLimelight = new LimelightSubsystem("limelight-intake");
   public final LedSubsystem leds = new LedSubsystem();
 
   
@@ -73,6 +74,7 @@ public class RobotContainer {
     autoChooser.addOption("5 Piece", new FivePiece(drive, shooter, intake, shooterLimelight, intakeLimelight));
     autoChooser.addOption("Middle Notes", new MiddleNotesCommand(drive, shooter, intake, shooterLimelight, intakeLimelight));
     autoChooser.addOption("Disruptor", new DisruptorAuto(drive, shooter, intake, shooterLimelight, intakeLimelight));
+    autoChooser.addOption("Amp Side", new AmpSideThreePiece(drive, shooter, intake, shooterLimelight, intakeLimelight));
     
 
     SmartDashboard.putData(autoChooser);

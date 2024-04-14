@@ -21,8 +21,8 @@ public final class Constants {
 
     // Swerve
     public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(1, 2, 11, 135.7/*137.2*/, 1, -1, ModuleLocation.FRONT_RIGHT);
-    public static final SwerveModuleInfo FRONT_LEFT = new SwerveModuleInfo(3, 4, 12, 212.95/*233.9*/, 1, 1, ModuleLocation.FRONT_LEFT);
-    public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(5, 6, 13, 130.7/*136.1*/, -1, -1, ModuleLocation.BACK_RIGHT);
+    public static final SwerveModuleInfo FRONT_LEFT = new SwerveModuleInfo(3, 4, 12, 182.9/*233.9*/, 1, 1, ModuleLocation.FRONT_LEFT);
+    public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(5, 6, 13, 133.7/*136.1*/, -1, -1, ModuleLocation.BACK_RIGHT);
     public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(7, 8, 14, 65.9 - 2/*53.36*/, -1, 1, ModuleLocation.BACK_LEFT);
 
     // Shooter

@@ -65,7 +65,7 @@ public class RobotPresetCommand extends Command {
   @Override
   public void initialize() {
     shooter.setSpeedLimit(1);
-    intake.setSpeedLimit(0.6);
+    intake.setSpeedLimit(0.7);
     shooterLimelight.setDetectionType(DetectionType.FIDUCIAL);
     intakeLimelight.setDetectionType(DetectionType.NOTE);
     RobotState.setChosenConfiguration(RobotConfiguration.SHOOT_SPEAKER);
@@ -172,7 +172,7 @@ public class RobotPresetCommand extends Command {
     
 
     if (RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER)){
-      if (shooterLimelight.y <= 0){
+      if (shooterLimelight.y < 0){
         shooterLimelight.setDetectionType(DetectionType.FIDUCIAL_ZOOM);
         
       }
@@ -194,7 +194,7 @@ public class RobotPresetCommand extends Command {
     }
     else if (shooterLimelight.isDetection && RobotState.getChosenRobotConfiguration().equals(RobotConfiguration.SHOOT_SPEAKER)){
       //System.out.println(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
-      System.out.println(shooterLimelight.y + " " + shooter.getPitch());
+      //System.out.println(shooterLimelight.y + " " + shooter.getPitch());
       
       shooter.tiltToAngle(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
     }
@@ -256,7 +256,9 @@ public class RobotPresetCommand extends Command {
         if (Math.abs(MathR.getDistanceToAngle(0, intakeLimelight.x)) <= 2){
           limelightTurnPower = 0;
         }
-        if (intakeLimelight.isDetection && intakeLimelight.confidence() >= 0.2 && IntakeSubsystem.getPitch() <= 10){
+        
+        
+        if (intakeLimelight.isDetection && IntakeSubsystem.getPitch() <= 20 && IntakeSubsystem.getPitch() != 0){
           
           drive.move(leftJoystick, limelightTurnPower);
         }
