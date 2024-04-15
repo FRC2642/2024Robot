@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class LedSubsystem extends SubsystemBase {
   /** Creates a new LedSubsystem. */
 
-  public static Spark LEDs = new Spark(0/*PWM Channel*/);
+  public static Spark LEDs = new Spark(1);
 
 
   public LedSubsystem() {}
