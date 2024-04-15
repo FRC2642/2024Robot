@@ -34,9 +34,10 @@ public class CloseFourPiece extends SequentialCommandGroup {
     var note2 = paths.get(0);
     var shootNote2 = paths.get(1);
     var note3 = paths.get(2);
-    var note4 = paths.get(3);
-    var shootNote4 = paths.get(4);
-    var moveOut = paths.get(5);
+    var shootNote3 = paths.get(3);
+    var note4 = paths.get(4);
+    var shootNote4 = paths.get(5);
+    var moveOut = paths.get(6);
 
     
     
@@ -80,11 +81,13 @@ public class CloseFourPiece extends SequentialCommandGroup {
           new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, true)
       ).withTimeout(3),
 
+      new FollowPathCommand(drive, shootNote3, false, 0.25),
+
       //Shoot 3rd note
       new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
       new WaitCommand(0.4),
       new InstantCommand(()->shooter.setFeeder(1), shooter),
-      new WaitCommand(0.05), //DO NOT REMOVE
+      new WaitCommand(0.1), //DO NOT REMOVE
       new InstantCommand(()->{
         shooter.setFeeder(0);
       }, shooter),
@@ -93,6 +96,8 @@ public class CloseFourPiece extends SequentialCommandGroup {
       new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, note4, false, 0.25, 0.2, 1, true).alongWith(
           new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, true)
       ).withTimeout(3),
+
+      new InstantCommand(()->shooter.setManual(0), shooter),
 
       new FollowPathCommand(drive, shootNote4, false, 0.25),
 

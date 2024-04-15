@@ -5,6 +5,7 @@
 package frc.robot.commands.auto.fullAutos;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.auto.IntakeUntilFound;
@@ -66,11 +67,11 @@ public class MiddleNotesCommand extends SequentialCommandGroup {
 
       
       //Get 2nd note
-      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote2, true, 0.5, 0.8, 0.9, true).alongWith(
+      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote2, true, 0.25, 0.25, 3, true).alongWith(
         new WaitCommand(1.5).andThen(
           new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, true)
         )
-      ).withTimeout(4),
+      ),
       
       new FollowPathCommand(drive, shootNote2, false, 0.5).alongWith(new SetIntakeCommand(intake, ()->IntakePosition.RETRACTED)),
 
@@ -80,14 +81,15 @@ public class MiddleNotesCommand extends SequentialCommandGroup {
       new WaitCommand(0.05), //DO NOT REMOVE
       new InstantCommand(()->{
         shooter.setFeeder(0);
+        shooter.setShooter(0);
       }, shooter),
 
       //Get 3rd note
-      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote3, false, 0.25, 0.5, 2, true).alongWith(
+      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote3, false, 0.25, 0.25, 2, true).alongWith(
         new WaitCommand(2).andThen(
           new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, true)
         )
-      ).withTimeout(5),
+      ),
 
       new FollowPathCommand(drive, shootNote3, false, 0.5).alongWith(new SetIntakeCommand(intake, ()->IntakePosition.RETRACTED)),
 
@@ -101,6 +103,9 @@ public class MiddleNotesCommand extends SequentialCommandGroup {
         shooter.setManual(0);
         drive.stop();
       }, shooter)
+      
     );
+
+   
   }
 }

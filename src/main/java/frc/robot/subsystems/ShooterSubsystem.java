@@ -26,7 +26,7 @@ import frc.robot.utils.MathR;
 
 public class ShooterSubsystem extends SubsystemBase{
 
-  private PIDController tiltPID = new PIDController(0.055, 0, 0);
+  private PIDController tiltPID = new PIDController(0.06, 0, 0);
   private PIDController shooterPID1 = new PIDController(0.3, 0, 0);
   private PIDController shooterPID2 = new PIDController(0.2, 0, 0);
 
