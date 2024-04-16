@@ -279,7 +279,7 @@ public class ShooterSubsystem extends SubsystemBase{
     TRAP(150/*205*/),
     PASS(70),
     SUBWOOFER(100),
-    CLIMB_UP(190),
+    CLIMB_UP(195),
     CLIMB_DOWN(85),
     NONE(-1);
 

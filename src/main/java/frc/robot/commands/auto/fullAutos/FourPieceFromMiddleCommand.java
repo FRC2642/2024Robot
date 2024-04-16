@@ -26,10 +26,10 @@ import frc.robot.utils.VectorR;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class CloseFourPiece extends SequentialCommandGroup {
+public class FourPieceFromMiddleCommand extends SequentialCommandGroup {
   /** Creates a new CloseFourPiece. */
-  public CloseFourPiece(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem shooterLimelight, LimelightSubsystem intakeLimelight) {
-    PiratePath path = new PiratePath("CloseFourPiece", false);
+  public FourPieceFromMiddleCommand(DriveSubsystem drive, ShooterSubsystem shooter, IntakeSubsystem intake, LimelightSubsystem shooterLimelight, LimelightSubsystem intakeLimelight) {
+    PiratePath path = new PiratePath("FourPieceFromMiddle", false);
     var paths = path.getSubPaths();
     var note2 = paths.get(0);
     var shootNote2 = paths.get(1);
@@ -37,9 +37,7 @@ public class CloseFourPiece extends SequentialCommandGroup {
     var shootNote3 = paths.get(3);
     var note4 = paths.get(4);
     var shootNote4 = paths.get(5);
-    var moveOut = paths.get(6);
 
-    
     
     addCommands(
       new InstantCommand(() -> {
@@ -68,7 +66,7 @@ public class CloseFourPiece extends SequentialCommandGroup {
 
       //Shoot 2nd note
       new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
-      new WaitCommand(0.2),
+      new WaitCommand(0.4),
       new InstantCommand(()->shooter.setFeeder(1), shooter),
       new WaitCommand(0.05), //DO NOT REMOVE
       new InstantCommand(()->{
@@ -77,7 +75,7 @@ public class CloseFourPiece extends SequentialCommandGroup {
       
 
       //Get 3rd note
-      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, note3, false, 0.25, 0.2, 0.6, true).alongWith(
+      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, note3, false, 0.25, 0.2, 0.8, true).alongWith(
           new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, true)
       ).withTimeout(3),
 
@@ -85,7 +83,7 @@ public class CloseFourPiece extends SequentialCommandGroup {
 
       //Shoot 3rd note
       new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
-      new WaitCommand(0.2),
+      new WaitCommand(0.4),
       new InstantCommand(()->shooter.setFeeder(1), shooter),
       new WaitCommand(0.1), //DO NOT REMOVE
       new InstantCommand(()->{
@@ -93,7 +91,7 @@ public class CloseFourPiece extends SequentialCommandGroup {
       }, shooter),
 
       //Get 4th note
-      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, note4, false, 0.25, 0.2, 1, true).alongWith(
+      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, note4, false, 0.25, 0.2, 0.8, true).alongWith(
           new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, true)
       ).withTimeout(3),
 
@@ -103,15 +101,13 @@ public class CloseFourPiece extends SequentialCommandGroup {
 
       //Shoot 4th note
       new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
-      new WaitCommand(0.2),
+      new WaitCommand(0.4),
       new InstantCommand(()->shooter.setFeeder(1), shooter),
       new WaitCommand(0.6),
       new InstantCommand(()->{
         shooter.setManual(0);
         shooter.setFeeder(0);
-      }, shooter),
-      new FollowPathCommand(drive, moveOut, false, 0.25)
-
+      }, shooter)
     );
   }
 }

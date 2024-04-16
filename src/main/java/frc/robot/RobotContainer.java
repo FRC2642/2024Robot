@@ -18,6 +18,8 @@ import frc.robot.commands.auto.fullAutos.AmpSideThreePiece;
 import frc.robot.commands.auto.fullAutos.CloseFourPiece;
 import frc.robot.commands.auto.fullAutos.DisruptorAuto;
 import frc.robot.commands.auto.fullAutos.FivePiece;
+import frc.robot.commands.auto.fullAutos.FourPieceFromMiddleCommand;
+import frc.robot.commands.auto.fullAutos.FourPieceToMiddleCommand;
 import frc.robot.commands.auto.fullAutos.MiddleNotesCommand;
 import frc.robot.commands.auto.fullAutos.MoveCommand;
 import frc.robot.commands.auto.fullAutos.OnePieceCommand;
@@ -74,8 +76,8 @@ public class RobotContainer {
     autoChooser.addOption("5 Piece", new FivePiece(drive, shooter, intake, shooterLimelight, intakeLimelight));
     autoChooser.addOption("Middle Notes", new MiddleNotesCommand(drive, shooter, intake, shooterLimelight, intakeLimelight));
     autoChooser.addOption("Disruptor", new DisruptorAuto(drive, shooter, intake, shooterLimelight, intakeLimelight));
-    autoChooser.addOption("Amp Side", new AmpSideThreePiece(drive, shooter, intake, shooterLimelight, intakeLimelight));
-    
+    autoChooser.addOption("FourPieceToMiddle", new FourPieceToMiddleCommand(drive, shooter, intake, shooterLimelight, intakeLimelight));
+    autoChooser.addOption("FourPieceFromMiddle", new FourPieceFromMiddleCommand(drive, shooter, intake, shooterLimelight, intakeLimelight));
 
     SmartDashboard.putData(autoChooser);
   }
