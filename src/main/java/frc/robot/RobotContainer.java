@@ -14,13 +14,17 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auto.drive.StopCommand;
+import frc.robot.commands.auto.fullAutos.AmpSideThreePiece;
 import frc.robot.commands.auto.fullAutos.CloseFourPiece;
 import frc.robot.commands.auto.fullAutos.DisruptorAuto;
 import frc.robot.commands.auto.fullAutos.FivePiece;
+import frc.robot.commands.auto.fullAutos.FourPieceFromMiddleCommand;
+import frc.robot.commands.auto.fullAutos.FourPieceToMiddleCommand;
 import frc.robot.commands.auto.fullAutos.MiddleNotesCommand;
 import frc.robot.commands.auto.fullAutos.MoveCommand;
 import frc.robot.commands.auto.fullAutos.OnePieceCommand;
 import frc.robot.commands.auto.fullAutos.OnePiecePath;
+import frc.robot.commands.teleop.LedCommand;
 import frc.robot.commands.teleop.ManualIntakeCommand;
 import frc.robot.commands.teleop.ManualShooterCommand;
 import frc.robot.commands.teleop.PresetSelectorCommand;
@@ -30,8 +34,10 @@ import frc.robot.commands.teleop.resetters.ResetDisplacementCommand;
 import frc.robot.commands.teleop.resetters.ResetGyroCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.LedSubsystem.LEDColor;
 import frc.robot.utils.VectorR;
 
 
@@ -43,7 +49,8 @@ public class RobotContainer {
   public final ShooterSubsystem shooter = new ShooterSubsystem();
   public final IntakeSubsystem intake = new IntakeSubsystem();
   public final LimelightSubsystem shooterLimelight = new LimelightSubsystem("limelight-shooter");
-  public final LimelightSubsystem intakeLimelight = new LimelightSubsystem("limelight");
+  public final LimelightSubsystem intakeLimelight = new LimelightSubsystem("limelight-intake");
+  public final LedSubsystem leds = new LedSubsystem();
 
   
   public final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
@@ -54,9 +61,10 @@ public class RobotContainer {
 
 
   public RobotContainer() {
+    LedSubsystem.setColor(LEDColor.GREEN);
+
     SmartDashboard.putNumber("DEBUG MODE", 0);
     SmartDashboard.putNumber("ANGLE", 0);
-    SmartDashboard.putNumber("OFFSET", 0);
     
     
     // Auto options
@@ -68,7 +76,8 @@ public class RobotContainer {
     autoChooser.addOption("5 Piece", new FivePiece(drive, shooter, intake, shooterLimelight, intakeLimelight));
     autoChooser.addOption("Middle Notes", new MiddleNotesCommand(drive, shooter, intake, shooterLimelight, intakeLimelight));
     autoChooser.addOption("Disruptor", new DisruptorAuto(drive, shooter, intake, shooterLimelight, intakeLimelight));
-    
+    autoChooser.addOption("FourPieceToMiddle", new FourPieceToMiddleCommand(drive, shooter, intake, shooterLimelight, intakeLimelight));
+    autoChooser.addOption("FourPieceFromMiddle", new FourPieceFromMiddleCommand(drive, shooter, intake, shooterLimelight, intakeLimelight));
 
     SmartDashboard.putData(autoChooser);
   }
@@ -84,17 +93,18 @@ public class RobotContainer {
   public void teleopInit() {
     CommandScheduler.getInstance().cancelAll();
     
+    
     if (!DEBUG) {
       CommandScheduler.getInstance().schedule(new PresetSelectorCommand(mainControl, auxButtonBoard));
       CommandScheduler.getInstance().schedule(new RobotPresetCommand(drive, shooter, intake, shooterLimelight, intakeLimelight, mainControl, auxButtonBoard));
-  
+      CommandScheduler.getInstance().schedule(new LedCommand(leds));
 
       //Reset Gyro and Displacement D-Pad
       new POVButton(mainControl, 0).onTrue(new ResetGyroCommand(0).andThen(new ResetDisplacementCommand(new VectorR())));
       //Adjust shooter angle up
-      new POVButton(mainControl, 90).onTrue(new InstantCommand(()->OFFSET+=1));
+      new POVButton(mainControl, 90).onTrue(new InstantCommand(()->OFFSET+=0.5));
       //Adjust shooter angle down
-      new POVButton(mainControl, 90).onTrue(new InstantCommand(()->OFFSET-=1));
+      new POVButton(mainControl, 270).onTrue(new InstantCommand(()->OFFSET-=0.5));
 
       //Data button
       /*new JoystickButton(mainControl, 7).onTrue(new InstantCommand(()->{

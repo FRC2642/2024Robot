@@ -5,6 +5,7 @@
 package frc.robot.commands.auto.fullAutos;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.auto.IntakeUntilFound;
@@ -42,7 +43,7 @@ public class MiddleNotesCommand extends SequentialCommandGroup {
     addCommands(
       new InstantCommand(() -> {
         drive.setDefensiveMode(true);
-        shooter.setSpeedLimit(0.9);
+        shooter.setSpeedLimit(1);
         intake.setSpeedLimit(0.5);
         shooter.setShooter(-1);
         drive.move(new VectorR(), 0);
@@ -55,48 +56,45 @@ public class MiddleNotesCommand extends SequentialCommandGroup {
       
     
       //Shoot 1st note
-      new SetShooterCommand(shooter, ()->ShooterAngle.SUBWOOFER),
+      new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight).withTimeout(0.6),
       new InstantCommand(()->shooter.setManual(0), shooter),
       new WaitCommand(0.3),
       new InstantCommand(()->shooter.setFeeder(1), shooter),
-      new WaitCommand(0.3),
+      new WaitCommand(0.05), //DO NOT REMOVE
       new InstantCommand(()->{
-        shooter.setShooter(0);
         shooter.setFeeder(0);
       }, shooter),
 
       
       //Get 2nd note
-      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote2, true, 0, 0.3, 1.8, true).alongWith(
-        new WaitCommand(2).andThen(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
+      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote2, true, 0.25, 0.25, 3, true).alongWith(
+        new WaitCommand(1.5).andThen(
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, true)
         )
       ),
       
       new FollowPathCommand(drive, shootNote2, false, 0.5).alongWith(new SetIntakeCommand(intake, ()->IntakePosition.RETRACTED)),
 
       //Shoot 2nd note
-      new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
-      new WaitCommand(0.5),
+      new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight).withTimeout(1.4),
       new InstantCommand(()->shooter.setFeeder(1), shooter),
-      new WaitCommand(0.3),
+      new WaitCommand(0.05), //DO NOT REMOVE
       new InstantCommand(()->{
-        shooter.setShooter(0);
         shooter.setFeeder(0);
+        shooter.setShooter(0);
       }, shooter),
 
       //Get 3rd note
-      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote3, false, 0.25, 3, 2, true).alongWith(
-        new WaitCommand(3).andThen(
-          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, false)
+      new DivertToGamePieceCommand(drive, intakeLimelight, DetectionType.NOTE, getNote3, false, 0.25, 0.25, 2, true).alongWith(
+        new WaitCommand(2).andThen(
+          new IntakeUntilFound(()->IntakePosition.EXTENDED, intake, shooter, true)
         )
       ),
 
       new FollowPathCommand(drive, shootNote3, false, 0.5).alongWith(new SetIntakeCommand(intake, ()->IntakePosition.RETRACTED)),
 
       //Shoot 3rd note
-      new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight),
-      new WaitCommand(0.5),
+      new AutoAimShooterCommand(drive, shooter, ()->ShooterSpeed.SPEAKER, shooterLimelight).withTimeout(1),
       new InstantCommand(()->shooter.setFeeder(1), shooter),
       new WaitCommand(0.3),
       new InstantCommand(()->{
@@ -105,6 +103,9 @@ public class MiddleNotesCommand extends SequentialCommandGroup {
         shooter.setManual(0);
         drive.stop();
       }, shooter)
+      
     );
+
+   
   }
 }

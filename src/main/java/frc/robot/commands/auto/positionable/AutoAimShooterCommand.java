@@ -23,7 +23,7 @@ public class AutoAimShooterCommand extends Command {
   private final Supplier<ShooterSubsystem.ShooterSpeed> speed;
   private final LimelightSubsystem shooterLimelight;
   
-  final double LIMELIGHT_TURN_KP = 0.009;
+  final double LIMELIGHT_TURN_KP = 0.013;
   double turnPower;
 
   private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0.8, 0.00105, 0);
@@ -51,8 +51,8 @@ public class AutoAimShooterCommand extends Command {
     }
     
     //shooter.set(speed.get());
-    shooter.runVelocity(ShooterSpeed.SPEAKER.rpm, ShooterSpeed.SPEAKER.rpm, ff.calculate(ShooterSpeed.SPEAKER.rpm), ff.calculate(ShooterSpeed.SPEAKER.rpm));
-    turnPower = MathR.limit(LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, shooterLimelight.x - 4), -0.19, 0.19) * -1;
+    shooter.setShooter(-1);
+    turnPower = MathR.limit(LIMELIGHT_TURN_KP * MathR.getDistanceToAngle(0, shooterLimelight.x), -0.19, 0.19) * -1;
     drive.move(new VectorR(), turnPower);
   }
 
@@ -64,10 +64,10 @@ public class AutoAimShooterCommand extends Command {
     //boolean shooterRevReady = (ShooterSubsystem.getMotorVelocity() <= -70) && (ShooterSubsystem.getMotorVelocity() >= -94);
     boolean shooterAngleReady = shooter.atPitch(shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
     System.out.println("robot: " + robotReady);
-    //System.out.println("shooter: "+shooterAngleReady);
+    System.out.println("shooter: "+shooterAngleReady);
     //System.out.println("shooter rev: "+shooterRevReady);
     
-    System.out.println(shooter.getPitch() + " "+shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
+    //System.out.println(shooter.getPitch() + " "+shooter.getAutoAngle(shooterLimelight.y, shooterLimelight.a));
     
     
     

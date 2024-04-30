@@ -26,7 +26,6 @@ public class Robot extends TimedRobot {
 
     RobotContainer.DEBUG = (int)SmartDashboard.getNumber("DEBUG MODE", 0) != 0;
     RobotContainer.ANGLE = SmartDashboard.getNumber("ANGLE", 0);
-    RobotContainer.OFFSET = SmartDashboard.getNumber("OFFSET", 0);
     SmartDashboard.putBoolean("Note Detected", ShooterSubsystem.getNoteDetected());
   }
 
