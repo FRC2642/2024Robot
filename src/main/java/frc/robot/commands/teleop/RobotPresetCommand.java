@@ -242,7 +242,7 @@ public class RobotPresetCommand extends Command {
           intakeTimerStarted = false;
         } 
         else if (ShooterSubsystem.getCloseNoteDetected() && !ShooterSubsystem.getNoteDetected()){
-          shooter.setFeeder(0.2);
+          shooter.setFeeder(0.35);
         }
         else if (ShooterSubsystem.getNoteDetected()){
           intake.set(IntakePosition.RETRACTED);

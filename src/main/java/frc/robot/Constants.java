@@ -20,10 +20,10 @@ public final class Constants {
     public static final int AUX_BUTTON_BOARD_PORT = 1;
 
     // Swerve
-    public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(1, 2, 11, 135.7/*137.2*/, 1, -1, ModuleLocation.FRONT_RIGHT);
-    public static final SwerveModuleInfo FRONT_LEFT = new SwerveModuleInfo(3, 4, 12, 171/*233.9*/, 1, 1, ModuleLocation.FRONT_LEFT);
-    public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(5, 6, 13, 133.7/*136.1*/, -1, -1, ModuleLocation.BACK_RIGHT);
-    public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(7, 8, 14, 65.9 - 2/*53.36*/, -1, 1, ModuleLocation.BACK_LEFT);
+    public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(1, 2, 11, 135.6/*135.7*/, 1, -1, ModuleLocation.FRONT_RIGHT);
+    public static final SwerveModuleInfo FRONT_LEFT = new SwerveModuleInfo(3, 4, 12, 163.5/*163*/, 1, 1, ModuleLocation.FRONT_LEFT);
+    public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(5, 6, 13, 129.7/*133.7*/, -1, -1, ModuleLocation.BACK_RIGHT);
+    public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(7, 8, 14, 68, -1, 1, ModuleLocation.BACK_LEFT);
 
     // Shooter
     public static final int SHOOTER_SPINNER_ID_1 = 21;
@@ -55,7 +55,7 @@ public final class Constants {
     
     public static final double INTAKE_TILT_ENCODER_MAX_VALUE = 1;
     public static final double INTAKE_TILT_ENCODER_MIN_VALUE = 0;
-    public static final double INTAKE_TILT_ENCODER_OFFSET = 85;
+    public static final double INTAKE_TILT_ENCODER_OFFSET = -98;
 
     public static final int FAR_BEAM_BREAK_CHANNEL = 9;
     public static final int CLOSE_BEAM_BREAK_CHANNEL = 8;

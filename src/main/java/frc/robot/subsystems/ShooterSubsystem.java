@@ -164,15 +164,14 @@ public class ShooterSubsystem extends SubsystemBase{
       power = 0;
     }
 
-    if ((getPitch() <= 30  && power < 0) || (getPitch() >= 200 && power > 0)){
+    if ((getPitch() <= 30  && power > 0) || (getPitch() >= 205 && power < 0)){
       power = 0;
     }
 
 
-    //shooterMotor1.setControl(new DutyCycleOut(power, true, false, false, false));
-    //shooterMotor2.setControl(new DutyCycleOut(power, true, false, false, false));
-     shooterTiltMotor1.set(power);
-     shooterTiltMotor2.set(-power);
+    
+    shooterTiltMotor1.set(power);
+    shooterTiltMotor2.set(-power);
   }
 
   //Run the motors
@@ -273,13 +272,13 @@ public class ShooterSubsystem extends SubsystemBase{
 
   //Shooter angle names
   public enum ShooterAngle {
-    TRAVEL(40),
+    TRAVEL(45),
     AMP(176),
     TOP(180),
     TRAP(150/*205*/),
     PASS(70),
     SUBWOOFER(100),
-    CLIMB_UP(195),
+    CLIMB_UP(200),
     CLIMB_DOWN(85),
     NONE(-1);
 
